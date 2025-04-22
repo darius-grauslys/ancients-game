@@ -3,6 +3,14 @@
 
 #include "defines.h"
 
+void register_aliased_textures_for__world(
+        Aliased_Texture_Manager *p_aliased_texture_manager,
+        Game *p_game);
+
+void register_aliased_textures_for__entities(
+        Aliased_Texture_Manager *p_aliased_texture_manager,
+        Game *p_game);
+
 void register_aliased_textures(
         Aliased_Texture_Manager *p_aliased_texture_manager,
         Game *p_game);
