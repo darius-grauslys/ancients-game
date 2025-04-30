@@ -1,4 +1,4 @@
-.PHONY GAME_SETUP
+.PHONY: GAME_SETUP
 
 $(OFILES_GAME:.c=.o):
 	@mkdir -p $(BUILD)/$$(dirname $@)
