@@ -14,6 +14,7 @@
 #include "types/implemented/scene_kind.h"
 #include "types/implemented/ui_tile_kind.h"
 #include "ui/ui_ag__slider.h"
+#include "ui/ui_element.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_tile_map.h"
 #include "ui/ag_fonts.h"
@@ -45,8 +46,8 @@ static void m_ui_button__clicked_handler__world(
             get_p_world_from__game(p_game));
     set_name_of__world(
             get_p_world_from__game(p_game), 
-            p_this_ui_element
-            ->pM_char_buffer);
+            get_child_of__ui_element(p_this_ui_element)
+                ->pM_char_buffer);
     set_active_scene_for__scene_manager(
             get_p_scene_manager_from__game(
                 p_game), 
@@ -134,6 +135,7 @@ void m_load_scene_as__singleplayer_handler(
             (UI_Tile){UI_Tile_Kind__Button_Toggled_Fill});
 
     char directory_names[1024];
+    memset(directory_names, 0, sizeof(directory_names));
     Quantity__u32 max_length_of__directory_name = 32;
 
     IO_path path_to__saves;

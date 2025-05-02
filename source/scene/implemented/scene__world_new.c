@@ -12,6 +12,8 @@
 #include "ui/ui_ag__button.h"
 #include "ui/ui_ag__text.h"
 #include "ui/ui_ag__text_box.h"
+#include "ui/ui_element.h"
+#include "ui/ui_text_box.h"
 #include "ui/ui_manager.h"
 #include "world/world.h"
 
@@ -89,6 +91,10 @@ void m_load_scene_as__world_new_handler(
                 196, 32, 
                 get_AG_font__large(), 
                 32);
+
+    set_ui_element__typed_handler(
+            _p_ui_element__world_name__text_box, 
+            m_ui_element__typed_handler__text_box__alphanumeric);
 
     make_ag_button(
             p_game, 

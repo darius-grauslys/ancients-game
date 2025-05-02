@@ -10,8 +10,10 @@
 #include "rendering/gfx_context.h"
 #include "client.h"
 #include "rendering/aliased_texture_manager.h"
+#include "types/implemented/scene_kind.h"
 #include "world/local_space.h"
 #include "world/chunk.h"
+#include "input/input.h"
 
 Graphics_Window *ptr_array_of__p_graphics_windows[] = {
     0, // world, ground
@@ -118,18 +120,38 @@ void m_enter_scene_as__world_handler(
         while(!poll__game_tick_timer(p_game));
         manage_game__pre_render(p_game);
 
-        PLATFORM_compose_world(
-                get_p_gfx_context_from__game(p_game), 
-                ptr_array_of__p_graphics_windows, 
-                get_p_local_space_manager_from__client(p_client), 
-                ptr_array_of__p_PLATFORM_textures_for__world, 
-                3, 
-                f_tile_render_kernel__TO_REMOVE_LATER);
+        if (is_input__forward_released(get_p_input_from__game(p_game))) {
+            set_active_scene_for__scene_manager(
+                    get_p_scene_manager_from__game(p_game), 
+                    Scene_Kind__World_Save);
+        }
+
+        // PLATFORM_compose_world(
+        //         get_p_gfx_context_from__game(p_game), 
+        //         ptr_array_of__p_graphics_windows, 
+        //         get_p_local_space_manager_from__client(p_client), 
+        //         ptr_array_of__p_PLATFORM_textures_for__world, 
+        //         3, 
+        //         f_tile_render_kernel__TO_REMOVE_LATER);
 
         render_graphic_windows_in__graphics_window_manager(
                 p_game);
         manage_game__post_render(p_game);
     }
+}
+
+void m_unload_scene_as__world_handler(
+        Scene *p_this_scene,
+        Game *p_game) {
+    release_graphics_window_from__graphics_window_manager(
+            p_game, 
+            *p_ptr_graphics_window__ground);
+    release_graphics_window_from__graphics_window_manager(
+            p_game, 
+            *p_ptr_graphics_window__cover);
+    release_graphics_window_from__graphics_window_manager(
+            p_game, 
+            *p_ptr_graphics_window__ui);
 }
 
 void register_scene__world(Scene_Manager *p_scene_manager) {
@@ -138,5 +160,5 @@ void register_scene__world(Scene_Manager *p_scene_manager) {
             Scene_Kind__World, 
             m_load_scene_as__world_handler, 
             m_enter_scene_as__world_handler, 
-            0);
+            m_unload_scene_as__world_handler);
 }

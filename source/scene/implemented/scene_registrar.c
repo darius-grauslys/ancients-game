@@ -6,12 +6,14 @@
 #include "scene/implemented/scene__multiplayer.h"
 #include "scene/implemented/scene__world_load.h"
 #include "scene/implemented/scene__world_new.h"
+#include "scene/implemented/scene__world_save.h"
 
 void register_scenes(Scene_Manager *p_scene_manager) {
     register_scene__main(p_scene_manager);
     register_scene__world(p_scene_manager);
     register_scene__world_new(p_scene_manager);
     register_scene__world_load(p_scene_manager);
+    register_scene__world_save(p_scene_manager);
     register_scene__settings(p_scene_manager);
     register_scene__singleplayer(p_scene_manager);
     register_scene__multiplayer(p_scene_manager);
