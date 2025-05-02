@@ -23,21 +23,27 @@ static void m_ui_button__clicked_handler__singleplayer(
         UI_Element *p_ui_element,
         Game *p_game,
         Graphics_Window *p_graphics_window) {
-    debug_info("singleplayer");
+    set_active_scene_for__scene_manager(
+            get_p_scene_manager_from__game(p_game), 
+            Scene_Kind__Singleplayer);
 }
 
 static void m_ui_button__clicked_handler__multiplayer(
         UI_Element *p_ui_element,
         Game *p_game,
         Graphics_Window *p_graphics_window) {
-    debug_info("multiplayer");
+    set_active_scene_for__scene_manager(
+            get_p_scene_manager_from__game(p_game), 
+            Scene_Kind__Multiplayer);
 }
 
 static void m_ui_button__clicked_handler__settings(
         UI_Element *p_ui_element,
         Game *p_game,
         Graphics_Window *p_graphics_window) {
-    debug_info("settings");
+    set_active_scene_for__scene_manager(
+            get_p_scene_manager_from__game(p_game), 
+            Scene_Kind__Settings);
 }
 
 static void m_ui_button__clicked_handler__quit(
@@ -168,11 +174,19 @@ void m_enter_scene_as__main_handler(
     }
 }
 
+void m_unload_scene_as__main_handler(
+        Scene *p_this_scene,
+        Game *p_game) {
+    release_graphics_window_from__graphics_window_manager(
+            p_game,
+            _p_main__graphics_window__ui);
+}
+
 void register_scene__main(Scene_Manager *p_scene_manager) {
     register_scene_into__scene_manager(
             p_scene_manager, 
             Scene_Kind__None, 
             m_load_scene_as__main_handler, 
             m_enter_scene_as__main_handler, 
-            0);
+            m_unload_scene_as__main_handler);
 }

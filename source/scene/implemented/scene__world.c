@@ -135,7 +135,7 @@ void m_enter_scene_as__world_handler(
 void register_scene__world(Scene_Manager *p_scene_manager) {
     register_scene_into__scene_manager(
             p_scene_manager, 
-            Scene_Kind__None, 
+            Scene_Kind__World, 
             m_load_scene_as__world_handler, 
             m_enter_scene_as__world_handler, 
             0);

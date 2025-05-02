@@ -1,6 +1,7 @@
 #include "ui/ui_ag__button.h"
 #include "defines.h"
 #include "defines_weak.h"
+#include "ui/ui_element.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_button.h"
 #include "ui/ui_text.h"
@@ -18,7 +19,7 @@ UI_Element *make_ag_button(
 
     UI_Element *p_ui_element =
         allocate_ui_element_from__ui_manager(
-                p_graphics_window->p_ui_manager);
+                p_ui_manager);
 
     initialize_ui_element_as__button(
             p_ui_element, 
@@ -53,6 +54,10 @@ UI_Element *make_ag_button(
             p_font, 
             p_text__c_str, 
             strnlen(p_text__c_str, 32));
+
+    set_ui_element__transformed_handler(
+            p_ui_element__text__child, 
+            m_ui_element__transformed_handler__text__centered);
 
     allocate_hitbox_for__ui_element(
             p_game, 

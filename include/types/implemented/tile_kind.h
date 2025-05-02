@@ -5,6 +5,7 @@
 
 typedef enum Tile_Kind {
     Tile_Kind__None = 0,
+    Tile_Kind__Grass,
     Tile_Kind__Unknown
 } Tile_Kind;
 
