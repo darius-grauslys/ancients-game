@@ -86,12 +86,14 @@ void m_load_scene_as__singleplayer_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_graphics_window__singleplayer), 
             m_ui_button__clicked_handler__back, 
-            get_vector__3i32(24, 256 - 16, 0), 
+            get_vector__3i32(-128 + 24, 128 - 16, 0), 
             48, 
             32, 
             get_AG_font__large(), 
             "BACK");
 
+    // TODO: elements in graphics_window under slider
+    // need the input offset - do this in Lavender
     UI_Element *p_ui_slider =
         make_ag_slider(
             p_game, 
@@ -99,7 +101,7 @@ void m_load_scene_as__singleplayer_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_graphics_window__singleplayer), 
             m_ui_slider__dragged_handler__gfx_window__default, 
-            get_vector__3i32(220 + 12, (192-16)/2 + 8, 0), 
+            get_vector__3i32(220 - 128 + 12, (192 - 128 - 16)/2 + 8, 0), 
             get_vector__3i32(0, -512, 0),
             24, 
             192 - 16,
@@ -116,7 +118,7 @@ void m_load_scene_as__singleplayer_handler(
     set_position_3i32_of__graphics_window(
             p_game, 
             p_graphics_window__slider, 
-            get_vector__3i32(0,0,-10));
+            get_vector__3i32(0,0,-7));
 
     fill_ui_tile_map(
             get_ui_tile_map_from__graphics_window(
@@ -163,8 +165,8 @@ void m_load_scene_as__singleplayer_handler(
                     p_graphics_window__slider), 
                 m_ui_button__clicked_handler__world, 
                 get_vector__3i32(
-                    128,
-                    256 - 16 - (index_of__directory * 48), 
+                    0,
+                    128 - 16 - (index_of__directory * 48), 
                     0),
                 96, 
                 32, 
@@ -179,8 +181,8 @@ void m_load_scene_as__singleplayer_handler(
                 p_graphics_window__slider), 
             m_ui_button__clicked_handler__new_world, 
             get_vector__3i32(
-                128,
-                256 - 16 - (quantity_of__directories * 48), 
+                0,
+                128 - 16 - (quantity_of__directories * 48), 
                 0),
             96, 
             32, 

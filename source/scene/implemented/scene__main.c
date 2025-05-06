@@ -1,4 +1,5 @@
 #include "scene/implemented/scene__main.h"
+#include "ag__client.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "defines_weak.h"
@@ -63,6 +64,13 @@ void m_load_scene_as__main_handler(
                 p_game), 
             p_game);
 
+    set_dispatch_handler_process_for__load_client(
+            p_game, 
+            m_process__deserialize_client__ag);
+    set_dispatch_handler_process_for__save_client(
+            p_game, 
+            m_process__serialize_client__ag);
+
     initialize_hitbox_aabb_manager(
             get_p_hitbox_aabb_manager_from__game(p_game));
 
@@ -109,7 +117,7 @@ void m_load_scene_as__main_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__singleplayer, 
-            get_vector__3i32(128, 128 + 48, 0), 
+            get_vector__3i32(0, 48, 0), 
             128, 
             32, 
             (Font*)get_AG_font__large(), 
@@ -121,7 +129,7 @@ void m_load_scene_as__main_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__multiplayer, 
-            get_vector__3i32(128, 128, 0), 
+            get_vector__3i32(0, 0, 0), 
             128, 
             32, 
             (Font*)get_AG_font__large(), 
@@ -133,7 +141,7 @@ void m_load_scene_as__main_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__settings, 
-            get_vector__3i32(128, 128 - 48, 0), 
+            get_vector__3i32(0, -48, 0), 
             128, 
             32, 
             (Font*)get_AG_font__large(), 
@@ -145,7 +153,7 @@ void m_load_scene_as__main_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__quit, 
-            get_vector__3i32(128, 128 - 48*2, 0), 
+            get_vector__3i32(0, -48*2, 0), 
             128, 
             32, 
             (Font*)get_AG_font__large(), 

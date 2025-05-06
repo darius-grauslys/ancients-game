@@ -2,7 +2,9 @@
 #include "defines.h"
 #include "defines_weak.h"
 #include "platform.h"
+#include "platform_defines.h"
 #include "rendering/implemented/aliased_texture_registrar.h"
+#include "rendering/implemented/sprite_animation_registrar.h"
 #include "scene/scene.h"
 #include "scene/scene_manager.h"
 #include "game.h"
@@ -10,36 +12,51 @@
 #include "rendering/gfx_context.h"
 #include "client.h"
 #include "rendering/aliased_texture_manager.h"
+#include "rendering/graphics_window_manager.h"
+#include "rendering/graphics_window.h"
 #include "types/implemented/scene_kind.h"
+#include "types/implemented/tile_cover_kind.h"
+#include "world/chunk_vectors.h"
+#include "world/global_space.h"
+#include "world/implemented/f_tile_render_kernel.h"
 #include "world/local_space.h"
 #include "world/chunk.h"
 #include "input/input.h"
+#include "world/camera.h"
+#include "world/world.h"
+#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/hitbox_aabb.h"
+#include "world/local_space_manager.h"
 
 Graphics_Window *ptr_array_of__p_graphics_windows[] = {
     0, // world, ground
     0, // world, cover
-    0, // world, ui
+    0, // world, cover_over_sprites
 };
 
 PLATFORM_Texture *ptr_array_of__p_PLATFORM_textures_for__world[] = {
     0, // ground
     0, // cover
-    0, // ui
+    0, // cover
 };
+
+Graphics_Window *p_graphics_window__ui;
 
 Graphics_Window **p_ptr_graphics_window__ground = 
         &ptr_array_of__p_graphics_windows[0];
 Graphics_Window **p_ptr_graphics_window__cover = 
         &ptr_array_of__p_graphics_windows[1];
-Graphics_Window **p_ptr_graphics_window__ui = 
+Graphics_Window **p_ptr_graphics_window__cover_over_sprites = 
         &ptr_array_of__p_graphics_windows[2];
 
 PLATFORM_Texture **p_ptr_PLATFORM_texture__ground_tileset =
         &ptr_array_of__p_PLATFORM_textures_for__world[0];
 PLATFORM_Texture **p_ptr_PLATFORM_texture__cover_tileset =
         &ptr_array_of__p_PLATFORM_textures_for__world[1];
-PLATFORM_Texture **p_ptr_PLATFORM_texture__ui_tileset =
+PLATFORM_Texture **p_ptr_PLATFORM_texture__cover_over_sprites_tileset =
         &ptr_array_of__p_PLATFORM_textures_for__world[2];
+
+static Camera _camera;
 
 void m_load_scene_as__world_handler(
         Scene *p_this_scene,
@@ -61,58 +78,104 @@ void m_load_scene_as__world_handler(
                 get_p_aliased_texture_manager_from__game(p_game), 
                 name_of__texture__cover);
 
-    *p_ptr_PLATFORM_texture__ui_tileset =
+    *p_ptr_PLATFORM_texture__cover_over_sprites_tileset =
         get_p_PLATFORM_texture_by__alias(
                 get_p_aliased_texture_manager_from__game(p_game), 
-                name_of__texture__ui);
+                name_of__texture__cover);
 
     *p_ptr_graphics_window__ground =
         allocate_graphics_window_from__graphics_window_manager(
                 get_p_gfx_context_from__game(p_game), 
                 get_p_graphics_window_manager_from__gfx_context(
                     get_p_gfx_context_from__game(p_game)), 
-                TEXTURE_FLAG__SIZE_256x256);
+                TEXTURE_FLAGS(
+                    TEXTURE_FLAG__SIZE_256x256,
+                    0,
+                    TEXTURE_FLAG__FORMAT__RGBA8888));
+    allocate_sprite_manager_for__graphics_window(
+            get_p_gfx_context_from__game(p_game), 
+            *p_ptr_graphics_window__ground);
+    register_sprite_animations(
+            get_p_sprite_manager_from__graphics_window(
+                *p_ptr_graphics_window__ground));
+
+    get_p_world_from__game(p_game)
+        ->p_graphics_window_for__world = *p_ptr_graphics_window__ground;
 
     *p_ptr_graphics_window__cover =
         allocate_graphics_window_from__graphics_window_manager(
                 get_p_gfx_context_from__game(p_game), 
                 get_p_graphics_window_manager_from__gfx_context(
                     get_p_gfx_context_from__game(p_game)), 
-                TEXTURE_FLAG__SIZE_256x256);
+                TEXTURE_FLAGS(
+                    TEXTURE_FLAG__SIZE_256x256,
+                    0,
+                    TEXTURE_FLAG__FORMAT__RGBA8888));
 
-    *p_ptr_graphics_window__ui =
+    *p_ptr_graphics_window__cover_over_sprites =
         allocate_graphics_window_from__graphics_window_manager(
                 get_p_gfx_context_from__game(p_game), 
                 get_p_graphics_window_manager_from__gfx_context(
                     get_p_gfx_context_from__game(p_game)), 
-                TEXTURE_FLAG__SIZE_256x256);
+                TEXTURE_FLAGS(
+                    TEXTURE_FLAG__SIZE_256x256,
+                    0,
+                    TEXTURE_FLAG__FORMAT__RGBA8888));
+
+    set_position_3i32_of__graphics_window(
+            p_game, 
+            *p_ptr_graphics_window__cover, 
+            get_vector__3i32(0, 0, 1));
+
+    set_position_3i32_of__graphics_window(
+            p_game, 
+            *p_ptr_graphics_window__cover_over_sprites, 
+            get_vector__3i32(0, TILE__WIDTH_AND__HEIGHT_IN__PIXELS -2, 1));
+
+    p_graphics_window__ui =
+        allocate_graphics_window_from__graphics_window_manager(
+                get_p_gfx_context_from__game(p_game), 
+                get_p_graphics_window_manager_from__gfx_context(
+                    get_p_gfx_context_from__game(p_game)), 
+                TEXTURE_FLAGS(
+                    TEXTURE_FLAG__SIZE_256x256,
+                    0,
+                    TEXTURE_FLAG__FORMAT__RGBA8888));
+
+    set_graphics_window__ui_tile_map__texture(
+            p_graphics_window__ui, 
+            get_uuid_of__aliased_texture(
+                get_p_aliased_texture_manager_from__game(p_game), 
+                name_of__texture__ui));
+
+    Hitbox_AABB *p_hitbox_aabb =
+        get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
+                get_p_hitbox_aabb_manager_from__game(p_game),
+                GET_UUID_P(get_p_local_client_by__from__game(p_game)));
+
+    initialize_camera(
+            &_camera, 
+            get_position_3i32F4_of__hitbox_aabb(p_hitbox_aabb), 
+            m_camera_handler__follow__default, 
+            CAMERA_FULCRUM__WIDTH,
+            CAMERA_FULCRUM__WIDTH,
+            i32_to__i32F20(-1), 
+            i32_to__i32F20(100));
+
+    set_p_camera_of__graphics_window(
+            *p_ptr_graphics_window__ground,
+            &_camera);
 }
-
-void f_tile_render_kernel__TO_REMOVE_LATER(
-        Local_Space *p_local_space,
-        Tile_Render_Kernel_Result *p_tile_kernel_render_results,
-        Quantity__u32 quantity_of__tile_kernel_render_results,
-        u8 x__local,
-        u8 y__local,
-        u8 z__local) {
-    Tile *p_tile = 
-        get_p_tile_from__chunk_using__u8(
-                get_p_chunk_from__local_space(p_local_space), 
-                x__local, 
-                y__local, 
-                z__local);
-
-    p_tile_kernel_render_results[0].index_of__texture =
-        p_tile->the_kind_of__tile;
-    p_tile_kernel_render_results[1].index_of__texture =
-        p_tile->the_kind_of__tile_cover;
-}
-
 
 void m_enter_scene_as__world_handler(
         Scene *p_this_scene,
         Game *p_game) {
     Client *p_client = get_p_local_client_by__from__game(p_game);
+    Hitbox_AABB *p_hitbox_aabb =
+        get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
+                get_p_hitbox_aabb_manager_from__game(
+                    p_game), 
+                GET_UUID_P(p_client));
 
     while (poll_is__scene_active(
                 p_game, 
@@ -120,19 +183,18 @@ void m_enter_scene_as__world_handler(
         while(!poll__game_tick_timer(p_game));
         manage_game__pre_render(p_game);
 
-        if (is_input__forward_released(get_p_input_from__game(p_game))) {
-            set_active_scene_for__scene_manager(
-                    get_p_scene_manager_from__game(p_game), 
-                    Scene_Kind__World_Save);
-        }
+        manage_world(
+                p_game,
+                *p_ptr_graphics_window__ground);
 
-        // PLATFORM_compose_world(
-        //         get_p_gfx_context_from__game(p_game), 
-        //         ptr_array_of__p_graphics_windows, 
-        //         get_p_local_space_manager_from__client(p_client), 
-        //         ptr_array_of__p_PLATFORM_textures_for__world, 
-        //         3, 
-        //         f_tile_render_kernel__TO_REMOVE_LATER);
+        PLATFORM_compose_world(
+                get_p_gfx_context_from__game(p_game), 
+                ptr_array_of__p_graphics_windows, 
+                get_p_local_space_manager_from__client(p_client), 
+                ptr_array_of__p_PLATFORM_textures_for__world, 
+                sizeof(ptr_array_of__p_graphics_windows)
+                / sizeof(Graphics_Window*), 
+                f_tile_render_kernel);
 
         render_graphic_windows_in__graphics_window_manager(
                 p_game);
@@ -151,7 +213,7 @@ void m_unload_scene_as__world_handler(
             *p_ptr_graphics_window__cover);
     release_graphics_window_from__graphics_window_manager(
             p_game, 
-            *p_ptr_graphics_window__ui);
+            p_graphics_window__ui);
 }
 
 void register_scene__world(Scene_Manager *p_scene_manager) {

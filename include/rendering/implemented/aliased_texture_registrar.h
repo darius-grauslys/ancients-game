@@ -9,6 +9,8 @@ extern Texture_Name__c_str name_of__texture__ui;
 extern Texture_Name__c_str name_of__texture__font__large;
 extern Texture_Name__c_str name_of__texture__ui_sprites__16x16;
 
+extern Texture_Name__c_str name_of__texture__player;
+
 void register_aliased_textures(
         Aliased_Texture_Manager *p_aliased_texture_manager,
         Game *p_game);

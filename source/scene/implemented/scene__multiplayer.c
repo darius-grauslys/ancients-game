@@ -76,7 +76,7 @@ void m_load_scene_as__multiplayer_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_graphics_window__multiplayer), 
             m_ui_button__clicked_handler__back, 
-            get_vector__3i32(24, 256 - 16, 0), 
+            get_vector__3i32(-128 + 24, 256 - 128 - 16, 0), 
             48, 
             32, 
             get_AG_font__large(), 
@@ -85,7 +85,7 @@ void m_load_scene_as__multiplayer_handler(
     make_ag_text(
             p_game, 
             _p_graphics_window__multiplayer, 
-            get_vector__3i32(48, 168 - 24, 0),
+            get_vector__3i32(-128 + 48, 168 - 128 - 24, 0),
             96, 48, 
             "IP Address:",
             sizeof("IP Address:"));
@@ -95,7 +95,7 @@ void m_load_scene_as__multiplayer_handler(
             _p_graphics_window__multiplayer, 
             get_p_ui_manager_from__graphics_window(
                 _p_graphics_window__multiplayer), 
-            get_vector__3i32(96+32, 144, 0), 
+            get_vector__3i32(-128 + 96+32, -128 + 144, 0), 
             128, 32, 
             get_AG_font__large(), 
             15);
@@ -106,7 +106,7 @@ void m_load_scene_as__multiplayer_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_graphics_window__multiplayer), 
             m_ui_button__clicked_handler__connect, 
-            get_vector__3i32(192, 16, 0), 
+            get_vector__3i32(-128 + 192, -128 + 16, 0), 
             128, 
             32, 
             get_AG_font__large(), 

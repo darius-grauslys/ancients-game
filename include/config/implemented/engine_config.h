@@ -1,8 +1,6 @@
 #ifndef ENGINE_CONFIG_H
 #define ENGINE_CONFIG_H
 
-#include "platform_defines.h"
-
 #ifndef MAX_LENGTH_OF__IO_PATH
 //#define MAX_LENGTH_OF__IO_PATH 128
 #endif
@@ -91,8 +89,7 @@
 //#define CHUNK__WIDTH__AND_HEIGHT__BIT_SHIFT 3
 #endif
 #ifndef CHUNK__DEPTH__BIT_SHIFT
-//#define CHUNK__DEPTH__BIT_SHIFT (\
-        CHUNK__WIDTH__AND_HEIGHT__BIT_SHIFT << 1)
+#define CHUNK__DEPTH__BIT_SHIFT 3
 #endif
 
 #ifndef CHUNK__WIDTH
@@ -102,7 +99,7 @@
 //#define CHUNK_HEIGHT BIT(CHUNK__WIDTH__AND_HEIGHT__BIT_SHIFT)
 #endif
 #ifndef CHUNK__DEPTH
-//#define CHUNK__DEPTH (CHUNK__DEPTH_BIT_SHIFT)
+//#define CHUNK__DEPTH BIT(CHUNK__DEPTH_BIT_SHIFT)
 #endif
 
 #ifndef CHUNK__QUANTITY_OF_TILES

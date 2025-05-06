@@ -16,6 +16,8 @@
 #include "world/world.h"
 #include "process/process.h"
 #include "game_action/implemented/game_action_registrar.h"
+#include "entity/entity_manager.h"
+#include "entity/f_entity_initializer.h"
 
 Graphics_Window *_p_graphics_window__world_load = 0;
 
@@ -37,6 +39,10 @@ void m_load_scene_as__world_load_handler(
 
     register_game_actions__offline(
             get_p_game_action_logic_table_from__game(p_game));
+    
+    set_entity_initializer_in__entity_manager(
+            get_p_entity_manager_from__game(p_game), 
+            f_entity_initializer__ag);
 
     allocate_client_pool_for__game(
             p_game, 

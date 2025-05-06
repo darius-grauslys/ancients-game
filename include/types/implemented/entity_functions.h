@@ -17,6 +17,9 @@ typedef struct Entity_Functions_t {
     ///
     /// Extend the struct here:
     ///
+    m_Entity_Handler    m_entity_ai_handler;
+    m_Entity_Handler    m_entity_body_handler;
+    m_Entity_Handler    m_entity_death_handler;
 
 } Entity_Functions;
 

@@ -65,7 +65,7 @@ void m_load_scene_as__settings_handler(
             get_p_ui_manager_from__graphics_window(
                 _p_graphics_window__settings), 
             m_ui_button__clicked_handler__back, 
-            get_vector__3i32(24, 256 - 16, 0), 
+            get_vector__3i32(-128 + 24, -128 + 256 - 16, 0), 
             48, 
             32, 
             get_AG_font__large(), 
