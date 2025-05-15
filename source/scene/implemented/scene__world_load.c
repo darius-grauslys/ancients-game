@@ -1,4 +1,5 @@
 #include "scene/implemented/scene__world_load.h"
+#include "collisions/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "rendering/ag__graphics_window.h"
 #include "rendering/graphics_window_manager.h"
@@ -48,6 +49,10 @@ void m_load_scene_as__world_load_handler(
             p_game, 
             0, 
             1);
+    allocate_hitbox_aabb_from__hitbox_aabb_manager(
+            get_p_hitbox_aabb_manager_from__game(p_game), 
+            GET_UUID_P(get_p_local_client_by__from__game(
+                    p_game)));
 
     _p_graphics_window__world_load =
         make_AG_graphics_window_with__composition_texture(
@@ -66,6 +71,11 @@ void m_load_scene_as__world_load_handler(
                 32, 
                 "Loading.   ", 
                 sizeof("Loading.   "));
+
+    if (!is_world_allocated_for__game(p_game)) {
+        state_of__loading_text =
+            Loading_Text_State__Failed;
+    }
 }
 
 static Timer__u8 _tick_timer__loading_text;

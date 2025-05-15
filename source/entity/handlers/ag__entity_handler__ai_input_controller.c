@@ -29,19 +29,15 @@ void m_entity_handler__ai_input_controller(
         VECTOR__3i32F4__0_0_0;
     // up to here.
     if (is_input__forward_held(p_input)) {
-        p_hitbox_aabb->position__3i32F4.y__i32F4 += 0b1000;
         p_hitbox_aabb->velocity__3i32F4.y__i32F4 = 0b1000;
     }
     if (is_input__backward_held(p_input)) {
-        p_hitbox_aabb->position__3i32F4.y__i32F4 += -0b1000;
         p_hitbox_aabb->velocity__3i32F4.y__i32F4 = -0b1000;
     }
     if (is_input__right_held(p_input)) {
-        p_hitbox_aabb->position__3i32F4.x__i32F4 += 0b1000;
         p_hitbox_aabb->velocity__3i32F4.x__i32F4 = 0b1000;
     }
     if (is_input__left_held(p_input)) {
-        p_hitbox_aabb->position__3i32F4.x__i32F4 += -0b1000;
         p_hitbox_aabb->velocity__3i32F4.x__i32F4 = -0b1000;
     }
 }

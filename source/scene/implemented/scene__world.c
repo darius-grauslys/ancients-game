@@ -27,6 +27,7 @@
 #include "collisions/hitbox_aabb_manager.h"
 #include "collisions/hitbox_aabb.h"
 #include "world/local_space_manager.h"
+#include "entity/entity_manager.h"
 
 Graphics_Window *ptr_array_of__p_graphics_windows[] = {
     0, // world, ground
@@ -165,6 +166,12 @@ void m_load_scene_as__world_handler(
     set_p_camera_of__graphics_window(
             *p_ptr_graphics_window__ground,
             &_camera);
+
+    allocate_entity_in__entity_manager(
+            p_game, 
+            get_p_world_from__game(p_game), 
+            get_p_entity_manager_from__game(p_game), 
+            Entity_Kind__Skeleton);
 }
 
 void m_enter_scene_as__world_handler(

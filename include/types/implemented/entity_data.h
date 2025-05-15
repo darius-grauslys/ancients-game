@@ -2,6 +2,7 @@
 #define IMPL_ENTITY_DATA_H
 
 #include "ag__defines_weak.h"
+#include "defines_weak.h"
 
 #define DEFINE_ENTITY_DATA
 
@@ -20,6 +21,8 @@ typedef struct Entity_Data_t {
     };
     struct {
         Identifier__u32             uuid_of__current_container;    
+        Identifier__u32             uuid_of__target;
+        Vector__3i32F4                goal__3i32F4;
     };
 } Entity_Data;
 

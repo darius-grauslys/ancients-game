@@ -9,13 +9,6 @@ void m_entity_handler__update__ag(
         Entity *p_this_entity,
         Game *p_game,
         World *p_world) {
-    if (p_this_entity->entity_functions.m_entity_body_handler) {
-        p_this_entity->entity_functions.m_entity_body_handler(
-                p_this_entity,
-                p_game,
-                p_world);
-    }
-
     if (!get_quantity_u16_of__health_of__entity(
                 p_this_entity, 
                 false)) {
@@ -35,6 +28,12 @@ void m_entity_handler__update__ag(
 
     if (p_this_entity->entity_functions.m_entity_ai_handler) {
         p_this_entity->entity_functions.m_entity_ai_handler(
+                p_this_entity,
+                p_game,
+                p_world);
+    }
+    if (p_this_entity->entity_functions.m_entity_body_handler) {
+        p_this_entity->entity_functions.m_entity_body_handler(
                 p_this_entity,
                 p_game,
                 p_world);

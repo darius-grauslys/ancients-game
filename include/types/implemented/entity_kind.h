@@ -6,6 +6,7 @@
 typedef enum Entity_Kind {
     Entity_Kind__None = 0,
     Entity_Kind__Player,
+    Entity_Kind__Skeleton,
     Entity_Kind__Unknown
 } Entity_Kind;
 

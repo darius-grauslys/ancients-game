@@ -1,5 +1,6 @@
 #include "entity/implemented/ag__entity_player.h"
 #include "ag__defines_weak.h"
+#include "collisions/hitbox_aabb.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "entity/entity.h"
 #include "defines.h"
@@ -40,10 +41,20 @@ void m_entity_handler__update_player__begin(
                 GET_UUID_P(p_this_entity));
 
     if (!p_hitbox_aabb) {
-        allocate_hitbox_aabb_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
-                GET_UUID_P(p_this_entity));
+        p_hitbox_aabb =
+            allocate_hitbox_aabb_from__hitbox_aabb_manager(
+                    get_p_hitbox_aabb_manager_from__game(p_game), 
+                    GET_UUID_P(p_this_entity));
+        if (!p_hitbox_aabb) {
+            debug_error("m_entity_handler__update_player__begin, failed to allocate hitbox.");
+            set_entity_as__disabled(p_this_entity);
+            return;
+        }
     }
+
+    set_size_of__hitbox_aabb(
+            p_hitbox_aabb, 
+            8, 8);
 
     p_this_entity->entity_data
         .hearts.max_quantity_of__resource_symbols = 10;
