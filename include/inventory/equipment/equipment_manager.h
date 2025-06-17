@@ -1,0 +1,6 @@
+#ifndef EQUIPMENT_MANAGER_H
+#define EQUIPMENT_MANAGER_H
+
+
+
+#endif

@@ -6,6 +6,25 @@
 typedef enum Tile_Cover_Kind {
     Tile_Cover_Kind__None = 0                               ,
 
+    Tile_Cover_Kind__Stair = 16                             ,
+
+    Tile_Cover_Kind__Stair__Wood                            ,
+    Tile_Cover_Kind__Stair__Stone_Brick                     ,
+    Tile_Cover_Kind__Stair__Gold                            ,
+    Tile_Cover_Kind__Stair__Iron                            ,
+    Tile_Cover_Kind__Stair__Diamond                         ,
+    Tile_Cover_Kind__Stair__Amethyst                        ,
+    Tile_Cover_Kind__Stair__Sandstone                       ,
+    Tile_Cover_Kind__Stair__Stone                           ,
+    Tile_Cover_Kind__Stair__Dirt                            ,
+    Tile_Cover_Kind__Stair__Sand                            ,
+    Tile_Cover_Kind__Stair__Grass                           ,
+    Tile_Cover_Kind__Stair__Steel                           ,
+    Tile_Cover_Kind__Stair__Leaves                          ,
+    Tile_Cover_Kind__Stair__Snow                            ,
+    Tile_Cover_Kind__Stair__END =
+        Tile_Cover_Kind__Stair__Snow                        ,
+
     Tile_Cover_Kind__Wall = 1 + (32 * 16)                   ,
 
     Tile_Cover_Kind__Wall__Wood                             = Tile_Cover_Kind__Wall,

@@ -4,6 +4,15 @@
 #include "defines.h"
 #include "ag__defines_weak.h"
 
+///
+/// If a tile possesses this logic flag, it will
+/// be successfully placed over during place_tile.
+///
+#define TILE_LOGIC_FLAG__AG__IS_GROUND__PLACE_OVERIDDEN \
+    TILE_LOGIC_FLAG__CUSTOM_0
+#define TILE_LOGIC_FLAG__AG__IS_COVER__PLACE_OVERIDDEN \
+    TILE_LOGIC_FLAG__CUSTOM_1
+
 #define SPRITE_FRAME_WIDTH__ENTITY_HUMANOID_ARMORED 16
 #define SPRITE_FRAME_HEIGHT__ENTITY_HUMANOID_ARMORED 16
 

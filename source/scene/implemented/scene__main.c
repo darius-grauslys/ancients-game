@@ -89,10 +89,12 @@ void m_load_scene_as__main_handler(
         return;
     }
 
-    get_AG_font__large()->p_PLATFORM_texture_of__font =
-        get_p_PLATFORM_texture_by__alias(
-                get_p_aliased_texture_manager_from__game(p_game), 
-                name_of__texture__font__large);
+    if (!get_texture_by__alias(
+            get_p_aliased_texture_manager_from__game(p_game), 
+            name_of__texture__font__large,
+            &get_AG_font__large()->texture_of__font)) {
+        debug_error("m_load_scene_as__main_handler, failed to get font texture.");
+    }
 
     set_graphics_window__ui_tile_map(
             _p_main__graphics_window__ui, 

@@ -9,6 +9,7 @@
 typedef struct Tile_t {
     Tile_Kind the_kind_of__tile             :10;
     Tile_Cover_Kind the_kind_of__tile_cover :10;
+    Tile_Slope_Flags__u4 slope_flags__u4    :4;
 } Tile;
 
 static inline

@@ -24,7 +24,7 @@ void register_aliased_textures(
     PLATFORM_Gfx_Context *p_PLATFORM_gfx_context =
         get_p_PLATFORM_gfx_context_from__game(p_game);
 
-    load_p_PLATFORM_texture_from__path_with__alias(
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -33,9 +33,10 @@ void register_aliased_textures(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__ui);
+            path_to__texture__ui,
+            0);
 
-    load_p_PLATFORM_texture_from__path_with__alias(
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -44,9 +45,10 @@ void register_aliased_textures(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__font__large);
+            path_to__texture__font__large,
+            0);
 
-    load_p_PLATFORM_texture_from__path_with__alias(
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -55,7 +57,8 @@ void register_aliased_textures(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__ui_sprites__16x16);
+            path_to__texture__ui_sprites__16x16,
+            0);
 }
 
 void register_aliased_textures_for__world(
@@ -64,7 +67,7 @@ void register_aliased_textures_for__world(
     PLATFORM_Gfx_Context *p_PLATFORM_gfx_context =
         get_p_PLATFORM_gfx_context_from__game(p_game);
 
-    load_p_PLATFORM_texture_from__path_with__alias(
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -73,9 +76,10 @@ void register_aliased_textures_for__world(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__ground);
+            path_to__texture__ground,
+            0);
 
-    load_p_PLATFORM_texture_from__path_with__alias(
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -84,7 +88,8 @@ void register_aliased_textures_for__world(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__cover);
+            path_to__texture__cover,
+            0);
 }
 
 void register_aliased_textures_for__entities(
@@ -93,7 +98,7 @@ void register_aliased_textures_for__entities(
     PLATFORM_Gfx_Context *p_PLATFORM_gfx_context =
         get_p_PLATFORM_gfx_context_from__game(p_game);
 
-    load_p_PLATFORM_texture_from__path_with__alias(
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -102,8 +107,9 @@ void register_aliased_textures_for__entities(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__player);
-    load_p_PLATFORM_texture_from__path_with__alias(
+            path_to__texture__player,
+            0);
+    load_texture_from__path_with__alias(
             p_PLATFORM_gfx_context, 
             0, 
             p_aliased_texture_manager, 
@@ -112,5 +118,6 @@ void register_aliased_textures_for__entities(
                 TEXTURE_FLAG__SIZE_256x256,
                 TEXTURE_FLAG__RENDER_METHOD__0,
                 TEXTURE_FLAG__FORMAT__RGBA8888),
-            path_to__texture__skeleton);
+            path_to__texture__skeleton,
+            0);
 }

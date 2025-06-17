@@ -35,10 +35,10 @@ Graphics_Window *ptr_array_of__p_graphics_windows[] = {
     0, // world, cover_over_sprites
 };
 
-PLATFORM_Texture *ptr_array_of__p_PLATFORM_textures_for__world[] = {
-    0, // ground
-    0, // cover
-    0, // cover
+Texture array_of__textures_for__world[] = {
+    (Texture){0}, // ground
+    (Texture){0}, // cover
+    (Texture){0}, // cover
 };
 
 Graphics_Window *p_graphics_window__ui;
@@ -50,12 +50,12 @@ Graphics_Window **p_ptr_graphics_window__cover =
 Graphics_Window **p_ptr_graphics_window__cover_over_sprites = 
         &ptr_array_of__p_graphics_windows[2];
 
-PLATFORM_Texture **p_ptr_PLATFORM_texture__ground_tileset =
-        &ptr_array_of__p_PLATFORM_textures_for__world[0];
-PLATFORM_Texture **p_ptr_PLATFORM_texture__cover_tileset =
-        &ptr_array_of__p_PLATFORM_textures_for__world[1];
-PLATFORM_Texture **p_ptr_PLATFORM_texture__cover_over_sprites_tileset =
-        &ptr_array_of__p_PLATFORM_textures_for__world[2];
+Texture *p_texture__ground_tileset =
+        &array_of__textures_for__world[0];
+Texture *p_texture__cover_tileset =
+        &array_of__textures_for__world[1];
+Texture *p_texture__cover_over_sprites_tileset =
+        &array_of__textures_for__world[2];
 
 static Camera _camera;
 
@@ -69,20 +69,26 @@ void m_load_scene_as__world_handler(
             get_p_aliased_texture_manager_from__game(p_game), 
             p_game);
 
-    *p_ptr_PLATFORM_texture__ground_tileset =
-        get_p_PLATFORM_texture_by__alias(
+    if (get_texture_by__alias(
                 get_p_aliased_texture_manager_from__game(p_game), 
-                name_of__texture__ground);
+                name_of__texture__ground,
+                p_texture__ground_tileset)) {
+        debug_error("m_load_scene_as__world_handler, failed to load ground texture.");
+    }
 
-    *p_ptr_PLATFORM_texture__cover_tileset =
-        get_p_PLATFORM_texture_by__alias(
+    if (get_texture_by__alias(
                 get_p_aliased_texture_manager_from__game(p_game), 
-                name_of__texture__cover);
+                name_of__texture__cover,
+                p_texture__cover_tileset)) {
+        debug_error("m_load_scene_as__world_handler, failed to load cover texture.");
+    }
 
-    *p_ptr_PLATFORM_texture__cover_over_sprites_tileset =
-        get_p_PLATFORM_texture_by__alias(
+    if (get_texture_by__alias(
                 get_p_aliased_texture_manager_from__game(p_game), 
-                name_of__texture__cover);
+                name_of__texture__cover,
+                p_texture__cover_over_sprites_tileset)) {
+        debug_error("m_load_scene_as__world_handler, failed to load cover_over_sprites texture.");
+    }
 
     *p_ptr_graphics_window__ground =
         allocate_graphics_window_from__graphics_window_manager(
@@ -198,7 +204,7 @@ void m_enter_scene_as__world_handler(
                 get_p_gfx_context_from__game(p_game), 
                 ptr_array_of__p_graphics_windows, 
                 get_p_local_space_manager_from__client(p_client), 
-                ptr_array_of__p_PLATFORM_textures_for__world, 
+                array_of__textures_for__world, 
                 sizeof(ptr_array_of__p_graphics_windows)
                 / sizeof(Graphics_Window*), 
                 f_tile_render_kernel);

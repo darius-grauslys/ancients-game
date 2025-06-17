@@ -1,4 +1,5 @@
 #include "ui/ag_fonts.h"
+#include "defines.h"
 #include "rendering/font/font_letter.h"
 
 Font AG_font__large = {
@@ -1540,8 +1541,9 @@ Font AG_font__large = {
                 0,
                 0),
     },
-    0,
+    (Texture){0},
     FONT_LARGE__MAX_WIDTH,
-    FONT_LARGE__MAX_HEIGHT
+    FONT_LARGE__MAX_HEIGHT,
+    FONT_FLAGS__NONE
 };
 

@@ -50,6 +50,13 @@ UI_Element *make_ag_slider(
         allocate_ui_element_from__ui_manager(
                 p_ui_manager);
 
+    Texture texture_of__slider;
+    get_texture_by__alias(
+        get_p_aliased_texture_manager_from__game(
+            p_game), 
+        name_of__texture__ui_sprites__16x16,
+        &texture_of__slider);
+
     Sprite *p_sprite =
         allocate_sprite_from__sprite_manager(
                 get_p_gfx_context_from__game(p_game), 
@@ -57,10 +64,7 @@ UI_Element *make_ag_slider(
                     p_graphics_window), 
                 p_graphics_window, 
                 GET_UUID_P(p_ui_slider__sprite), 
-                get_p_PLATFORM_texture_by__alias(
-                    get_p_aliased_texture_manager_from__game(
-                        p_game), 
-                    name_of__texture__ui_sprites__16x16), 
+                texture_of__slider,
                 TEXTURE_FLAG__SIZE_16x16);
 
     set_frame_index_of__sprite(

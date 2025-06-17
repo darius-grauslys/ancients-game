@@ -31,19 +31,28 @@ void m_entity_handler__update_skeleton__begin(
         Entity *p_this_skeleton,
         Game *p_game,
         World *p_world) {
-    allocate_sprite_from__sprite_manager(
-            get_p_gfx_context_from__game(p_game), 
-            get_p_sprite_manager_from__graphics_window(
+    Texture texture_of__skeleton;
+
+    get_texture_by__alias(
+        get_p_aliased_texture_manager_from__game(
+            p_game), 
+        name_of__texture__skeleton,
+        &texture_of__skeleton);
+
+    Sprite *p_sprite =
+        allocate_sprite_from__sprite_manager(
+                get_p_gfx_context_from__game(p_game), 
+                get_p_sprite_manager_from__graphics_window(
+                    get_p_graphics_window_from__world(
+                        p_world)), 
                 get_p_graphics_window_from__world(
-                    p_world)), 
-            get_p_graphics_window_from__world(
-                p_world), 
-            GET_UUID_P(p_this_skeleton), 
-            get_p_PLATFORM_texture_by__alias(
-                get_p_aliased_texture_manager_from__game(
-                    p_game), 
-                name_of__texture__skeleton), 
-            TEXTURE_FLAG__SIZE_16x16);
+                    p_world), 
+                GET_UUID_P(p_this_skeleton), 
+                texture_of__skeleton,
+                TEXTURE_FLAG__SIZE_16x16);
+
+    p_sprite->m_sprite_animation_handler =
+        m_sprite_animation_handler__ag__humanoid;
 
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
