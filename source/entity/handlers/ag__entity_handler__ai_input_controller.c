@@ -40,4 +40,14 @@ void m_entity_handler__ai_input_controller(
     if (is_input__left_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.x__i32F4 = -0b1000;
     }
+    if (is_input__consume_held(p_input)) {
+        p_hitbox_aabb->velocity__3i32F4.z__i32F4 = 0b1000;
+        debug_info("z: %d", i32F4_to__i32(
+                    p_hitbox_aabb->position__3i32F4.z__i32F4) >> 3);
+    }
+    if (is_input__examine_held(p_input)) {
+        p_hitbox_aabb->velocity__3i32F4.z__i32F4 = -0b1000;
+        debug_info("z: %d", i32F4_to__i32(
+                    p_hitbox_aabb->position__3i32F4.z__i32F4) >> 3);
+    }
 }

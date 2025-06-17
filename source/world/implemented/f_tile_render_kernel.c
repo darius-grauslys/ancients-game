@@ -512,9 +512,6 @@ void get_tile_texture_sheet_index(
         //TODO: leaves and snow
         // case Tile_Kind__Snow:
         //     return TILE_SHEET_INDEX__DIRT;
-        case Tile_Kind__Water:
-            p_render_result->tile_index__ground = 0;
-            return;
     }
 tile_structure:
     ;
@@ -550,7 +547,7 @@ Tile *get_p_tile__from_chunk_and__wall_adjacency_of__that_tile(
                         p_local_space->p_local_space__north),
                     x__local, 
                     0,
-                    0)
+                    z__local)
                 : 0)
         : get_p_tile_from__chunk_using__u8(
                 get_p_chunk_from__local_space(

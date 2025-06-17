@@ -11,6 +11,7 @@
 #include "rendering/graphics_window.h"
 #include "rendering/implemented/aliased_texture_registrar.h"
 #include "rendering/sprite_manager.h"
+#include "rendering/handlers/ag__sprite_animation_handler.h"
 #include "collisions/collision_node_pool.h"
 #include "collisions/collision_node.h"
 #include "vectors.h"

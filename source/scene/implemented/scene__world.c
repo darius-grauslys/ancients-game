@@ -166,18 +166,18 @@ void m_load_scene_as__world_handler(
             m_camera_handler__follow__default, 
             CAMERA_FULCRUM__WIDTH,
             CAMERA_FULCRUM__WIDTH,
-            i32_to__i32F20(-1), 
+            i32_to__i32F20(-10), 
             i32_to__i32F20(100));
 
     set_p_camera_of__graphics_window(
             *p_ptr_graphics_window__ground,
             &_camera);
 
-    allocate_entity_in__entity_manager(
-            p_game, 
-            get_p_world_from__game(p_game), 
-            get_p_entity_manager_from__game(p_game), 
-            Entity_Kind__Skeleton);
+    // allocate_entity_in__entity_manager(
+    //         p_game, 
+    //         get_p_world_from__game(p_game), 
+    //         get_p_entity_manager_from__game(p_game), 
+    //         Entity_Kind__Skeleton);
 }
 
 void m_enter_scene_as__world_handler(

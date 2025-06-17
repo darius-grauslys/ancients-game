@@ -18,7 +18,7 @@ typedef enum Tile_Kind {
     Tile_Kind__Grass,
     Tile_Kind__Steel,
 
-    Tile_Kind__Water,
+    Tile_Kind__Water = 23 + 32,
 
     Tile_Kind__Unknown
 } Tile_Kind;

@@ -31,12 +31,21 @@ void m_sprite_animation_handler__ag__humanoid(
 
     // TODO: check by armor
     // p_sprite->index_of__sprite_animation_sub_group__u8 = 0;
-    if (get_movement_direction_of__hitbox(
-                p_hitbox_aabb)) {
+    Direction__u8 direction_of__movement =
+        get_movement_direction_of__hitbox(
+                p_hitbox_aabb);
+    if (direction_of__movement) {
         set_sprite_animation(
                 p_sprite_manager, 
                 p_this_sprite, 
                 Sprite_Animation_Kind__Humanoid_Walk);
+        if (direction_of__movement
+                & DIRECTION__WEST) {
+            set_sprite_as__flipped_x(p_this_sprite);
+        } else if (direction_of__movement
+                & DIRECTION__EAST) {
+            set_sprite_as__NOT_flipped_x(p_this_sprite);
+        }
     } else {
         set_sprite_animation(
                 p_sprite_manager, 
