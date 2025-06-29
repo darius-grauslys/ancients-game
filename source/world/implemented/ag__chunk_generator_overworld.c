@@ -132,8 +132,8 @@ void f_chunk_generator__overworld(Game *p_game, Global_Space *p_global_space) {
     }
 
     // Within terrain surface zone
-    for (i32 dx = 0; dx < CHUNK__WIDTH; ++dx) {
-        for (i32 dy = 0; dy < CHUNK__HEIGHT; ++dy) {
+    for (i32 dy = 0; dy < CHUNK__WIDTH; ++dy) {
+        for (i32 dx = 0; dx < CHUNK__HEIGHT; ++dx) {
             i32 world_x = base_x + dx;
             i32 world_y = base_y + dy;
 

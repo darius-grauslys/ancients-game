@@ -27,6 +27,7 @@
 #include "collisions/hitbox_aabb_manager.h"
 #include "collisions/hitbox_aabb.h"
 #include "world/local_space_manager.h"
+#include "world/global_space_manager.h"
 #include "entity/entity_manager.h"
 
 Graphics_Window *ptr_array_of__p_graphics_windows[] = {

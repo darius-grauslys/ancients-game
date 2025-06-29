@@ -1,5 +1,6 @@
 #include "world/implemented/f_tile_render_kernel.h"
 #include "defines.h"
+#include "defines_weak.h"
 #include "platform_defines.h"
 #include "types/implemented/tile.h"
 #include "types/implemented/tile_cover_kind.h"
@@ -256,6 +257,69 @@ wall:
             p_render_result->tile_index__cover =
                 Tile_Cover_Kind__Tree__Trunk;
             break;
+    }
+}
+
+static inline
+void get_tile_sheet_index_offset_for__sprite_cover_from__slope_flags(
+        Tile *p_tile,
+        Tile_Render_Result *p_render_result) {
+    if (is_tile_cover__a_stair(get_tile_cover_kind_from__tile(p_tile))) {
+        switch (p_tile->slope_flags__u4) {
+            case TILE_SLOPE_FLAG__NORTH:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__NORTH;
+                break;
+            case TILE_SLOPE_FLAG__EAST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__EAST_WEST;
+                break;
+            case TILE_SLOPE_FLAG__SOUTH:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__SOUTH;
+                break;
+            case TILE_SLOPE_FLAG__WEST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__EAST_WEST;
+                p_render_result->is_flipped__y = true;
+                break;
+            case TILE_SLOPE_FLAG__CONCAVE__NORTH_EAST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__NORTH__EAST_WEST;
+                break;
+            case TILE_SLOPE_FLAG__CONCAVE__NORTH_WEST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__NORTH__EAST_WEST;
+                p_render_result->is_flipped__y = true;
+                break;
+            case TILE_SLOPE_FLAG__CONCAVE__SOUTH_EAST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__SOUTH__EAST_WEST;
+                break;
+            case TILE_SLOPE_FLAG__CONCAVE__SOUTH_WEST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__SOUTH__EAST_WEST;
+                p_render_result->is_flipped__y = true;
+                break;
+            case TILE_SLOPE_FLAG__CONVEX__NORTH_EAST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__NORTH__EAST_WEST;
+                p_render_result->is_flipped__y = true;
+                break;
+            case TILE_SLOPE_FLAG__CONVEX__NORTH_WEST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__NORTH__EAST_WEST;
+                break;
+            case TILE_SLOPE_FLAG__CONVEX__SOUTH_EAST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__SOUTH__EAST_WEST;
+                p_render_result->is_flipped__y = true;
+                break;
+            case TILE_SLOPE_FLAG__CONVEX__SOUTH_WEST:
+                p_render_result->tile_index__sprite_cover
+                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__SOUTH__EAST_WEST;
+                break;
+        }
     }
 }
 
@@ -522,7 +586,7 @@ tile_structure:
 }
 
 static inline 
-Tile *get_p_tile__from_chunk_and__wall_adjacency_of__that_tile(
+Tile *get_p_tile__from_chunk_and__adjacencies_of__that_tile(
         Local_Space *p_local_space,
         Local_Tile_Vector__3u8 local_tile_vector__3u8,
         Tile_Wall_Adjacency_Code__u16 *p_OUT_wall_adjacency) {
@@ -617,21 +681,29 @@ Tile *get_p_tile__from_chunk_and__wall_adjacency_of__that_tile(
         ;
 
     Tile_Wall_Adjacency_Code__u16 wall_adjacency = 0;
-    if (p_north && is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_north))) {
-        wall_adjacency +=
-            TILE_RENDER__WALL_ADJACENCY__NORTH;
+    if (p_north) {
+        if (is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_north))) {
+            wall_adjacency +=
+                TILE_RENDER__WALL_ADJACENCY__NORTH;
+        }
     }
-    if (p_east && is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_east))) {
-        wall_adjacency +=
-            TILE_RENDER__WALL_ADJACENCY__EAST;
+    if (p_east) {
+        if (is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_east))) {
+            wall_adjacency +=
+                TILE_RENDER__WALL_ADJACENCY__EAST;
+        }
     }
-    if (p_south && is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_south))) {
-        wall_adjacency +=
-            TILE_RENDER__WALL_ADJACENCY__SOUTH;
+    if (p_south) {
+        if (is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_south))) {
+            wall_adjacency +=
+                TILE_RENDER__WALL_ADJACENCY__SOUTH;
+        }
     }
-    if (p_west && is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_west))) {
-        wall_adjacency +=
-            TILE_RENDER__WALL_ADJACENCY__WEST;
+    if (p_west) {
+        if (is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_west))) {
+            wall_adjacency +=
+                TILE_RENDER__WALL_ADJACENCY__WEST;
+        }
     }
 
     *p_OUT_wall_adjacency = wall_adjacency;
@@ -660,7 +732,7 @@ void get_tile_render_result(
         return;
 
     Tile *p_tile = 
-        get_p_tile__from_chunk_and__wall_adjacency_of__that_tile(
+        get_p_tile__from_chunk_and__adjacencies_of__that_tile(
                 p_local_space, 
                 local_tile_vector__3u8, 
                 &p_OUT_tile_render_result
@@ -700,6 +772,12 @@ void get_tile_render_result(
                     p_OUT_tile_render_result
                     ->wall_adjacency)
             << 10;
+    }
+    if (is_tile_cover__a_stair(
+                get_tile_cover_kind_from__tile(p_tile))) {
+        get_tile_sheet_index_offset_for__sprite_cover_from__slope_flags(
+                p_tile, 
+                p_OUT_tile_render_result);
     }
 }
 

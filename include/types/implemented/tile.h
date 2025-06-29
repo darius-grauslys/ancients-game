@@ -18,7 +18,11 @@ Tile_Cover_Kind get_tile_cover_kind_from__tile(
     return p_tile->the_kind_of__tile_cover;
 }
 
+typedef uint16_t Tile_Wall_Adjacency_Code__u16;
+typedef uint16_t Tile_Stair_Adjacency_Code__u6;
+
 #ifndef TILE_RENDER__WALL_ADJAVENCY
+#define TILE_RENDER__WALL_ADJAVENCY 
 #define TILE_COVER__BIT_IS_WALL BIT(9)
 #define TILE_RENDER__WALL_ADJACENCY__BIT_VFLIP BIT(5)
 
@@ -33,10 +37,30 @@ Tile_Cover_Kind get_tile_cover_kind_from__tile(
     MASK(4)
 #endif
 
+#ifndef TILE_STAIR_ADJACENCY_CODE
+#define TILE_STAIR_ADJACENCY_CODE
+#define TILE_RENDER__STAIR_ADJACENCY__NORTH 0b001000
+#define TILE_RENDER__STAIR_ADJACENCY__EAST 0b000100
+#define TILE_RENDER__STAIR_ADJACENCY__SOUTH 0b000010
+#define TILE_RENDER__STAIR_ADJACENCY__WEST 0b000001
+
+#define TILE_RENDER__STAIR_ADJACENCY__CONCAVE 0b010000
+#define TILE_RENDER__STAIR_ADJACENCY__CONVEX 0b100000
+#endif
+
 static inline 
 bool is_tile_cover__a_wall(
         enum Tile_Cover_Kind kind_of_tile_cover) {
     return kind_of_tile_cover & TILE_COVER__BIT_IS_WALL;
+}
+
+static inline
+bool is_tile_cover__a_stair(
+        enum Tile_Cover_Kind kind_of_tile_cover) {
+    return (kind_of_tile_cover 
+        & BIT(4))
+        && !(kind_of_tile_cover
+                & BIT(9));
 }
 
 static inline 
@@ -44,8 +68,6 @@ bool does_tile__have_a_wall(
         Tile *p_tile) {
     return is_tile_cover__a_wall(get_tile_cover_kind_from__tile(p_tile));
 }
-
-typedef uint16_t Tile_Wall_Adjacency_Code__u16;
 
 static inline 
 bool does_wall_adjacency_require__vflip(
