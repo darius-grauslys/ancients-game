@@ -6,22 +6,36 @@
 typedef enum Tile_Cover_Kind {
     Tile_Cover_Kind__None = 0                               ,
 
-    Tile_Cover_Kind__Stair = 16                             ,
+    Tile_Cover_Kind__Stair = 18                             ,
 
-    Tile_Cover_Kind__Stair__Wood,
-    Tile_Cover_Kind__Stair__Stone_Brick,
-    Tile_Cover_Kind__Stair__Gold,
-    Tile_Cover_Kind__Stair__Iron,
-    Tile_Cover_Kind__Stair__Diamond,
-    Tile_Cover_Kind__Stair__Amethyst,
-    Tile_Cover_Kind__Stair__Sandstone,
-    Tile_Cover_Kind__Stair__Stone,
-    Tile_Cover_Kind__Stair__Dirt,
-    Tile_Cover_Kind__Stair__Sand,
-    Tile_Cover_Kind__Stair__Grass,
-    Tile_Cover_Kind__Stair__Steel,
-    Tile_Cover_Kind__Stair__Leaves,
-    Tile_Cover_Kind__Stair__Snow,
+    Tile_Cover_Kind__Stair__Wood =
+        Tile_Cover_Kind__Stair,
+    Tile_Cover_Kind__Stair__Stone_Brick =
+        Tile_Cover_Kind__Stair__Wood+1,
+    Tile_Cover_Kind__Stair__Gold =
+        Tile_Cover_Kind__Stair__Stone_Brick+1,
+    Tile_Cover_Kind__Stair__Iron =
+        Tile_Cover_Kind__Stair__Gold+1,
+    Tile_Cover_Kind__Stair__Diamond =
+        Tile_Cover_Kind__Stair__Iron+1,
+    Tile_Cover_Kind__Stair__Amethyst =
+        Tile_Cover_Kind__Stair__Diamond+1,
+    Tile_Cover_Kind__Stair__Sandstone =
+        Tile_Cover_Kind__Stair__Amethyst+1,
+    Tile_Cover_Kind__Stair__Stone =
+        Tile_Cover_Kind__Stair__Sandstone+1,
+    Tile_Cover_Kind__Stair__Dirt =
+        Tile_Cover_Kind__Stair__Stone+1,
+    Tile_Cover_Kind__Stair__Sand =
+        Tile_Cover_Kind__Stair__Dirt+1,
+    Tile_Cover_Kind__Stair__Grass =
+        Tile_Cover_Kind__Stair__Sand+1,
+    Tile_Cover_Kind__Stair__Steel =
+        Tile_Cover_Kind__Stair__Grass+1,
+    Tile_Cover_Kind__Stair__Leaves =
+        Tile_Cover_Kind__Stair__Steel+1,
+    Tile_Cover_Kind__Stair__Snow =
+        Tile_Cover_Kind__Stair__Leaves+1,
 
 #define TILE_COVER_KIND__STAIR__OFFSET__NORTH (32*6)
 #define TILE_COVER_KIND__STAIR__OFFSET__EAST_WEST (32*3)
@@ -62,91 +76,111 @@ typedef enum Tile_Cover_Kind {
     Tile_Cover_Kind__Stair__Snow__Concave_Corner__North_West            =
         Tile_Cover_Kind__Stair__Snow,
 
-    Tile_Cover_Kind__Stair__Wood__North_South_West            =
+    Tile_Cover_Kind__Stair__Concave_Corner__North_West            =
+        Tile_Cover_Kind__Stair__Wood__Concave_Corner__North_West-1,
+
+
+
+
+
+    Tile_Cover_Kind__Stair__Wood__West__North_South            =
         Tile_Cover_Kind__Stair__Wood
         + (32*1),
-    Tile_Cover_Kind__Stair__Stone_Brick__North_South_West     =
+    Tile_Cover_Kind__Stair__Stone_Brick__West__North_South     =
         Tile_Cover_Kind__Stair__Stone_Brick
         + (32*1),
-    Tile_Cover_Kind__Stair__Gold__North_South_West            =
+    Tile_Cover_Kind__Stair__Gold__West__North_South            =
         Tile_Cover_Kind__Stair__Gold
         + (32*1),
-    Tile_Cover_Kind__Stair__Iron__North_South_West            =
+    Tile_Cover_Kind__Stair__Iron__West__North_South            =
         Tile_Cover_Kind__Stair__Iron
         + (32*1),
-    Tile_Cover_Kind__Stair__Diamond__North_South_West         =
+    Tile_Cover_Kind__Stair__Diamond__West__North_South         =
         Tile_Cover_Kind__Stair__Diamond
         + (32*1),
-    Tile_Cover_Kind__Stair__Amethyst__North_South_West        =
+    Tile_Cover_Kind__Stair__Amethyst__West__North_South        =
         Tile_Cover_Kind__Stair__Amethyst
         + (32*1),
-    Tile_Cover_Kind__Stair__Sandstone__North_South_West       =
+    Tile_Cover_Kind__Stair__Sandstone__West__North_South       =
         Tile_Cover_Kind__Stair__Sandstone
         + (32*1),
-    Tile_Cover_Kind__Stair__Stone__North_South_West           =
+    Tile_Cover_Kind__Stair__Stone__West__North_South           =
         Tile_Cover_Kind__Stair__Stone
         + (32*1),
-    Tile_Cover_Kind__Stair__Dirt__North_South_West            =
+    Tile_Cover_Kind__Stair__Dirt__West__North_South            =
         Tile_Cover_Kind__Stair__Dirt
         + (32*1),
-    Tile_Cover_Kind__Stair__Sand__North_South_West            =
+    Tile_Cover_Kind__Stair__Sand__West__North_South            =
         Tile_Cover_Kind__Stair__Sand
         + (32*1),
-    Tile_Cover_Kind__Stair__Grass__North_South_West           =
+    Tile_Cover_Kind__Stair__Grass__West__North_South           =
         Tile_Cover_Kind__Stair__Grass
         + (32*1),
-    Tile_Cover_Kind__Stair__Steel__North_South_West           =
+    Tile_Cover_Kind__Stair__Steel__West__North_South           =
         Tile_Cover_Kind__Stair__Steel
         + (32*1),
-    Tile_Cover_Kind__Stair__Leaves__North_South_West          =
+    Tile_Cover_Kind__Stair__Leaves__West__North_South          =
         Tile_Cover_Kind__Stair__Leaves
         + (32*1),
-    Tile_Cover_Kind__Stair__Snow__North_South_West            =
+    Tile_Cover_Kind__Stair__Snow__West__North_South            =
         Tile_Cover_Kind__Stair__Snow
         + (32*1),
 
-    Tile_Cover_Kind__Stair__Wood__North_West            =
+    Tile_Cover_Kind__Stair__West__North_South            =
+        Tile_Cover_Kind__Stair__Wood__West__North_South-1,
+
+
+
+
+
+    Tile_Cover_Kind__Stair__Wood__West__North            =
         Tile_Cover_Kind__Stair__Wood
         + (32*2),
-    Tile_Cover_Kind__Stair__Stone_Brick__North_West     =
+    Tile_Cover_Kind__Stair__Stone_Brick__West__North     =
         Tile_Cover_Kind__Stair__Stone_Brick
         + (32*2),
-    Tile_Cover_Kind__Stair__Gold__North_West            =
+    Tile_Cover_Kind__Stair__Gold__West__North            =
         Tile_Cover_Kind__Stair__Gold
         + (32*2),
-    Tile_Cover_Kind__Stair__Iron__North_West            =
+    Tile_Cover_Kind__Stair__Iron__West__North            =
         Tile_Cover_Kind__Stair__Iron
         + (32*2),
-    Tile_Cover_Kind__Stair__Diamond__North_West         =
+    Tile_Cover_Kind__Stair__Diamond__West__North         =
         Tile_Cover_Kind__Stair__Diamond
         + (32*2),
-    Tile_Cover_Kind__Stair__Amethyst__North_West        =
+    Tile_Cover_Kind__Stair__Amethyst__West__North        =
         Tile_Cover_Kind__Stair__Amethyst
         + (32*2),
-    Tile_Cover_Kind__Stair__Sandstone__North_West       =
+    Tile_Cover_Kind__Stair__Sandstone__West__North       =
         Tile_Cover_Kind__Stair__Sandstone
         + (32*2),
-    Tile_Cover_Kind__Stair__Stone__North_West           =
+    Tile_Cover_Kind__Stair__Stone__West__North           =
         Tile_Cover_Kind__Stair__Stone
         + (32*2),
-    Tile_Cover_Kind__Stair__Dirt__North_West            =
+    Tile_Cover_Kind__Stair__Dirt__West__North            =
         Tile_Cover_Kind__Stair__Dirt
         + (32*2),
-    Tile_Cover_Kind__Stair__Sand__North_West            =
+    Tile_Cover_Kind__Stair__Sand__West__North            =
         Tile_Cover_Kind__Stair__Sand
         + (32*2),
-    Tile_Cover_Kind__Stair__Grass__North_West           =
+    Tile_Cover_Kind__Stair__Grass__West__North           =
         Tile_Cover_Kind__Stair__Grass
         + (32*2),
-    Tile_Cover_Kind__Stair__Steel__North_West           =
+    Tile_Cover_Kind__Stair__Steel__West__North           =
         Tile_Cover_Kind__Stair__Steel
         + (32*2),
-    Tile_Cover_Kind__Stair__Leaves__North_West          =
+    Tile_Cover_Kind__Stair__Leaves__West__North          =
         Tile_Cover_Kind__Stair__Leaves
         + (32*2),
-    Tile_Cover_Kind__Stair__Snow__North_West            =
+    Tile_Cover_Kind__Stair__Snow__West__North            =
         Tile_Cover_Kind__Stair__Snow
         + (32*2),
+
+    Tile_Cover_Kind__Stair__West__North            =
+        Tile_Cover_Kind__Stair__Wood__West__North-1,
+
+
+
 
     Tile_Cover_Kind__Stair__Wood__West            =
         Tile_Cover_Kind__Stair__Wood
@@ -190,92 +224,111 @@ typedef enum Tile_Cover_Kind {
     Tile_Cover_Kind__Stair__Snow__West            =
         Tile_Cover_Kind__Stair__Snow
         + (32*3),
+    
+    Tile_Cover_Kind__Stair__West            =
+        Tile_Cover_Kind__Stair__Wood__West-1,
 
-    Tile_Cover_Kind__Stair__Wood__North_East_West            =
+
+
+
+    Tile_Cover_Kind__Stair__Wood__North__East_West            =
         Tile_Cover_Kind__Stair__Wood
         + (32*4),
-    Tile_Cover_Kind__Stair__Stone_Brick__North_East_West     =
+    Tile_Cover_Kind__Stair__Stone_Brick__North__East_West     =
         Tile_Cover_Kind__Stair__Stone_Brick
         + (32*4),
-    Tile_Cover_Kind__Stair__Gold__North_East_West            =
+    Tile_Cover_Kind__Stair__Gold__North__East_West            =
         Tile_Cover_Kind__Stair__Gold
         + (32*4),
-    Tile_Cover_Kind__Stair__Iron__North_East_West            =
+    Tile_Cover_Kind__Stair__Iron__North__East_West            =
         Tile_Cover_Kind__Stair__Iron
         + (32*4),
-    Tile_Cover_Kind__Stair__Diamond__North_East_West         =
+    Tile_Cover_Kind__Stair__Diamond__North__East_West         =
         Tile_Cover_Kind__Stair__Diamond
         + (32*4),
-    Tile_Cover_Kind__Stair__Amethyst__North_East_West        =
+    Tile_Cover_Kind__Stair__Amethyst__North__East_West        =
         Tile_Cover_Kind__Stair__Amethyst
         + (32*4),
-    Tile_Cover_Kind__Stair__Sandstone__North_East_West       =
+    Tile_Cover_Kind__Stair__Sandstone__North__East_West       =
         Tile_Cover_Kind__Stair__Sandstone
         + (32*4),
-    Tile_Cover_Kind__Stair__Stone__North_East_West           =
+    Tile_Cover_Kind__Stair__Stone__North__East_West           =
         Tile_Cover_Kind__Stair__Stone
         + (32*4),
-    Tile_Cover_Kind__Stair__Dirt__North_East_West            =
+    Tile_Cover_Kind__Stair__Dirt__North__East_West            =
         Tile_Cover_Kind__Stair__Dirt
         + (32*4),
-    Tile_Cover_Kind__Stair__Sand__North_East_West            =
+    Tile_Cover_Kind__Stair__Sand__North__East_West            =
         Tile_Cover_Kind__Stair__Sand
         + (32*4),
-    Tile_Cover_Kind__Stair__Grass__North_East_West           =
+    Tile_Cover_Kind__Stair__Grass__North__East_West           =
         Tile_Cover_Kind__Stair__Grass
         + (32*4),
-    Tile_Cover_Kind__Stair__Steel__North_East_West           =
+    Tile_Cover_Kind__Stair__Steel__North__East_West           =
         Tile_Cover_Kind__Stair__Steel
         + (32*4),
-    Tile_Cover_Kind__Stair__Leaves__North_East_West          =
+    Tile_Cover_Kind__Stair__Leaves__North__East_West          =
         Tile_Cover_Kind__Stair__Leaves
         + (32*4),
-    Tile_Cover_Kind__Stair__Snow__North_East_West            =
+    Tile_Cover_Kind__Stair__Snow__North__East_West            =
         Tile_Cover_Kind__Stair__Snow
         + (32*4),
 
-    Tile_Cover_Kind__Stair__Wood__North_East            =
+    Tile_Cover_Kind__Stair__North__East_West            =
+        Tile_Cover_Kind__Stair__Wood__North__East_West-1,
+
+
+
+
+    Tile_Cover_Kind__Stair__Wood__North__East            =
         Tile_Cover_Kind__Stair__Wood
         + (32*5),
-    Tile_Cover_Kind__Stair__Stone_Brick__North_East     =
+    Tile_Cover_Kind__Stair__Stone_Brick__North__East     =
         Tile_Cover_Kind__Stair__Stone_Brick
         + (32*5),
-    Tile_Cover_Kind__Stair__Gold__North_East            =
+    Tile_Cover_Kind__Stair__Gold__North__East            =
         Tile_Cover_Kind__Stair__Gold
         + (32*5),
-    Tile_Cover_Kind__Stair__Iron__North_East            =
+    Tile_Cover_Kind__Stair__Iron__North__East            =
         Tile_Cover_Kind__Stair__Iron
         + (32*5),
-    Tile_Cover_Kind__Stair__Diamond__North_East         =
+    Tile_Cover_Kind__Stair__Diamond__North__East         =
         Tile_Cover_Kind__Stair__Diamond
         + (32*5),
-    Tile_Cover_Kind__Stair__Amethyst__North_East        =
+    Tile_Cover_Kind__Stair__Amethyst__North__East        =
         Tile_Cover_Kind__Stair__Amethyst
         + (32*5),
-    Tile_Cover_Kind__Stair__Sandstone__North_East       =
+    Tile_Cover_Kind__Stair__Sandstone__North__East       =
         Tile_Cover_Kind__Stair__Sandstone
         + (32*5),
-    Tile_Cover_Kind__Stair__Stone__North_East           =
+    Tile_Cover_Kind__Stair__Stone__North__East           =
         Tile_Cover_Kind__Stair__Stone
         + (32*5),
-    Tile_Cover_Kind__Stair__Dirt__North_East            =
+    Tile_Cover_Kind__Stair__Dirt__North__East            =
         Tile_Cover_Kind__Stair__Dirt
         + (32*5),
-    Tile_Cover_Kind__Stair__Sand__North_East            =
+    Tile_Cover_Kind__Stair__Sand__North__East            =
         Tile_Cover_Kind__Stair__Sand
         + (32*5),
-    Tile_Cover_Kind__Stair__Grass__North_East           =
+    Tile_Cover_Kind__Stair__Grass__North__East           =
         Tile_Cover_Kind__Stair__Grass
         + (32*5),
-    Tile_Cover_Kind__Stair__Steel__North_East           =
+    Tile_Cover_Kind__Stair__Steel__North__East           =
         Tile_Cover_Kind__Stair__Steel
         + (32*5),
-    Tile_Cover_Kind__Stair__Leaves__North_East          =
+    Tile_Cover_Kind__Stair__Leaves__North__East          =
         Tile_Cover_Kind__Stair__Leaves
         + (32*5),
-    Tile_Cover_Kind__Stair__Snow__North_East            =
+    Tile_Cover_Kind__Stair__Snow__North__East            =
         Tile_Cover_Kind__Stair__Snow
         + (32*5),
+
+    Tile_Cover_Kind__Stair__North__East            =
+        Tile_Cover_Kind__Stair__Wood__North__East-1,
+
+
+
+
 
     Tile_Cover_Kind__Stair__Wood__North            =
         Tile_Cover_Kind__Stair__Wood
@@ -320,6 +373,12 @@ typedef enum Tile_Cover_Kind {
         Tile_Cover_Kind__Stair__Snow
         + (32*6),
 
+    Tile_Cover_Kind__Stair__North            =
+        Tile_Cover_Kind__Stair__Wood__North-1,
+
+
+
+
     Tile_Cover_Kind__Stair__Wood__Concave_Corner__South_West            =
         Tile_Cover_Kind__Stair__Wood
         + (32*7),
@@ -363,91 +422,107 @@ typedef enum Tile_Cover_Kind {
         Tile_Cover_Kind__Stair__Snow
         + (32*7),
 
-    Tile_Cover_Kind__Stair__Wood__South_East_West            =
+    Tile_Cover_Kind__Stair__Concave_Corner__South_West            =
+        Tile_Cover_Kind__Stair__Wood__Concave_Corner__South_West-1,
+
+
+
+    Tile_Cover_Kind__Stair__Wood__South__East_West            =
         Tile_Cover_Kind__Stair__Wood
         + (32*8),
-    Tile_Cover_Kind__Stair__Stone_Brick__South_East_West     =
+    Tile_Cover_Kind__Stair__Stone_Brick__South__East_West     =
         Tile_Cover_Kind__Stair__Stone_Brick
         + (32*8),
-    Tile_Cover_Kind__Stair__Gold__South_East_West            =
+    Tile_Cover_Kind__Stair__Gold__South__East_West            =
         Tile_Cover_Kind__Stair__Gold
         + (32*8),
-    Tile_Cover_Kind__Stair__Iron__South_East_West            =
+    Tile_Cover_Kind__Stair__Iron__South__East_West            =
         Tile_Cover_Kind__Stair__Iron
         + (32*8),
-    Tile_Cover_Kind__Stair__Diamond__South_East_West         =
+    Tile_Cover_Kind__Stair__Diamond__South__East_West         =
         Tile_Cover_Kind__Stair__Diamond
         + (32*8),
-    Tile_Cover_Kind__Stair__Amethyst__South_East_West        =
+    Tile_Cover_Kind__Stair__Amethyst__South__East_West        =
         Tile_Cover_Kind__Stair__Amethyst
         + (32*8),
-    Tile_Cover_Kind__Stair__Sandstone__South_East_West       =
+    Tile_Cover_Kind__Stair__Sandstone__South__East_West       =
         Tile_Cover_Kind__Stair__Sandstone
         + (32*8),
-    Tile_Cover_Kind__Stair__Stone__South_East_West           =
+    Tile_Cover_Kind__Stair__Stone__South__East_West           =
         Tile_Cover_Kind__Stair__Stone
         + (32*8),
-    Tile_Cover_Kind__Stair__Dirt__South_East_West            =
+    Tile_Cover_Kind__Stair__Dirt__South__East_West            =
         Tile_Cover_Kind__Stair__Dirt
         + (32*8),
-    Tile_Cover_Kind__Stair__Sand__South_East_West            =
+    Tile_Cover_Kind__Stair__Sand__South__East_West            =
         Tile_Cover_Kind__Stair__Sand
         + (32*8),
-    Tile_Cover_Kind__Stair__Grass__South_East_West           =
+    Tile_Cover_Kind__Stair__Grass__South__East_West           =
         Tile_Cover_Kind__Stair__Grass
         + (32*8),
-    Tile_Cover_Kind__Stair__Steel__South_East_West           =
+    Tile_Cover_Kind__Stair__Steel__South__East_West           =
         Tile_Cover_Kind__Stair__Steel
         + (32*8),
-    Tile_Cover_Kind__Stair__Leaves__South_East_West          =
+    Tile_Cover_Kind__Stair__Leaves__South__East_West          =
         Tile_Cover_Kind__Stair__Leaves
         + (32*8),
-    Tile_Cover_Kind__Stair__Snow__South_East_West            =
+    Tile_Cover_Kind__Stair__Snow__South__East_West            =
         Tile_Cover_Kind__Stair__Snow
         + (32*8),
 
-    Tile_Cover_Kind__Stair__Wood__South_East            =
+    Tile_Cover_Kind__Stair__South__East_West            =
+        Tile_Cover_Kind__Stair__Wood__South__East_West-1,
+
+
+
+    Tile_Cover_Kind__Stair__Wood__South__East            =
         Tile_Cover_Kind__Stair__Wood
         + (32*9),
-    Tile_Cover_Kind__Stair__Stone_Brick__South_East     =
+    Tile_Cover_Kind__Stair__Stone_Brick__South__East     =
         Tile_Cover_Kind__Stair__Stone_Brick
         + (32*9),
-    Tile_Cover_Kind__Stair__Gold__South_East            =
+    Tile_Cover_Kind__Stair__Gold__South__East            =
         Tile_Cover_Kind__Stair__Gold
         + (32*9),
-    Tile_Cover_Kind__Stair__Iron__South_East            =
+    Tile_Cover_Kind__Stair__Iron__South__East            =
         Tile_Cover_Kind__Stair__Iron
         + (32*9),
-    Tile_Cover_Kind__Stair__Diamond__South_East         =
+    Tile_Cover_Kind__Stair__Diamond__South__East         =
         Tile_Cover_Kind__Stair__Diamond
         + (32*9),
-    Tile_Cover_Kind__Stair__Amethyst__South_East        =
+    Tile_Cover_Kind__Stair__Amethyst__South__East        =
         Tile_Cover_Kind__Stair__Amethyst
         + (32*9),
-    Tile_Cover_Kind__Stair__Sandstone__South_East       =
+    Tile_Cover_Kind__Stair__Sandstone__South__East       =
         Tile_Cover_Kind__Stair__Sandstone
         + (32*9),
-    Tile_Cover_Kind__Stair__Stone__South_East           =
+    Tile_Cover_Kind__Stair__Stone__South__East           =
         Tile_Cover_Kind__Stair__Stone
         + (32*9),
-    Tile_Cover_Kind__Stair__Dirt__South_East            =
+    Tile_Cover_Kind__Stair__Dirt__South__East            =
         Tile_Cover_Kind__Stair__Dirt
         + (32*9),
-    Tile_Cover_Kind__Stair__Sand__South_East            =
+    Tile_Cover_Kind__Stair__Sand__South__East            =
         Tile_Cover_Kind__Stair__Sand
         + (32*9),
-    Tile_Cover_Kind__Stair__Grass__South_East           =
+    Tile_Cover_Kind__Stair__Grass__South__East           =
         Tile_Cover_Kind__Stair__Grass
         + (32*9),
-    Tile_Cover_Kind__Stair__Steel__South_East           =
+    Tile_Cover_Kind__Stair__Steel__South__East           =
         Tile_Cover_Kind__Stair__Steel
         + (32*9),
-    Tile_Cover_Kind__Stair__Leaves__South_East          =
+    Tile_Cover_Kind__Stair__Leaves__South__East          =
         Tile_Cover_Kind__Stair__Leaves
         + (32*9),
-    Tile_Cover_Kind__Stair__Snow__South_East            =
+    Tile_Cover_Kind__Stair__Snow__South__East            =
         Tile_Cover_Kind__Stair__Snow
         + (32*9),
+
+    Tile_Cover_Kind__Stair__South__East            =
+        Tile_Cover_Kind__Stair__Wood__South__East-1,
+
+
+
 
     Tile_Cover_Kind__Stair__Wood__South            =
         Tile_Cover_Kind__Stair__Wood
@@ -492,6 +567,12 @@ typedef enum Tile_Cover_Kind {
         Tile_Cover_Kind__Stair__Snow
         + (32*10),
 
+    Tile_Cover_Kind__Stair__South            =
+        Tile_Cover_Kind__Stair__Wood__South-1,
+
+
+
+
     Tile_Cover_Kind__Stair__Wood__Convex_Corner__North_East            =
         Tile_Cover_Kind__Stair__Wood
         + (32*11),
@@ -535,6 +616,12 @@ typedef enum Tile_Cover_Kind {
         Tile_Cover_Kind__Stair__Snow
         + (32*11),
 
+    Tile_Cover_Kind__Stair__Convex_Corner__North_East            =
+        Tile_Cover_Kind__Stair__Wood__Convex_Corner__North_East-1,
+
+
+
+
     Tile_Cover_Kind__Stair__Wood__Convex_Corner__South_East            =
         Tile_Cover_Kind__Stair__Wood
         + (32*12),
@@ -577,6 +664,12 @@ typedef enum Tile_Cover_Kind {
     Tile_Cover_Kind__Stair__Snow__Convex_Corner__South_East            =
         Tile_Cover_Kind__Stair__Snow
         + (32*12),
+
+    Tile_Cover_Kind__Stair__Convex_Corner__South_East            =
+        Tile_Cover_Kind__Stair__Wood__Convex_Corner__South_East-1,
+
+
+
 
     Tile_Cover_Kind__Wall = 1 + (32 * 16)                   ,
 
@@ -622,14 +715,14 @@ typedef enum Tile_Cover_Kind {
     Tile_Cover_Kind__Crop__F                                ,
     Tile_Cover_Kind__Crop__G                                ,
 
-    Tile_Cover_Kind__Stump                                  ,
-    Tile_Cover_Kind__Tree__Trunk                            ,
-    Tile_Cover_Kind__Tree__Oak                              ,
-    Tile_Cover_Kind__Tree__Pine                             ,
+    Tile_Cover_Kind__Stump                                  = 68,
+    Tile_Cover_Kind__Tree__Trunk                            = 69,
+    Tile_Cover_Kind__Tree__Oak                              = 70,
+    Tile_Cover_Kind__Tree__Pine                             = 71,
 
-    Tile_Cover_Kind__Table__Bottom__Left                    ,
-    Tile_Cover_Kind__Table__Bottom__Middle                  ,
-    Tile_Cover_Kind__Table__Bottom__Right                   ,
+    Tile_Cover_Kind__Table__Bottom__Left                    = 490,
+    Tile_Cover_Kind__Table__Bottom__Middle                  = 491,
+    Tile_Cover_Kind__Table__Bottom__Right                   = 492,
 
     Tile_Cover_Kind__Door__Horizontal = 1 + (33 * 16)       ,
 

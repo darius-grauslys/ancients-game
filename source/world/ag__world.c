@@ -7,7 +7,6 @@
 #include "game.h"
 #include "world/world.h"
 #include "world/global_space_manager.h"
-#include "world/tile_slope_flags.h"
 
 ///
 /// Attempts to set the qualities of the
@@ -63,13 +62,14 @@ bool place_tile(
             || p_tile_at__location->the_kind_of__tile_cover
             == Tile_Cover_Kind__None)) {
 
-        if (is_tile_with__stairs(p_tile)) {
-            p_tile_at__location->slope_flags__u4 =
-                get_tile_slope_flags(
-                        p_world,
-                        tile_vector__3i32,
-                        direction_of__placement__u8);
-        }
+        // TODO: determine stair slope
+        // if (is_tile_with__stairs(p_tile)) {
+        //     p_tile_at__location->slope_flags__u4 =
+        //         get_tile_slope_flags(
+        //                 p_world,
+        //                 tile_vector__3i32,
+        //                 direction_of__placement__u8);
+        // }
 
         p_tile_at__location->the_kind_of__tile_cover =
             p_tile->the_kind_of__tile_cover;
@@ -123,10 +123,11 @@ bool remove_tile(
 
     if (p_tile_at__location->the_kind_of__tile_cover
             == tile.the_kind_of__tile_cover) {
-        if (is_tile_with__stairs(
-                    p_tile_at__location)) {
-            p_tile_at__location->slope_flags__u4 = 0;
-        }
+        // TODO: determine stair slope
+        // if (is_tile_with__stairs(
+        //             p_tile_at__location)) {
+        //     p_tile_at__location->slope_flags__u4 = 0;
+        // }
         p_tile_at__location->the_kind_of__tile =
             Tile_Kind__None;
     } else if (tile.the_kind_of__tile_cover != Tile_Cover_Kind__None) {

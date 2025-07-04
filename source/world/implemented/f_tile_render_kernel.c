@@ -260,69 +260,6 @@ wall:
     }
 }
 
-static inline
-void get_tile_sheet_index_offset_for__sprite_cover_from__slope_flags(
-        Tile *p_tile,
-        Tile_Render_Result *p_render_result) {
-    if (is_tile_cover__a_stair(get_tile_cover_kind_from__tile(p_tile))) {
-        switch (p_tile->slope_flags__u4) {
-            case TILE_SLOPE_FLAG__NORTH:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__NORTH;
-                break;
-            case TILE_SLOPE_FLAG__EAST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__EAST_WEST;
-                break;
-            case TILE_SLOPE_FLAG__SOUTH:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__SOUTH;
-                break;
-            case TILE_SLOPE_FLAG__WEST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__EAST_WEST;
-                p_render_result->is_flipped__y = true;
-                break;
-            case TILE_SLOPE_FLAG__CONCAVE__NORTH_EAST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__NORTH__EAST_WEST;
-                break;
-            case TILE_SLOPE_FLAG__CONCAVE__NORTH_WEST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__NORTH__EAST_WEST;
-                p_render_result->is_flipped__y = true;
-                break;
-            case TILE_SLOPE_FLAG__CONCAVE__SOUTH_EAST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__SOUTH__EAST_WEST;
-                break;
-            case TILE_SLOPE_FLAG__CONCAVE__SOUTH_WEST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONCAVE__SOUTH__EAST_WEST;
-                p_render_result->is_flipped__y = true;
-                break;
-            case TILE_SLOPE_FLAG__CONVEX__NORTH_EAST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__NORTH__EAST_WEST;
-                p_render_result->is_flipped__y = true;
-                break;
-            case TILE_SLOPE_FLAG__CONVEX__NORTH_WEST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__NORTH__EAST_WEST;
-                break;
-            case TILE_SLOPE_FLAG__CONVEX__SOUTH_EAST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__SOUTH__EAST_WEST;
-                p_render_result->is_flipped__y = true;
-                break;
-            case TILE_SLOPE_FLAG__CONVEX__SOUTH_WEST:
-                p_render_result->tile_index__sprite_cover
-                    += TILE_COVER_KIND__STAIR__OFFSET__CONVEX__SOUTH__EAST_WEST;
-                break;
-        }
-    }
-}
-
 static void inline get_tile_sprite_cover_texture_sheet_index(
         Tile *p_tile,
         Tile_Render_Result *p_render_result) {
@@ -598,6 +535,11 @@ Tile *get_p_tile__from_chunk_and__adjacencies_of__that_tile(
                 get_p_chunk_from__local_space(
                     p_local_space),
                 local_tile_vector__3u8);
+    if (!is_tile_cover__a_wall(
+                get_tile_cover_kind_from__tile(p_tile))) {
+        p_OUT_wall_adjacency = 0;
+        return p_tile;
+    }
 
     Tile *p_north = 0, *p_east = 0, *p_south = 0, *p_west = 0;
 
@@ -772,12 +714,11 @@ void get_tile_render_result(
                     p_OUT_tile_render_result
                     ->wall_adjacency)
             << 10;
-    }
-    if (is_tile_cover__a_stair(
-                get_tile_cover_kind_from__tile(p_tile))) {
-        get_tile_sheet_index_offset_for__sprite_cover_from__slope_flags(
-                p_tile, 
-                p_OUT_tile_render_result);
+    } else {
+        if (p_tile->ag_tile_flags__u4 & AG_TILE_FLAG__IS_FLIPPED_X)
+            p_OUT_tile_render_result->is_flipped__x = true;
+        if (p_tile->ag_tile_flags__u4 & AG_TILE_FLAG__IS_FLIPPED_Y)
+            p_OUT_tile_render_result->is_flipped__y = true;
     }
 }
 
@@ -807,7 +748,8 @@ void f_tile_render_kernel(
         p_tile_kernel_render_results[0].index_of__texture =
             (trr.tile_index__ground  & MASK(10)) - 1;
         p_tile_kernel_render_results[0].is_flipped__y =
-            BIT(10) & trr.tile_index__ground;
+            (BIT(10) & trr.tile_index__ground)
+            || trr.is_flipped__y;
     } else {
         p_tile_kernel_render_results[0].index_of__texture = 0;
     }
@@ -815,7 +757,8 @@ void f_tile_render_kernel(
         p_tile_kernel_render_results[1].index_of__texture =
             (trr.tile_index__cover & MASK(10)) - 1;
         p_tile_kernel_render_results[1].is_flipped__y =
-            BIT(10) & trr.tile_index__cover;
+            (BIT(10) & trr.tile_index__cover)
+            || trr.is_flipped__y;
     } else {
         p_tile_kernel_render_results[1].index_of__texture = 0;
     }
@@ -823,7 +766,8 @@ void f_tile_render_kernel(
         p_tile_kernel_render_results[2].index_of__texture =
             (trr.tile_index__sprite_cover & MASK(10)) - 1;
         p_tile_kernel_render_results[2].is_flipped__y =
-            BIT(10) & trr.tile_index__sprite_cover;
+            (BIT(10) & trr.tile_index__sprite_cover)
+            || trr.is_flipped__y;
     } else {
         p_tile_kernel_render_results[2].index_of__texture = 0;
     }

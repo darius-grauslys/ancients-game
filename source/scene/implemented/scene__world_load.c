@@ -1,4 +1,5 @@
 #include "scene/implemented/scene__world_load.h"
+#include "client.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "rendering/ag__graphics_window.h"
