@@ -533,6 +533,14 @@ void resolve_slope_map__slope_adjacency(Slope_Map slope_map) {
             if (p_entry__other 
                     && p_entry__other->final_slope_map__value
                     == SLOPE_MAP__WALL) {
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x + 1, 
+                        local__y)->is_stair_adjacent__west = true;
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x, 
+                        local__y+1)->is_stair_adjacent__south = true;
                 p_entry->is_stair_adjacent__north = true;
                 p_entry->is_stair_adjacent__east = true;
             }
@@ -544,6 +552,14 @@ void resolve_slope_map__slope_adjacency(Slope_Map slope_map) {
             if (p_entry__other 
                     && p_entry__other->final_slope_map__value
                     == SLOPE_MAP__WALL) {
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x - 1, 
+                        local__y)->is_stair_adjacent__east = true;
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x, 
+                        local__y + 1)->is_stair_adjacent__south = true;
                 p_entry->is_stair_adjacent__north = true;
                 p_entry->is_stair_adjacent__west = true;
             }
@@ -555,6 +571,14 @@ void resolve_slope_map__slope_adjacency(Slope_Map slope_map) {
             if (p_entry__other 
                     && p_entry__other->final_slope_map__value
                     == SLOPE_MAP__WALL) {
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x + 1, 
+                        local__y)->is_stair_adjacent__west = true;
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x, 
+                        local__y - 1)->is_stair_adjacent__north = true;
                 p_entry->is_stair_adjacent__south = true;
                 p_entry->is_stair_adjacent__east = true;
             }
@@ -566,6 +590,14 @@ void resolve_slope_map__slope_adjacency(Slope_Map slope_map) {
             if (p_entry__other 
                     && p_entry__other->final_slope_map__value
                     == SLOPE_MAP__WALL) {
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x - 1, 
+                        local__y)->is_stair_adjacent__east = true;
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x, 
+                        local__y - 1)->is_stair_adjacent__north = true;
                 p_entry->is_stair_adjacent__south = true;
                 p_entry->is_stair_adjacent__west = true;
             }
