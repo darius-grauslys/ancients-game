@@ -21,6 +21,7 @@
 #include "world/global_space_manager.h"
 #include "world/chunk_pool.h"
 #include "collisions/collision_node_pool.h"
+#include <string.h>
 
 #define BIOME__BIT_SHIFT 3
 #define BIOME__RANGE BIT(BIOME__BIT_SHIFT)
@@ -352,25 +353,23 @@ typedef u8 Slope_Map_Value__u2;
 #define SLOPE_MAP__EXCLUDED_SLOPE 0b11
 
 typedef struct Slope_Map_Entry_t {
-    u8 quantity_of__adjacent_walls : 2;
-    Slope_Map_Value__u2 final_slope_map__value : 2;
     union {
         struct {
-            bool is_wall_adjacent__west  : 1;
-            bool is_wall_adjacent__south : 1;
-            bool is_wall_adjacent__east  : 1;
             bool is_wall_adjacent__north : 1;
+            bool is_wall_adjacent__east  : 1;
+            bool is_wall_adjacent__south : 1;
+            bool is_wall_adjacent__west  : 1;
         };
         u8 wall_adjacency_flags__u4          : 4;
     };
     union {
         struct {
-            bool is_stair_adjacent__west  : 1;
-            bool is_stair_adjacent__south : 1;
-            bool is_stair_adjacent__east  : 1;
-            bool is_stair_adjacent__north : 1;
+            bool is_corner_present__south_east  : 1;
+            bool is_corner_present__south_west  : 1;
+            bool is_corner_present__north_east  : 1;
+            bool is_corner_present__north_west  : 1;
         };
-        u8 stair_adjacency_flags__u4          : 4;
+        u8 corner_adjacency_flags__u4 :4;
     };
 } Slope_Map_Entry;
 
@@ -395,271 +394,271 @@ void generate_slope_map(
         Global_Space *p_global_space,
         Chunk *ptr_array_of__chunk__neighbors[8],
         Slope_Map slope_map,
-        u8 local__z) {
+        u8 z__local) {
     Chunk *p_chunk = get_p_chunk_from__global_space(p_global_space);
 
-    for (i8 local__y = 0; local__y < CHUNK__HEIGHT; local__y++) {
-        for (i8 local__x = 0; local__x < CHUNK__WIDTH; local__x++) {
+    for (i8 y__local = 0; y__local < CHUNK__HEIGHT; y__local++) {
+        for (i8 x__local = 0; x__local < CHUNK__WIDTH; x__local++) {
             Slope_Map_Entry *p_entry = 
-                get_p_slope_map_entry__at(slope_map, local__x, local__y);
+                get_p_slope_map_entry__at(slope_map, x__local, y__local);
             memset(p_entry, 0, sizeof(Slope_Map_Entry));
             Tile *p_tile = get_p_tile_from__chunk(
-                    p_chunk, (Local_Tile_Vector__3u8) {local__x, local__y, local__z});
+                    p_chunk, (Local_Tile_Vector__3u8) {x__local, y__local, z__local});
             if (is_tile_cover__a_wall(
                         get_tile_cover_kind_from__tile(p_tile))) {
-                p_entry->final_slope_map__value =
-                    SLOPE_MAP__WALL;
                 continue;
             }
-            p_entry->final_slope_map__value =
-                SLOPE_MAP__PROSPECT_SLOPE;
-            p_tile = get_p_tile_from__chunk_neighborhood(
-                    p_chunk, 
-                    ptr_array_of__chunk__neighbors,
-                    local__x+1, local__y, local__z);
-            if (p_tile && is_tile_cover__a_wall(
-                        get_tile_cover_kind_from__tile(p_tile))) {
-                p_entry->is_wall_adjacent__east = true;
-                p_entry->quantity_of__adjacent_walls++;
-            }
-            p_tile = get_p_tile_from__chunk_neighborhood(
-                    p_chunk, 
-                    ptr_array_of__chunk__neighbors,
-                    local__x-1, local__y, local__z);
-            if (p_tile && is_tile_cover__a_wall(
-                        get_tile_cover_kind_from__tile(p_tile))) {
-                p_entry->is_wall_adjacent__west = true;
-                p_entry->quantity_of__adjacent_walls++;
-            }
-            p_tile = get_p_tile_from__chunk_neighborhood(
-                    p_chunk, 
-                    ptr_array_of__chunk__neighbors,
-                    local__x, local__y+1, local__z);
-            if (p_tile && is_tile_cover__a_wall(
-                        get_tile_cover_kind_from__tile(p_tile))) {
-                p_entry->is_wall_adjacent__north = true;
-                p_entry->quantity_of__adjacent_walls++;
-            }
-            p_tile = get_p_tile_from__chunk_neighborhood(
-                    p_chunk, 
-                    ptr_array_of__chunk__neighbors,
-                    local__x, local__y-1, local__z);
-            if (p_tile && is_tile_cover__a_wall(
-                        get_tile_cover_kind_from__tile(p_tile))) {
-                p_entry->is_wall_adjacent__south = true;
-                p_entry->quantity_of__adjacent_walls++;
-            }
+
+            { // corners
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local-1, 
+                        y__local-1, 
+                        z__local);
+
+                p_entry->is_corner_present__south_west = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local+1, 
+                        y__local-1, 
+                        z__local);
+
+                p_entry->is_corner_present__south_east = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local-1, 
+                        y__local+1, 
+                        z__local);
+
+                p_entry->is_corner_present__north_west = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local+1, 
+                        y__local+1, 
+                        z__local);
+
+                p_entry->is_corner_present__north_east = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+            } // corners
+
+            { // edges
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local-1, 
+                        y__local, 
+                        z__local);
+
+                p_entry->is_wall_adjacent__west = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local+1, 
+                        y__local, 
+                        z__local);
+
+                p_entry->is_wall_adjacent__east = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local, 
+                        y__local+1, 
+                        z__local);
+
+                p_entry->is_wall_adjacent__north = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+
+                p_tile = get_p_tile_from__chunk_neighborhood(
+                        p_chunk, 
+                        ptr_array_of__chunk__neighbors, 
+                        x__local, 
+                        y__local-1, 
+                        z__local);
+
+                p_entry->is_wall_adjacent__south = 
+                    p_tile
+                    && is_tile_cover__a_wall(
+                        get_tile_cover_kind_from__tile(p_tile));
+            } //edges
         }
     }
 }
 
 static inline
-void invalidate_slope_map_entry(
-        Slope_Map_Entry *p_slope_map_entry) {
-    if (p_slope_map_entry->final_slope_map__value
-            == SLOPE_MAP__PROSPECT_SLOPE) {
-        p_slope_map_entry->final_slope_map__value =
-            SLOPE_MAP__EXCLUDED_SLOPE;
-    }
-}
-
-static inline
-void invalidate_slope_map_entry__at(
-        Slope_Map slope_map,
-        u8 local__x,
-        u8 local__y) {
-    if (local__x >= CHUNK__WIDTH)
-        return;
-    if (local__y >= CHUNK__HEIGHT)
-        return;
-    Slope_Map_Entry *p_slope_map_entry =
-        get_p_slope_map_entry__at(
-                slope_map, 
-                local__x, 
-                local__y);
-    if (p_slope_map_entry->final_slope_map__value
-            == SLOPE_MAP__PROSPECT_SLOPE) {
-        p_slope_map_entry->final_slope_map__value =
-            SLOPE_MAP__EXCLUDED_SLOPE;
-    }
-}
-
-void invalidate_adjacent_slope_map_entries(
-        Slope_Map slope_map,
-        u8 local__x,
-        u8 local__y) {
-    invalidate_slope_map_entry__at(slope_map, local__x+1, local__y);
-    invalidate_slope_map_entry__at(slope_map, local__x-1, local__y);
-    invalidate_slope_map_entry__at(slope_map, local__x, local__y+1);
-    invalidate_slope_map_entry__at(slope_map, local__x, local__y-1);
-}
-
-void resolve_slope_map__niche_slopes(Slope_Map slope_map) {
-    for (u8 local__y = 0; local__y < CHUNK__HEIGHT; local__y++) {
-        for (u8 local__x = 0; local__x < CHUNK__WIDTH; local__x++) {
-            Slope_Map_Entry *p_entry = 
-                get_p_slope_map_entry__at(slope_map, local__x, local__y);
-            if (p_entry->final_slope_map__value
-                    != SLOPE_MAP__PROSPECT_SLOPE) {
-                continue;
-            }
-            if (p_entry->quantity_of__adjacent_walls == 2) {
-                if (p_entry->is_wall_adjacent__east
-                        && p_entry->is_wall_adjacent__west) {
-                    p_entry->final_slope_map__value =
-                        SLOPE_MAP__EXCLUDED_SLOPE;
-                    continue;
-                }
-                if (p_entry->is_wall_adjacent__north
-                        && p_entry->is_wall_adjacent__south) {
-                    p_entry->final_slope_map__value =
-                        SLOPE_MAP__EXCLUDED_SLOPE;
-                    continue;
-                }
-            }
-            if (p_entry->quantity_of__adjacent_walls >= 3) {
-                invalidate_adjacent_slope_map_entries(
-                        slope_map,
-                        local__x,
-                        local__y);
-                continue;
-            }
+bool modify_tile_for__slope_map_entry(
+        Slope_Map_Entry *p_entry,
+        Tile *p_tile) {
+    if (p_tile->the_kind_of__tile_cover != Tile_Cover_Kind__None)
+        return false;
+    if (p_entry->wall_adjacency_flags__u4 == 0) {
+        switch (p_entry->corner_adjacency_flags__u4) {
+            case 0b1000:
+                p_tile->ag_tile_flags__u4 |=
+                    AG_TILE_FLAG__IS_FLIPPED_Y;
+                p_tile->the_kind_of__tile_cover =
+                    p_tile->the_kind_of__tile
+                    + Tile_Cover_Kind__Stair__Convex_Corner__North_East;
+                return true;
+            case 0b0100:
+                p_tile->the_kind_of__tile_cover =
+                    p_tile->the_kind_of__tile
+                    + Tile_Cover_Kind__Stair__Convex_Corner__North_East;
+                return true;
+            case 0b0010:
+                p_tile->ag_tile_flags__u4 |=
+                    AG_TILE_FLAG__IS_FLIPPED_Y;
+                p_tile->the_kind_of__tile_cover =
+                    p_tile->the_kind_of__tile
+                    + Tile_Cover_Kind__Stair__Convex_Corner__South_East;
+                return true;
+            case 0b0001:
+                p_tile->the_kind_of__tile_cover =
+                    p_tile->the_kind_of__tile
+                    + Tile_Cover_Kind__Stair__Convex_Corner__South_East;
+                return true;
+            default:
+                return false;
         }
     }
-}
 
-void resolve_slope_map__slope_adjacency(Slope_Map slope_map) {
-    for (u8 local__y = 0; local__y < CHUNK__HEIGHT; local__y++) {
-        for (u8 local__x = 0; local__x < CHUNK__WIDTH; local__x++) {
-            Slope_Map_Entry *p_entry = 
-                get_p_slope_map_entry__at(slope_map, local__x, local__y);
-            if (p_entry->final_slope_map__value
-                    != SLOPE_MAP__PROSPECT_SLOPE) {
-                continue;
-            }
+    switch (p_entry->wall_adjacency_flags__u4) {
+        default:
+            return false;
 
-            Slope_Map_Entry *p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x + 1, 
-                        local__y);
-            if (p_entry__other
-                    && p_entry__other->quantity_of__adjacent_walls
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__PROSPECT_SLOPE) {
-                p_entry->is_stair_adjacent__east = true;
+        case 0b1000:
+            switch (p_entry->corner_adjacency_flags__u4) {
+                default:
+                    return false;
+                case 0b1000:
+                case 0b1010:
+                case 0b0010:
+                case 0:
+                    p_tile->the_kind_of__tile_cover =
+                        p_tile->the_kind_of__tile
+                        + Tile_Cover_Kind__Stair__West__North_South;
+                    break;
             }
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x - 1, 
-                        local__y);
-            if (p_entry__other
-                    && p_entry__other->quantity_of__adjacent_walls
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__PROSPECT_SLOPE) {
-                p_entry->is_stair_adjacent__west = true;
+            return true;
+        case 0b0010:
+            p_tile->ag_tile_flags__u4 |=
+                AG_TILE_FLAG__IS_FLIPPED_Y;
+            switch (p_entry->corner_adjacency_flags__u4) {
+                default:
+                    return false;
+                case 0b0101:
+                case 0b0001:
+                case 0b0100:
+                case 0:
+                    p_tile->the_kind_of__tile_cover =
+                        p_tile->the_kind_of__tile
+                        + Tile_Cover_Kind__Stair__West__North_South;
+                    break;
             }
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x, 
-                        local__y + 1);
-            if (p_entry__other
-                    && p_entry__other->quantity_of__adjacent_walls
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__PROSPECT_SLOPE) {
-                p_entry->is_stair_adjacent__north = true;
+            return true;
+        case 0b0100:
+            switch (p_entry->corner_adjacency_flags__u4) {
+                default:
+                    return false;
+                case 0b0011:
+                case 0b0001:
+                case 0b0010:
+                case 0:
+                    p_tile->the_kind_of__tile_cover =
+                        p_tile->the_kind_of__tile
+                        + Tile_Cover_Kind__Stair__South__East_West;
+                    break;
             }
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x, 
-                        local__y - 1);
-            if (p_entry__other
-                    && p_entry__other->quantity_of__adjacent_walls
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__PROSPECT_SLOPE) {
-                p_entry->is_stair_adjacent__south = true;
+            return true;
+        case 0b0001:
+            switch (p_entry->corner_adjacency_flags__u4) {
+                default:
+                    return false;
+                case 0b1100:
+                case 0b0100:
+                case 0b1000:
+                case 0:
+                    p_tile->the_kind_of__tile_cover =
+                        p_tile->the_kind_of__tile
+                        + Tile_Cover_Kind__Stair__North__East_West;
+                    break;
             }
+            return true;
 
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x + 1, 
-                        local__y + 1);
-            if (p_entry__other 
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__WALL) {
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x + 1, 
-                        local__y)->is_stair_adjacent__west = true;
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x, 
-                        local__y+1)->is_stair_adjacent__south = true;
-                p_entry->is_stair_adjacent__north = true;
-                p_entry->is_stair_adjacent__east = true;
-            }
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x - 1, 
-                        local__y + 1);
-            if (p_entry__other 
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__WALL) {
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x - 1, 
-                        local__y)->is_stair_adjacent__east = true;
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x, 
-                        local__y + 1)->is_stair_adjacent__south = true;
-                p_entry->is_stair_adjacent__north = true;
-                p_entry->is_stair_adjacent__west = true;
-            }
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x + 1, 
-                        local__y - 1);
-            if (p_entry__other 
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__WALL) {
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x + 1, 
-                        local__y)->is_stair_adjacent__west = true;
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x, 
-                        local__y - 1)->is_stair_adjacent__north = true;
-                p_entry->is_stair_adjacent__south = true;
-                p_entry->is_stair_adjacent__east = true;
-            }
-            p_entry__other =
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x - 1, 
-                        local__y - 1);
-            if (p_entry__other 
-                    && p_entry__other->final_slope_map__value
-                    == SLOPE_MAP__WALL) {
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x - 1, 
-                        local__y)->is_stair_adjacent__east = true;
-                get_p_slope_map_entry__at(
-                        slope_map, 
-                        local__x, 
-                        local__y - 1)->is_stair_adjacent__north = true;
-                p_entry->is_stair_adjacent__south = true;
-                p_entry->is_stair_adjacent__west = true;
-            }
-        }
+        case 0b1100:
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__Concave_Corner__South_West;
+            return true;
+        case 0b0110:
+            p_tile->ag_tile_flags__u4 |=
+                AG_TILE_FLAG__IS_FLIPPED_Y;
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__Concave_Corner__South_West;
+            return true;
+        case 0b1001:
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__Concave_Corner__North_West;
+            return true;
+        case 0b011:
+            p_tile->ag_tile_flags__u4 |=
+                AG_TILE_FLAG__IS_FLIPPED_Y;
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__Concave_Corner__North_West;
+            return true;
+
+        case 0b1110:
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__South__East_West;
+            return true;
+        case 0b0111:
+            p_tile->ag_tile_flags__u4 |=
+                AG_TILE_FLAG__IS_FLIPPED_Y;
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__West__North_South;
+            return true;
+        case 0b1101:
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__West__North_South;
+            return true;
+        case 0b1011:
+            p_tile->the_kind_of__tile_cover =
+                p_tile->the_kind_of__tile
+                + Tile_Cover_Kind__Stair__North__East_West;
+            return true;
     }
 }
 
@@ -671,10 +670,6 @@ void render_slope_map_into__chunk(
         for (u8 local__x = 0; local__x < CHUNK__WIDTH; local__x++) {
             Slope_Map_Entry *p_entry = 
                 get_p_slope_map_entry__at(slope_map, local__x, local__y);
-            if (p_entry->final_slope_map__value
-                    != SLOPE_MAP__PROSPECT_SLOPE) {
-                continue;
-            }
             Tile *p_tile =
                 get_p_tile_from__chunk(
                         p_chunk, (Local_Tile_Vector__3u8){local__x, local__y, local__z});
@@ -685,180 +680,14 @@ void render_slope_map_into__chunk(
                         (local__z + 1) & MASK(CHUNK__DEPTH__BIT_SHIFT)})
                 : p_tile // TODO: need to go back after chunk is generated, and apply seam fixing.
                 ;
-            if (p_entry->quantity_of__adjacent_walls == 0) {
-                // this is possibly a convex stair
-                switch (p_entry->stair_adjacency_flags__u4) {
-                    case 0b1001: //adj north west
-                        p_tile->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                        p_tile__above->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                    case 0b1100: //adj north east
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__Convex_Corner__North_East;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__Convex_Corner__North_East;
-                        break;
-                    case 0b0011: //adj south west
-                        p_tile->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                        p_tile__above->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                    case 0b0110: //adj south east
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__Convex_Corner__South_East;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__Convex_Corner__South_East;
-                        break;
-                    default:
-                        break;
-                }
-                continue;
-            }
-            switch (p_entry->wall_adjacency_flags__u4) {
-                case 0b1000: //adj north
-                    if (p_entry->is_stair_adjacent__east) {
-                        if (p_entry->is_stair_adjacent__west) {
-                            p_tile->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__North__East_West;
-                            p_tile__above->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__North__East_West;
-                        } else {
-                            p_tile->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__North__East;
-                            p_tile__above->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__North__East;
-                        }
-                    } else if (p_entry->is_stair_adjacent__west) {
-                        p_tile->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                        p_tile__above->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__North__East;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__North__East;
-                    } else {
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__North;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__North;
-                    }
-                    break;
-                case 0b0100: //adj east
-                    p_tile->ag_tile_flags__u4 |=
-                        AG_TILE_FLAG__IS_FLIPPED_Y;
-                    p_tile__above->ag_tile_flags__u4 |=
-                        AG_TILE_FLAG__IS_FLIPPED_Y;
-                case 0b0001: //adj west
-                    if (p_entry->is_stair_adjacent__north) {
-                        if (p_entry->is_stair_adjacent__south) {
-                            p_tile->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__West__North_South;
-                            p_tile__above->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__West__North_South;
-                        } else {
-                            p_tile->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__West__North;
-                            p_tile__above->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__West__North;
-                        }
-                    } else if (p_entry->is_stair_adjacent__south) {
-                        // TODO: missing from tileset
-                        // p_tile->the_kind_of__tile_cover =
-                        //     p_tile->the_kind_of__tile
-                        //     + Tile_Cover_Kind__Stair__;
-                        // p_tile__above->the_kind_of__tile_cover =
-                        //     p_tile->the_kind_of__tile
-                        //     + Tile_Cover_Kind__Stair__;
-                    } else {
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__West;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__West;
-                    }
-                    break;
-                case 0b0010: //adj south
-                    if (p_entry->is_stair_adjacent__east) {
-                        if (p_entry->is_stair_adjacent__west) {
-                            p_tile->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__South__East_West;
-                            p_tile__above->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__South__East_West;
-                        } else {
-                            p_tile->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__South__East;
-                            p_tile__above->the_kind_of__tile_cover =
-                                p_tile->the_kind_of__tile
-                                + Tile_Cover_Kind__Stair__South__East;
-                        }
-                    } else if (p_entry->is_stair_adjacent__west) {
-                        p_tile->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                        p_tile__above->ag_tile_flags__u4 |=
-                            AG_TILE_FLAG__IS_FLIPPED_Y;
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__South__East;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__South__East;
-                    } else {
-                        p_tile->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__South;
-                        p_tile__above->the_kind_of__tile_cover =
-                            p_tile->the_kind_of__tile
-                            + Tile_Cover_Kind__Stair__South;
-                    }
-                    break;
-                case 0b1100: //adj north east
-                    p_tile->ag_tile_flags__u4 |=
-                        AG_TILE_FLAG__IS_FLIPPED_Y;
-                    p_tile__above->ag_tile_flags__u4 |=
-                        AG_TILE_FLAG__IS_FLIPPED_Y;
-                case 0b1001: //adj north west
-                    p_tile->the_kind_of__tile_cover =
-                        p_tile->the_kind_of__tile
-                        + Tile_Cover_Kind__Stair__Concave_Corner__North_West;
-                    p_tile__above->the_kind_of__tile_cover =
-                        p_tile->the_kind_of__tile
-                        + Tile_Cover_Kind__Stair__Concave_Corner__North_West;
-                    break;
-                case 0b0110: //adj south east
-                    p_tile->ag_tile_flags__u4 |=
-                        AG_TILE_FLAG__IS_FLIPPED_Y;
-                    p_tile__above->ag_tile_flags__u4 |=
-                        AG_TILE_FLAG__IS_FLIPPED_Y;
-                case 0b0011: //adj south west
-                    p_tile->the_kind_of__tile_cover =
-                        p_tile->the_kind_of__tile
-                        + Tile_Cover_Kind__Stair__Concave_Corner__South_West;
-                    p_tile__above->the_kind_of__tile_cover =
-                        p_tile->the_kind_of__tile
-                        + Tile_Cover_Kind__Stair__Concave_Corner__South_West;
-                    break;
+            
+            if (modify_tile_for__slope_map_entry(
+                    p_entry, 
+                    p_tile)) {
+                p_tile__above->the_kind_of__tile_cover =
+                    p_tile->the_kind_of__tile_cover;
+                p_tile__above->ag_tile_flags__u4 =
+                    p_tile->ag_tile_flags__u4;
             }
         }
     }
@@ -1033,10 +862,6 @@ void m_process__chunk_generator__overworld(
                     release_global_space(
                             get_p_world_from__game(p_game), 
                             p_global_space);
-                    debug_info("dropping %d,%d,%d",
-                            chunk_pos.x__i32,
-                            chunk_pos.y__i32,
-                            chunk_pos.z__i32);
                     complete_process(p_this_process);
                 }
                 return;
@@ -1045,10 +870,6 @@ void m_process__chunk_generator__overworld(
             hold_global_space_neighbors(
                     p_game, 
                     p_global_space);
-            debug_info("go to slope%d,%d,%d",
-                    chunk_pos.x__i32,
-                    chunk_pos.y__i32,
-                    chunk_pos.z__i32);
             p_this_process->m_process_run__handler =
                 m_process__chunk_generator__slope_resolver;
             return;
@@ -1192,10 +1013,6 @@ void m_process__chunk_generator__overworld(
         }
     }
 
-    debug_info("awaiting neighbor %d,%d,%d",
-            chunk_pos.x__i32,
-            chunk_pos.y__i32,
-            chunk_pos.z__i32);
     set_global_space_as__finished_terrain(p_global_space);
     p_this_process->process_value_bytes__u8[0] =
         Chunk_Generation__State__Awaiting_Neighbors;
@@ -1238,19 +1055,12 @@ void m_process__chunk_generator__slope_resolver(
                 ptr_array_of__chunk__neighbors,
                 slope_map, 
                 local__z);
-        resolve_slope_map__niche_slopes(slope_map);
-        resolve_slope_map__slope_adjacency(
-                slope_map);
         render_slope_map_into__chunk(
                 p_chunk, 
                 slope_map, 
                 local__z);
     }
 
-    debug_info("done slope: %d,%d,%d",
-            chunk_pos.x__i32,
-            chunk_pos.y__i32,
-            chunk_pos.z__i32);
     drop_global_space_neighbors(
             p_game, 
             p_global_space);

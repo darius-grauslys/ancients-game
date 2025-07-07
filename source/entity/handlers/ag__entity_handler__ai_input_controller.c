@@ -28,6 +28,14 @@ void m_entity_handler__ai_input_controller(
     p_hitbox_aabb->velocity__3i32F4 =
         VECTOR__3i32F4__0_0_0;
     // up to here.
+    if (is_input__turn_left_released(p_input)) {
+        debug_info(
+                "pos: %d,%d,%d",
+                p_hitbox_aabb->position__3i32F4.x__i32F4 >> 7,
+                p_hitbox_aabb->position__3i32F4.y__i32F4 >> 7,
+                p_hitbox_aabb->position__3i32F4.z__i32F4 >> 7
+                );
+    }
     if (is_input__forward_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.y__i32F4 = 0b1000;
     }
