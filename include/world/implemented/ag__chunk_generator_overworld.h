@@ -13,8 +13,8 @@ i32 ag__get_natural_world_height_at__xy(
         i32 x,
         i32 y);
 
-void f_chunk_generator__overworld(
-        Game *p_game,
-        Global_Space *p_global_space);
+void m_process__chunk_generator__overworld(
+        Process *p_this_process,
+        Game *p_game);
 
 #endif

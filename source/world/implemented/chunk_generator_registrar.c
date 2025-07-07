@@ -8,5 +8,5 @@ void register_chunk_generators(
     register_chunk_generator_into__chunk_generator_table(
             p_chunk_generator_table, 
             Chunk_Generator_Kind__Overworld, 
-            f_chunk_generator__overworld);
+            m_process__chunk_generator__overworld);
 }

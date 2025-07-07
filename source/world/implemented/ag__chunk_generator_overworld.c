@@ -6,6 +6,7 @@
 #include "numerics.h"
 #include "platform_defaults.h"
 #include "platform_defines.h"
+#include "types/implemented/chunk_generator_kind.h"
 #include "types/implemented/tile.h"
 #include "types/implemented/tile_cover_kind.h"
 #include "types/implemented/tile_kind.h"
@@ -16,6 +17,10 @@
 #include "world/chunk.h"
 #include "random.h"
 #include "world/world.h"
+#include "process/process.h"
+#include "world/global_space_manager.h"
+#include "world/chunk_pool.h"
+#include "collisions/collision_node_pool.h"
 
 #define BIOME__BIT_SHIFT 3
 #define BIOME__RANGE BIT(BIOME__BIT_SHIFT)
@@ -386,11 +391,15 @@ Slope_Map_Entry *get_p_slope_map_entry__at(
 }
 
 void generate_slope_map(
-        Chunk *p_chunk,
+        Global_Space_Manager *p_global_space_manager,
+        Global_Space *p_global_space,
+        Chunk *ptr_array_of__chunk__neighbors[8],
         Slope_Map slope_map,
         u8 local__z) {
-    for (u8 local__y = 0; local__y < CHUNK__HEIGHT; local__y++) {
-        for (u8 local__x = 0; local__x < CHUNK__WIDTH; local__x++) {
+    Chunk *p_chunk = get_p_chunk_from__global_space(p_global_space);
+
+    for (i8 local__y = 0; local__y < CHUNK__HEIGHT; local__y++) {
+        for (i8 local__x = 0; local__x < CHUNK__WIDTH; local__x++) {
             Slope_Map_Entry *p_entry = 
                 get_p_slope_map_entry__at(slope_map, local__x, local__y);
             memset(p_entry, 0, sizeof(Slope_Map_Entry));
@@ -404,33 +413,37 @@ void generate_slope_map(
             }
             p_entry->final_slope_map__value =
                 SLOPE_MAP__PROSPECT_SLOPE;
-            p_tile = try_get_p_tile_from__chunk(
+            p_tile = get_p_tile_from__chunk_neighborhood(
                     p_chunk, 
-                    (Local_Tile_Vector__3u8){local__x+1, local__y, local__z});
+                    ptr_array_of__chunk__neighbors,
+                    local__x+1, local__y, local__z);
             if (p_tile && is_tile_cover__a_wall(
                         get_tile_cover_kind_from__tile(p_tile))) {
                 p_entry->is_wall_adjacent__east = true;
                 p_entry->quantity_of__adjacent_walls++;
             }
-            p_tile = try_get_p_tile_from__chunk(
+            p_tile = get_p_tile_from__chunk_neighborhood(
                     p_chunk, 
-                    (Local_Tile_Vector__3u8){local__x-1, local__y, local__z});
+                    ptr_array_of__chunk__neighbors,
+                    local__x-1, local__y, local__z);
             if (p_tile && is_tile_cover__a_wall(
                         get_tile_cover_kind_from__tile(p_tile))) {
                 p_entry->is_wall_adjacent__west = true;
                 p_entry->quantity_of__adjacent_walls++;
             }
-            p_tile = try_get_p_tile_from__chunk(
+            p_tile = get_p_tile_from__chunk_neighborhood(
                     p_chunk, 
-                    (Local_Tile_Vector__3u8){local__x, local__y+1, local__z});
+                    ptr_array_of__chunk__neighbors,
+                    local__x, local__y+1, local__z);
             if (p_tile && is_tile_cover__a_wall(
                         get_tile_cover_kind_from__tile(p_tile))) {
                 p_entry->is_wall_adjacent__north = true;
                 p_entry->quantity_of__adjacent_walls++;
             }
-            p_tile = try_get_p_tile_from__chunk(
+            p_tile = get_p_tile_from__chunk_neighborhood(
                     p_chunk, 
-                    (Local_Tile_Vector__3u8){local__x, local__y-1, local__z});
+                    ptr_array_of__chunk__neighbors,
+                    local__x, local__y-1, local__z);
             if (p_tile && is_tile_cover__a_wall(
                         get_tile_cover_kind_from__tile(p_tile))) {
                 p_entry->is_wall_adjacent__south = true;
@@ -526,6 +539,51 @@ void resolve_slope_map__slope_adjacency(Slope_Map slope_map) {
             }
 
             Slope_Map_Entry *p_entry__other =
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x + 1, 
+                        local__y);
+            if (p_entry__other
+                    && p_entry__other->quantity_of__adjacent_walls
+                    && p_entry__other->final_slope_map__value
+                    == SLOPE_MAP__PROSPECT_SLOPE) {
+                p_entry->is_stair_adjacent__east = true;
+            }
+            p_entry__other =
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x - 1, 
+                        local__y);
+            if (p_entry__other
+                    && p_entry__other->quantity_of__adjacent_walls
+                    && p_entry__other->final_slope_map__value
+                    == SLOPE_MAP__PROSPECT_SLOPE) {
+                p_entry->is_stair_adjacent__west = true;
+            }
+            p_entry__other =
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x, 
+                        local__y + 1);
+            if (p_entry__other
+                    && p_entry__other->quantity_of__adjacent_walls
+                    && p_entry__other->final_slope_map__value
+                    == SLOPE_MAP__PROSPECT_SLOPE) {
+                p_entry->is_stair_adjacent__north = true;
+            }
+            p_entry__other =
+                get_p_slope_map_entry__at(
+                        slope_map, 
+                        local__x, 
+                        local__y - 1);
+            if (p_entry__other
+                    && p_entry__other->quantity_of__adjacent_walls
+                    && p_entry__other->final_slope_map__value
+                    == SLOPE_MAP__PROSPECT_SLOPE) {
+                p_entry->is_stair_adjacent__south = true;
+            }
+
+            p_entry__other =
                 get_p_slope_map_entry__at(
                         slope_map, 
                         local__x + 1, 
@@ -806,11 +864,198 @@ void render_slope_map_into__chunk(
     }
 }
 
-void f_chunk_generator__overworld(Game *p_game, Global_Space *p_global_space) {
+typedef enum Chunk_Generation__State {
+    Chunk_Generation__State__Default,
+    Chunk_Generation__State__Terrain,
+    Chunk_Generation__State__Awaiting_Neighbors,
+    Chunk_Generation__State__Unknown,
+} Chunk_Generation__State;
+
+#define CHUNK_FLAG__IS_DONE_TERRAIN \
+    CHUNK_FLAG__MODDABLE_0
+
+static inline
+bool is_global_space__finished_terrain(
+        Global_Space *p_global_space) {
+    return p_global_space
+        && get_p_chunk_from__global_space(p_global_space)
+        && (get_p_chunk_from__global_space(p_global_space)
+                ->chunk_flags
+                & CHUNK_FLAG__IS_DONE_TERRAIN)
+        ;
+}
+
+static inline
+void set_global_space_as__finished_terrain(
+        Global_Space *p_global_space) {
+    if (!p_global_space) return;
+    if (!get_p_chunk_from__global_space(p_global_space))
+        return;
+    get_p_chunk_from__global_space(p_global_space)
+        ->chunk_flags |= CHUNK_FLAG__IS_DONE_TERRAIN;
+}
+
+static u8 poll_global_space_neighbors(
+        Game *p_game,
+        Global_Space *p_global_space) {
+    u8 neighbor_flags = 0;
+    u8 neighbor_flag__shift = 0;
+    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
+
+    Global_Space_Manager *p_global_space_manager =
+        get_p_global_space_manager_from__game(p_game);
+    Global_Space *p_global_space__neighbor = 0;
+
+    for (i8 y=-1;y<2;y++) {
+        for (i8 x=-1;x<2;x++) {
+            if (x == 0 && y == 0)
+                continue;
+            p_global_space__neighbor =
+                get_p_global_space_from__global_space_manager(
+                        p_global_space_manager, 
+                        add_vectors__3i32(
+                            chunk_pos,
+                            get_vector__3i32(x, y, 0)));
+            if (p_global_space__neighbor
+                    && is_global_space__finished_terrain(
+                        p_global_space__neighbor)) {
+                neighbor_flags |= BIT(neighbor_flag__shift++);
+            }
+        }
+    }
+    
+    return neighbor_flags;
+}
+
+static bool hold_global_space_neighbors(
+        Game *p_game,
+        Global_Space *p_global_space) {
+    u8 neighbor_flags = 0;
+    u8 neighbor_flag__shift = 0;
+    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
+
+    Global_Space_Manager *p_global_space_manager =
+        get_p_global_space_manager_from__game(p_game);
+    Global_Space *p_global_space__neighbor = 0;
+
+    for (i8 y=-1;y<2;y++) {
+        for (i8 x=-1;x<2;x++) {
+            if (x == 0 && y == 0)
+                continue;
+            p_global_space__neighbor =
+                get_p_global_space_from__global_space_manager(
+                        p_global_space_manager, 
+                        add_vectors__3i32(
+                            chunk_pos,
+                            get_vector__3i32(x, y, 0)));
+            if (!p_global_space__neighbor) {
+                u8 neighbor_unset_flag__shift = 0;
+                for (y=-1;y<2;y++) {
+                    for (x=-1;x<2;x++) {
+                        p_global_space__neighbor =
+                            get_p_global_space_from__global_space_manager(
+                                    p_global_space_manager, 
+                                    add_vectors__3i32(
+                                        chunk_pos,
+                                        get_vector__3i32(x, y, 0)));
+                        if (p_global_space__neighbor
+                                && (neighbor_flags 
+                                    & BIT(neighbor_unset_flag__shift++))) {
+                            drop_global_space(p_global_space__neighbor);
+                        }
+                    }
+                }
+                return false;
+            }
+
+            neighbor_flags |= BIT(neighbor_flag__shift++);
+            hold_global_space(p_global_space__neighbor);
+        }
+    }
+    
+    return true;
+}
+
+static void drop_global_space_neighbors(
+        Game *p_game,
+        Global_Space *p_global_space) {
+    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
+
+    Global_Space_Manager *p_global_space_manager =
+        get_p_global_space_manager_from__game(p_game);
+    Global_Space *p_global_space__neighbor = 0;
+
+    for (i8 y=-1;y<2;y++) {
+        for (i8 x=-1;x<2;x++) {
+            if (x == 0 && y == 0)
+                continue;
+            p_global_space__neighbor =
+                get_p_global_space_from__global_space_manager(
+                        p_global_space_manager, 
+                        add_vectors__3i32(
+                            chunk_pos,
+                            get_vector__3i32(x, y, 0)));
+            if (!p_global_space__neighbor) {
+                continue;
+            }
+
+            drop_global_space(p_global_space__neighbor);
+        }
+    }
+}
+
+void m_process__chunk_generator__slope_resolver(
+        Process *p_this_process,
+        Game *p_game);
+
+void m_process__chunk_generator__overworld(
+        Process *p_this_process,
+        Game *p_game) {
+    Global_Space *p_global_space = p_this_process->p_process_data;
     Chunk *p_chunk = get_p_chunk_from__global_space(p_global_space);
+    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
+
+    switch (p_this_process->process_value_bytes__u8[0]) {
+        default:
+        case Chunk_Generation__State__Terrain:
+            break;
+        case Chunk_Generation__State__Awaiting_Neighbors:
+            p_this_process->process_value_bytes__u8[1] =
+                poll_global_space_neighbors(
+                        p_game, 
+                        p_global_space);
+
+            if (p_this_process->process_value_bytes__u8[1]
+                    != (u8)-1) {
+                // never timeout, but check for awaiting deconstruction
+                if (is_global_space__awaiting_deconstruction(
+                            p_global_space)) {
+                    release_global_space(
+                            get_p_world_from__game(p_game), 
+                            p_global_space);
+                    debug_info("dropping %d,%d,%d",
+                            chunk_pos.x__i32,
+                            chunk_pos.y__i32,
+                            chunk_pos.z__i32);
+                    complete_process(p_this_process);
+                }
+                return;
+            }
+
+            hold_global_space_neighbors(
+                    p_game, 
+                    p_global_space);
+            debug_info("go to slope%d,%d,%d",
+                    chunk_pos.x__i32,
+                    chunk_pos.y__i32,
+                    chunk_pos.z__i32);
+            p_this_process->m_process_run__handler =
+                m_process__chunk_generator__slope_resolver;
+            return;
+    }
+
     Repeatable_Psuedo_Random *p_random = get_p_repeatable_psuedo_random_from__world(get_p_world_from__game(p_game));
 
-    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
     Tile_Vector__3i32 tile_vector_of__chunk =
         chunk_vector_3i32_to__tile_vector_3i32(chunk_pos);
     i32 tile_origin_x = tile_vector_of__chunk.x__i32;
@@ -840,6 +1085,8 @@ void f_chunk_generator__overworld(Game *p_game, Global_Space *p_global_space) {
                         p_chunk, 
                         Tile_Kind__Stone, 
                         Tile_Cover_Kind__Wall__Stone);
+                set_global_space_as__finished_terrain(p_global_space);
+                complete_process(p_this_process);
                 return;
             }
             if (chunk_pos.z__i32 - 1 > z_chunk__height) {
@@ -847,6 +1094,8 @@ void f_chunk_generator__overworld(Game *p_game, Global_Space *p_global_space) {
                         p_chunk, 
                         Tile_Kind__None, 
                         Tile_Cover_Kind__None);
+                set_global_space_as__finished_terrain(p_global_space);
+                complete_process(p_this_process);
                 return;
             }
 
@@ -943,515 +1192,67 @@ void f_chunk_generator__overworld(Game *p_game, Global_Space *p_global_space) {
         }
     }
 
+    debug_info("awaiting neighbor %d,%d,%d",
+            chunk_pos.x__i32,
+            chunk_pos.y__i32,
+            chunk_pos.z__i32);
+    set_global_space_as__finished_terrain(p_global_space);
+    p_this_process->process_value_bytes__u8[0] =
+        Chunk_Generation__State__Awaiting_Neighbors;
+}
+
+void m_process__chunk_generator__slope_resolver(
+        Process *p_this_process,
+        Game *p_game) {
+    Global_Space_Manager *p_global_space_manager = 
+        get_p_global_space_manager_from__game(p_game);
+    Global_Space *p_global_space = p_this_process->p_process_data;
+    Chunk *p_chunk = get_p_chunk_from__global_space(p_global_space);
+    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
+    Tile_Vector__3i32 tile_vector_of__chunk =
+        chunk_vector_3i32_to__tile_vector_3i32(chunk_pos);
+    i32 tile_origin_z = tile_vector_of__chunk.z__i32;
+
+    Chunk *ptr_array_of__chunk__neighbors[8];
+
+    for (i8 y=-1,index=0;y<2;y++) {
+        for (i8 x=-1;x<2;x++) {
+            if (x == 0 && y == 0) continue;
+            ptr_array_of__chunk__neighbors[index++] =
+                get_p_chunk_from__global_space(
+                        get_p_global_space_from__global_space_manager(
+                            p_global_space_manager, 
+                            add_vectors__3i32(
+                                p_global_space->chunk_vector__3i32,
+                                get_vector__3i32(x,y,0))));
+        }
+    }
+
     Slope_Map slope_map;
     for (u32 local__z = 0; local__z < CHUNK__DEPTH; local__z++) {
         i32 global__z = local__z + tile_origin_z;
         memset(slope_map, 0, sizeof(Slope_Map));
         generate_slope_map(
-                p_chunk,
+                get_p_global_space_manager_from__game(p_game),
+                p_global_space,
+                ptr_array_of__chunk__neighbors,
                 slope_map, 
                 local__z);
         resolve_slope_map__niche_slopes(slope_map);
-        resolve_slope_map__slope_adjacency(slope_map);
+        resolve_slope_map__slope_adjacency(
+                slope_map);
         render_slope_map_into__chunk(
                 p_chunk, 
                 slope_map, 
                 local__z);
     }
+
+    debug_info("done slope: %d,%d,%d",
+            chunk_pos.x__i32,
+            chunk_pos.y__i32,
+            chunk_pos.z__i32);
+    drop_global_space_neighbors(
+            p_game, 
+            p_global_space);
+    complete_process(p_this_process);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// typedef struct Region_Generation_Data__Node_Point_t {
-//     uint8_t x__node__u3     :3;
-//     uint8_t y__node__u3     :3;
-//     uint8_t piece_flags__u2 :2;
-//     uint8_t z__node__u8     :8;
-// } Region_Generation_Data__Node_Point;
-// 
-// #define REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__NODE 2
-// 
-// typedef struct Region_Generation_Data__Node_t {
-//     Region_Generation_Data__Node_Point region_generation_data__node__points[
-//         REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__NODE];
-// } Region_Generation_Data__Node;
-// 
-// static inline
-// Region_Generation_Data__Node_Point *get_p_region_generation_data__node_point_by__index(
-//         Region_Generation_Data__Node *p_region_generation_data__node,
-//         Index__u8 index_of__point_in__node) {
-//     return &p_region_generation_data__node
-//         ->region_generation_data__node__points[
-//         index_of__point_in__node];
-// }
-// 
-// #define REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF 4
-// #define REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF 4
-// 
-// #define REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__GLOB \
-//     REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__NODE * 4
-// 
-// typedef struct Region_Generation_Data__Glob_t {
-//     Region_Generation_Data__Node_Point *ptr_array_of__region_generation_data__nodes_points[
-//         REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__GLOB];
-//     ///
-//     /// Small globs will have the last 4 entries as nullptr.
-//     ///
-// } Region_Generation_Data__Glob;
-// 
-// static inline
-// Region_Generation_Data__Node_Point *get_p_region_generation_data__node_point_by__index_in__glob(
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Index__u8 index_of__point_in__node) {
-//     return p_region_generation_data__glob
-//         ->ptr_array_of__region_generation_data__nodes_points[
-//         index_of__point_in__node];
-// }
-// 
-// typedef struct Region_Generation_Data_t {
-//     Region_Generation_Data__Node region_generation_data__nodes[
-//         REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF
-//             * REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF];
-//     Region_Generation_Data__Glob region_generation_data__globs[
-//         (REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF+1)
-//             * (REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF+1)];
-// } Region_Generation_Data;
-// 
-// bool populate_region_generation_data__glob(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8);
-// 
-// bool populate_region_generation_data__glob__mini(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8);
-// 
-// static inline
-// Region_Generation_Data__Node *get_p_region_generation_data__node_by__indices(
-//         Region_Generation_Data *p_region_generation_data,
-//         Index__u8 index_x_of__node,
-//         Index__u8 index_y_of__node) {
-//     return &p_region_generation_data->region_generation_data__nodes[
-//         index_x_of__node
-//             + index_y_of__node
-//             * REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF];
-// }
-// 
-// bool populate_region_generation_data__glob__edge(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8);
-// 
-// bool populate_region_generation_data__glob__edge__mini(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8);
-// 
-// void populate_region_generation_data(
-//         Region_Generation_Data *p_region_generation_data,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Region_Vector__3i32 region_vector__3i32) {
-//     Vector__3i32 node_vector__origin__3i32 =
-//         get_vector__3i32(
-//                 region_vector__3i32.x__i32
-//                 * REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF,
-//                 region_vector__3i32.y__i32
-//                 * REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF,
-//                 region_vector__3i32.z__i32
-//                 * (REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF
-//                     * REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF));
-// 
-//     Region_Generation_Data__Node *p_region_generation_data__node =
-//         p_region_generation_data->region_generation_data__nodes;
-// 
-//     // randomize nodes
-// 
-//     for (Index__u8 index_y_of__node = 0;
-//             index_y_of__node
-//             < REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF;
-//             index_y_of__node++) {
-//         for (Index__u8 index_x_of__node = 0;
-//                 index_x_of__node
-//                 < REGION_GENERATION_DATA__NODE__ROW__MAX_QUANTITY_OF;
-//                 index_x_of__node++) {
-// 
-//             p_region_generation_data__node =
-//                 &p_region_generation_data->region_generation_data__nodes[
-//                     index_x_of__node
-//                         + index_y_of__node
-//                         * REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF];
-//             
-//             Vector__3i32 node_vector__3i32 =
-//                 get_vector__3i32(
-//                         node_vector__origin__3i32.x__i32
-//                         + index_x_of__node,
-//                         node_vector__origin__3i32.y__i32
-//                         + index_y_of__node,
-//                         node_vector__origin__3i32.z__i32);
-// 
-//             i32 random_value = 
-//                 get_pseudo_random_i32_with__xy__intrusively(
-//                         p_randomizer, 
-//                         node_vector__3i32.x__i32, 
-//                         node_vector__3i32.y__i32);
-// 
-//             Repeatable_Psuedo_Random sub_randomizer;
-//             initialize_repeatable_psuedo_random(
-//                     &sub_randomizer, 
-//                     random_value);
-// 
-//             for (Index__u8 index_of__point_in__node = 0;
-//                     index_of__point_in__node
-//                     < REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__NODE;
-//                     index_x_of__node++) {
-//                 Region_Generation_Data__Node_Point *p_point =
-//                     get_p_region_generation_data__node_point_by__index(
-//                             p_region_generation_data__node, 
-//                             index_of__point_in__node);
-//                 p_point->x__node__u3 =
-//                     random_value & MASK(3);
-//                 p_point->y__node__u3 =
-//                     (random_value>>3) & MASK(3);
-//                 random_value = get_pseudo_random_i32__intrusively(
-//                         &sub_randomizer);
-//             }
-//         }
-//     }
-// 
-//     // populate globs
-// 
-//     for (Index__u8 index_y_of__glob = 0;
-//             index_y_of__glob
-//             < REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF;
-//             index_y_of__glob++) {
-//         for (Index__u8 index_x_of__glob = 0;
-//                 index_x_of__glob
-//                 < REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF;
-//                 index_x_of__glob++) {
-//             Region_Generation_Data__Glob *p_region_generation_data__glob =
-//                 &p_region_generation_data->region_generation_data__globs[
-//                     index_x_of__glob
-//                         + index_y_of__glob
-//                         * (REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF+1)]
-//                         ;
-//             bool is_glob__mini_glob = (index_x_of__glob & 0b1);
-//             bool is_glob__edge_glob =
-//                 !index_x_of__glob
-//                 || !index_y_of__glob
-//                 || (index_x_of__glob
-//                         == REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF-1)
-//                 || (index_y_of__glob
-//                         == REGION_GENERATION_DATA__NODE__COLUMN__MAX_QUANTITY_OF-1)
-//                 ;
-// 
-//             if (is_glob__mini_glob
-//                     && is_glob__edge_glob) {
-//                 populate_region_generation_data__glob__edge__mini(
-//                         p_region_generation_data, 
-//                         p_region_generation_data__glob, 
-//                         p_randomizer, 
-//                         index_x_of__glob, 
-//                         index_y_of__glob);
-//                 continue;
-//             }
-// 
-//             if (is_glob__mini_glob) {
-//                 populate_region_generation_data__glob__mini(
-//                         p_region_generation_data, 
-//                         p_region_generation_data__glob, 
-//                         p_randomizer, 
-//                         index_x_of__glob, 
-//                         index_y_of__glob);
-//                 continue;
-//             }
-// 
-//             if (is_glob__edge_glob) {
-//                 populate_region_generation_data__glob__edge(
-//                         p_region_generation_data, 
-//                         p_region_generation_data__glob, 
-//                         p_randomizer, 
-//                         index_x_of__glob, 
-//                         index_y_of__glob);
-//                 continue;
-//             }
-// 
-//             populate_region_generation_data__glob(
-//                     p_region_generation_data, 
-//                     p_region_generation_data__glob, 
-//                     p_randomizer, 
-//                     index_x_of__glob, 
-//                     index_y_of__glob);
-//         }
-//     }
-// }
-// 
-// Region_Generation_Data__Node_Point 
-// *get_p_region_generation_data__node_point_closest_to__this_point(
-//         Region_Generation_Data__Node *p_region_generation_data__node,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Index__u8 minimum_index_x__u8,
-//         Index__u8 minimum_index_y__u8) {
-//     Region_Generation_Data__Node_Point *p_region_generation_data__node_point__closest =
-//         0;
-// 
-//     u32 distance_squared_of__closest = 0;
-// 
-//     for (Index__u8 index_of__point_in__node = 0;
-//             index_of__point_in__node
-//             < REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__NODE;
-//             index_of__point_in__node++) {
-//         Region_Generation_Data__Node_Point *p_region_generation_data__node_point =
-//             get_p_region_generation_data__node_point_by__index(
-//                     p_region_generation_data__node, 
-//                     index_of__point_in__node);
-// 
-//         if (!p_region_generation_data__node_point__closest) {
-//             p_region_generation_data__node_point__closest =
-//                 p_region_generation_data__node_point;
-//             i8 delta_x__closest =
-//                 p_region_generation_data__node_point->x__node__u3
-//                 - minimum_index_x__u8
-//                 ;
-//             i8 delta_y__closest =
-//                 p_region_generation_data__node_point->y__node__u3
-//                 - minimum_index_y__u8
-//                 ;
-// 
-//             distance_squared_of__closest =
-//                 (delta_x__closest*delta_x__closest)
-//                 + (delta_y__closest*delta_y__closest);
-//             continue;
-//         }
-// 
-//         i8 delta_x = 
-//             p_region_generation_data__node_point->x__node__u3
-//             - minimum_index_x__u8
-//             ;
-//         i8 delta_y = 
-//             p_region_generation_data__node_point->y__node__u3
-//             - minimum_index_y__u8
-//             ;
-// 
-//         u32 distance_squared =
-//             (delta_x * delta_x)
-//             + (delta_y * delta_y)
-//             ;
-// 
-//         if (distance_squared
-//                 >= distance_squared_of__closest) {
-//             continue;
-//         }
-// 
-//         if (!p_region_generation_data__glob)
-//             goto set_closest;
-//         
-//         for (Index__u8 index_of__point_in__glob = 0;
-//                 index_of__point_in__glob
-//                 < REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__GLOB;
-//                 index_of__point_in__glob++) {
-//             if (p_region_generation_data__node_point
-//                     == get_p_region_generation_data__node_point_by__index_in__glob(
-//                         p_region_generation_data__glob, 
-//                         index_of__point_in__node)) {
-//                 continue;
-//             }
-//         }
-// 
-// set_closest:
-//         distance_squared_of__closest =
-//             distance_squared;
-//         p_region_generation_data__node_point__closest =
-//             p_region_generation_data__node_point;
-//     }
-//     return p_region_generation_data__node_point__closest;
-// }
-// 
-// Region_Generation_Data__Node_Point *
-// populate_region_generation_data__glob__points(
-//         Region_Generation_Data__Node *p_region_generation_data__node,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Index__u8 *p_index_of__point_in__glob,
-//         Signed_Index__i8 closest_to__x,
-//         Signed_Index__i8 closest_to__y) {
-//     Region_Generation_Data__Node_Point *p_region_generation_data__node_point = 0;
-//     for (Index__u8 index_of__point_in__node = 0;
-//             index_of__point_in__node
-//             < REGION_GENERATION_DATA__NODE__POINT__QUANTITY_OF_PER__NODE;
-//             index_of__point_in__node++) {
-//         p_region_generation_data__node_point =
-//             get_p_region_generation_data__node_point_closest_to__this_point(
-//                     p_region_generation_data__node, 
-//                     p_region_generation_data__glob,
-//                     closest_to__x, 
-//                     closest_to__y);
-// 
-//         if (!p_region_generation_data__node_point)
-//             return 0;
-// 
-//         closest_to__x =
-//             p_region_generation_data__node_point
-//             ->x__node__u3;
-//         closest_to__y =
-//             p_region_generation_data__node_point
-//             ->y__node__u3;
-// 
-//         p_region_generation_data__glob
-//             ->ptr_array_of__region_generation_data__nodes_points[
-//             (*p_index_of__point_in__glob)++] =
-//                 p_region_generation_data__node_point;
-//     }
-//     return p_region_generation_data__node_point;
-// }
-// 
-// bool populate_region_generation_data__glob(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8) {
-//     Region_Generation_Data__Node *p_node__top_left =
-//         get_p_region_generation_data__node_by__indices(
-//                 p_region_generation_data, 
-//                 index_x_of__glob__u8 - 1, 
-//                 index_y_of__glob__u8 - 1);
-//     Region_Generation_Data__Node *p_node__top_right =
-//         get_p_region_generation_data__node_by__indices(
-//                 p_region_generation_data, 
-//                 index_x_of__glob__u8, 
-//                 index_y_of__glob__u8 - 1);
-//     Region_Generation_Data__Node *p_node__bottom_left =
-//         get_p_region_generation_data__node_by__indices(
-//                 p_region_generation_data, 
-//                 index_x_of__glob__u8 - 1, 
-//                 index_y_of__glob__u8);
-//     Region_Generation_Data__Node *p_node__bottom_right =
-//         get_p_region_generation_data__node_by__indices(
-//                 p_region_generation_data, 
-//                 index_x_of__glob__u8, 
-//                 index_y_of__glob__u8);
-// 
-//     Index__u8 index_of__point_in__glob = 0;
-//     Region_Generation_Data__Node_Point 
-//         *p_region_generation_data__node_point__latest =
-//         populate_region_generation_data__glob__points(
-//                 p_node__top_left, 
-//                 p_region_generation_data__glob, 
-//                 &index_of__point_in__glob,
-//                 0, 0);
-//     if (!p_region_generation_data__node_point__latest) {
-//         return false;
-//     }
-//     p_region_generation_data__node_point__latest =
-//         populate_region_generation_data__glob__points(
-//                 p_node__top_right, 
-//                 p_region_generation_data__glob, 
-//                 &index_of__point_in__glob,
-//                 p_region_generation_data__node_point__latest
-//                 ->x__node__u3 - 8,
-//                 p_region_generation_data__node_point__latest
-//                 ->y__node__u3);
-//     if (!p_region_generation_data__node_point__latest) {
-//         return false;
-//     }
-//     p_region_generation_data__node_point__latest =
-//         populate_region_generation_data__glob__points(
-//                 p_node__bottom_right, 
-//                 p_region_generation_data__glob, 
-//                 &index_of__point_in__glob,
-//                 p_region_generation_data__node_point__latest
-//                 ->x__node__u3,
-//                 p_region_generation_data__node_point__latest
-//                 ->y__node__u3 - 8);
-//     if (!p_region_generation_data__node_point__latest) {
-//         return false;
-//     }
-//     p_region_generation_data__node_point__latest =
-//         populate_region_generation_data__glob__points(
-//                 p_node__bottom_right, 
-//                 p_region_generation_data__glob, 
-//                 &index_of__point_in__glob,
-//                 p_region_generation_data__node_point__latest
-//                 ->x__node__u3 + 8,
-//                 p_region_generation_data__node_point__latest
-//                 ->y__node__u3);
-// 
-//     return true;
-// }
-// 
-// bool populate_region_generation_data__glob__mini(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8) {
-//     
-//     return true;
-// }
-// 
-// bool populate_region_generation_data__glob__edge(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8) {
-//     
-//     return true;
-// }
-// 
-// bool populate_region_generation_data__glob__edge__mini(
-//         Region_Generation_Data *p_region_generation_data,
-//         Region_Generation_Data__Glob *p_region_generation_data__glob,
-//         Repeatable_Psuedo_Random *p_randomizer,
-//         Index__u8 index_x_of__glob__u8,
-//         Index__u8 index_y_of__glob__u8) {
-//     
-//     return true;
-// }
