@@ -40,8 +40,8 @@ static void m_ui_button__clicked_handler__create(
                 get_p_world_from__game(p_game));
         set_name_of__world(
                 get_p_world_from__game(p_game), 
-                get_child_of__ui_element(p_this_ui_element)
-                    ->pM_char_buffer);
+                _p_ui_element__world_name__text_box
+                ->pM_char_buffer);
     }
     set_active_scene_for__scene_manager(
             get_p_scene_manager_from__game(p_game), 

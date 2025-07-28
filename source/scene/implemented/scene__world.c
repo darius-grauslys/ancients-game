@@ -101,15 +101,6 @@ void m_load_scene_as__world_handler(
                     TEXTURE_FLAG__SIZE_256x256,
                     0,
                     TEXTURE_FLAG__FORMAT__RGBA8888));
-    allocate_sprite_manager_for__graphics_window(
-            get_p_gfx_context_from__game(p_game), 
-            *p_ptr_graphics_window__ground);
-    register_sprite_animations(
-            get_p_sprite_manager_from__graphics_window(
-                *p_ptr_graphics_window__ground));
-
-    get_p_world_from__game(p_game)
-        ->p_graphics_window_for__world = *p_ptr_graphics_window__ground;
 
     *p_ptr_graphics_window__cover =
         allocate_graphics_window_from__graphics_window_manager(
@@ -120,6 +111,15 @@ void m_load_scene_as__world_handler(
                     TEXTURE_FLAG__SIZE_256x256,
                     0,
                     TEXTURE_FLAG__FORMAT__RGBA8888));
+    allocate_sprite_manager_for__graphics_window(
+            get_p_gfx_context_from__game(p_game), 
+            *p_ptr_graphics_window__cover);
+    register_sprite_animations(
+            get_p_sprite_manager_from__graphics_window(
+                *p_ptr_graphics_window__cover));
+
+    get_p_world_from__game(p_game)
+        ->p_graphics_window_for__world = *p_ptr_graphics_window__cover;
 
     *p_ptr_graphics_window__cover_over_sprites =
         allocate_graphics_window_from__graphics_window_manager(
@@ -173,6 +173,9 @@ void m_load_scene_as__world_handler(
 
     set_p_camera_of__graphics_window(
             *p_ptr_graphics_window__ground,
+            &_camera);
+    set_p_camera_of__graphics_window(
+            *p_ptr_graphics_window__cover,
             &_camera);
 
     // allocate_entity_in__entity_manager(

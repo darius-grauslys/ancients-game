@@ -706,11 +706,12 @@ typedef enum Chunk_Generation__State {
 static inline
 bool is_global_space__finished_terrain(
         Global_Space *p_global_space) {
-    return p_global_space
+    return is_global_space__active(p_global_space)
+        || (p_global_space
         && get_p_chunk_from__global_space(p_global_space)
         && (get_p_chunk_from__global_space(p_global_space)
                 ->chunk_flags
-                & CHUNK_FLAG__IS_DONE_TERRAIN)
+                & CHUNK_FLAG__IS_DONE_TERRAIN))
         ;
 }
 
@@ -748,89 +749,13 @@ static u8 poll_global_space_neighbors(
             if (p_global_space__neighbor
                     && is_global_space__finished_terrain(
                         p_global_space__neighbor)) {
-                neighbor_flags |= BIT(neighbor_flag__shift++);
+                neighbor_flags |= BIT(neighbor_flag__shift);
             }
+            neighbor_flag__shift++;
         }
     }
     
     return neighbor_flags;
-}
-
-static bool hold_global_space_neighbors(
-        Game *p_game,
-        Global_Space *p_global_space) {
-    u8 neighbor_flags = 0;
-    u8 neighbor_flag__shift = 0;
-    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
-
-    Global_Space_Manager *p_global_space_manager =
-        get_p_global_space_manager_from__game(p_game);
-    Global_Space *p_global_space__neighbor = 0;
-
-    for (i8 y=-1;y<2;y++) {
-        for (i8 x=-1;x<2;x++) {
-            if (x == 0 && y == 0)
-                continue;
-            p_global_space__neighbor =
-                get_p_global_space_from__global_space_manager(
-                        p_global_space_manager, 
-                        add_vectors__3i32(
-                            chunk_pos,
-                            get_vector__3i32(x, y, 0)));
-            if (!p_global_space__neighbor) {
-                u8 neighbor_unset_flag__shift = 0;
-                for (y=-1;y<2;y++) {
-                    for (x=-1;x<2;x++) {
-                        p_global_space__neighbor =
-                            get_p_global_space_from__global_space_manager(
-                                    p_global_space_manager, 
-                                    add_vectors__3i32(
-                                        chunk_pos,
-                                        get_vector__3i32(x, y, 0)));
-                        if (p_global_space__neighbor
-                                && (neighbor_flags 
-                                    & BIT(neighbor_unset_flag__shift++))) {
-                            drop_global_space(p_global_space__neighbor);
-                        }
-                    }
-                }
-                return false;
-            }
-
-            neighbor_flags |= BIT(neighbor_flag__shift++);
-            hold_global_space(p_global_space__neighbor);
-        }
-    }
-    
-    return true;
-}
-
-static void drop_global_space_neighbors(
-        Game *p_game,
-        Global_Space *p_global_space) {
-    Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
-
-    Global_Space_Manager *p_global_space_manager =
-        get_p_global_space_manager_from__game(p_game);
-    Global_Space *p_global_space__neighbor = 0;
-
-    for (i8 y=-1;y<2;y++) {
-        for (i8 x=-1;x<2;x++) {
-            if (x == 0 && y == 0)
-                continue;
-            p_global_space__neighbor =
-                get_p_global_space_from__global_space_manager(
-                        p_global_space_manager, 
-                        add_vectors__3i32(
-                            chunk_pos,
-                            get_vector__3i32(x, y, 0)));
-            if (!p_global_space__neighbor) {
-                continue;
-            }
-
-            drop_global_space(p_global_space__neighbor);
-        }
-    }
 }
 
 void m_process__chunk_generator__slope_resolver(
@@ -859,17 +784,11 @@ void m_process__chunk_generator__overworld(
                 // never timeout, but check for awaiting deconstruction
                 if (is_global_space__awaiting_deconstruction(
                             p_global_space)) {
-                    release_global_space(
-                            get_p_world_from__game(p_game), 
-                            p_global_space);
                     complete_process(p_this_process);
                 }
                 return;
             }
 
-            hold_global_space_neighbors(
-                    p_game, 
-                    p_global_space);
             p_this_process->m_process_run__handler =
                 m_process__chunk_generator__slope_resolver;
             return;
@@ -1024,6 +943,20 @@ void m_process__chunk_generator__slope_resolver(
     Global_Space_Manager *p_global_space_manager = 
         get_p_global_space_manager_from__game(p_game);
     Global_Space *p_global_space = p_this_process->p_process_data;
+
+    p_this_process->process_value_bytes__u8[1] =
+        poll_global_space_neighbors(
+                p_game, 
+                p_global_space);
+
+    if (is_global_space__awaiting_deconstruction(
+                p_global_space)
+        || (p_this_process->process_value_bytes__u8[1]
+            != (u8)-1)) {
+        complete_process(p_this_process);
+        return;
+    }
+
     Chunk *p_chunk = get_p_chunk_from__global_space(p_global_space);
     Chunk_Vector__3i32 chunk_pos = p_global_space->chunk_vector__3i32;
     Tile_Vector__3i32 tile_vector_of__chunk =
@@ -1035,13 +968,18 @@ void m_process__chunk_generator__slope_resolver(
     for (i8 y=-1,index=0;y<2;y++) {
         for (i8 x=-1;x<2;x++) {
             if (x == 0 && y == 0) continue;
-            ptr_array_of__chunk__neighbors[index++] =
+            ptr_array_of__chunk__neighbors[index] =
                 get_p_chunk_from__global_space(
                         get_p_global_space_from__global_space_manager(
                             p_global_space_manager, 
                             add_vectors__3i32(
                                 p_global_space->chunk_vector__3i32,
                                 get_vector__3i32(x,y,0))));
+            if (!ptr_array_of__chunk__neighbors[index++]) {
+                p_this_process->m_process_run__handler =
+                    m_process__chunk_generator__overworld;
+                return;
+            }
         }
     }
 
@@ -1061,8 +999,11 @@ void m_process__chunk_generator__slope_resolver(
                 local__z);
     }
 
-    drop_global_space_neighbors(
-            p_game, 
-            p_global_space);
+    set_chunk_as__visually_updated(ptr_array_of__chunk__neighbors[1]);
+    set_chunk_as__visually_updated(ptr_array_of__chunk__neighbors[3]);
+    set_chunk_as__visually_updated(ptr_array_of__chunk__neighbors[4]);
+    set_chunk_as__visually_updated(ptr_array_of__chunk__neighbors[6]);
+
+    set_chunk_as__active(p_chunk);
     complete_process(p_this_process);
 }
