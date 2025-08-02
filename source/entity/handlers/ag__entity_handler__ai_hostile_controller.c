@@ -121,7 +121,9 @@ static void engage_player(
             GET_UUID_P(p_this_entity),
             get_position_3i32F4_of__hitbox_aabb(
                 p_hitbox_aabb_of__this_entity),
-            movement__3i32F4);
+            get_velocity_3i32F4_of__hitbox_aabb(
+                p_hitbox_aabb_of__this_entity),
+            vector_3i32F4_to__vector_3i16F8(movement__3i32F4));
 }
 
 void m_entity_handler__ai_hostile__melee_controller(
@@ -217,5 +219,7 @@ void m_entity_handler__ai_hostile__melee_controller(
             GET_UUID_P(p_this_entity),
             get_position_3i32F4_of__hitbox_aabb(
                 p_hitbox_aabb),
-            movement__3i32F4);
+            get_velocity_3i32F4_of__hitbox_aabb(
+                p_hitbox_aabb),
+            vector_3i32F4_to__vector_3i16F8(movement__3i32F4));
 }

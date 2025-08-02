@@ -194,47 +194,47 @@ void m_enter_scene_as__world_handler(
                 get_p_hitbox_aabb_manager_from__game(
                     p_game), 
                 GET_UUID_P(p_client));
-    Chunk *p_chunk =
-            get_p_chunk_from__global_space(
-                get_p_global_space_from__global_space_manager(
-                    get_p_global_space_manager_from__game(p_game), 
-                    (Chunk_Vector__3i32){0,0,0}));
+    // Chunk *p_chunk =
+    //         get_p_chunk_from__global_space(
+    //             get_p_global_space_from__global_space_manager(
+    //                 get_p_global_space_manager_from__game(p_game), 
+    //                 (Chunk_Vector__3i32){0,0,0}));
 
-    fill_chunk_with(p_chunk, 
-            Tile_Kind__None, Tile_Cover_Kind__None);
+    // fill_chunk_with(p_chunk, 
+    //         Tile_Kind__None, Tile_Cover_Kind__None);
 
-    for (u8 i = 0; i<8;i++) {
-        Tile *p_tile = get_p_tile_from__chunk(
-                p_chunk,
-                (Local_Tile_Vector__3u8){i,4,0});
+    // for (u8 i = 0; i<8;i++) {
+    //     Tile *p_tile = get_p_tile_from__chunk(
+    //             p_chunk,
+    //             (Local_Tile_Vector__3u8){i,4,0});
 
-        p_tile->the_kind_of__tile_cover =
-            Tile_Kind__Grass +
-            Tile_Cover_Kind__Stair__Convex_Corner__North_East+i;
+    //     p_tile->the_kind_of__tile_cover =
+    //         Tile_Kind__Grass +
+    //         Tile_Cover_Kind__Stair__Convex_Corner__North_East+i;
 
-        p_tile = get_p_tile_from__chunk(
-                p_chunk,
-                (Local_Tile_Vector__3u8){i,5,0});
+    //     p_tile = get_p_tile_from__chunk(
+    //             p_chunk,
+    //             (Local_Tile_Vector__3u8){i,5,0});
 
-        p_tile->the_kind_of__tile_cover =
-            Tile_Kind__Grass +
-            Tile_Cover_Kind__Stair__Convex_Corner__South_East+i;
+    //     p_tile->the_kind_of__tile_cover =
+    //         Tile_Kind__Grass +
+    //         Tile_Cover_Kind__Stair__Convex_Corner__South_East+i;
 
-        p_tile = get_p_tile_from__chunk(
-                p_chunk,
-                (Local_Tile_Vector__3u8){i,6,0});
+    //     p_tile = get_p_tile_from__chunk(
+    //             p_chunk,
+    //             (Local_Tile_Vector__3u8){i,6,0});
 
-        p_tile->the_kind_of__tile_cover =
-            Tile_Kind__Grass +
-            Tile_Cover_Kind__Stair__South__East_West+i;
-        p_tile = get_p_tile_from__chunk(
-                p_chunk,
-                (Local_Tile_Vector__3u8){i,7,0});
+    //     p_tile->the_kind_of__tile_cover =
+    //         Tile_Kind__Grass +
+    //         Tile_Cover_Kind__Stair__South__East_West+i;
+    //     p_tile = get_p_tile_from__chunk(
+    //             p_chunk,
+    //             (Local_Tile_Vector__3u8){i,7,0});
 
-        p_tile->the_kind_of__tile_cover =
-            Tile_Kind__Grass +
-            Tile_Cover_Kind__Stair__North__East_West+i;
-    }
+    //     p_tile->the_kind_of__tile_cover =
+    //         Tile_Kind__Grass +
+    //         Tile_Cover_Kind__Stair__North__East_West+i;
+    // }
 
     while (poll_is__scene_active(
                 p_game, 

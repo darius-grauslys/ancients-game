@@ -3,7 +3,7 @@
 #include "types/implemented/tile_cover_kind.h"
 #include "world/ag__tile.h"
 #include "world/ag__tile_logic_record.h"
-#include "world/tile_logic_table_manager.h"
+#include "world/tile_logic_table.h"
 #include "game.h"
 #include "world/world.h"
 #include "world/global_space_manager.h"
@@ -41,7 +41,7 @@ bool place_tile(
 
     Tile_Logic_Record tile_logic_record;
     get_tile_logic_record_for__this_tile(
-            get_p_tile_logic_table_manager_from__world(p_world), 
+            get_p_tile_logic_table_from__world(p_world), 
             &tile_logic_record, 
             p_tile_at__location);
 

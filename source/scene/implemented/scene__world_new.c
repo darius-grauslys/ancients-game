@@ -1,5 +1,7 @@
 #include "scene/implemented/scene__world_new.h"
 #include "defines.h"
+#include "defines_weak.h"
+#include "random.h"
 #include "rendering/ag__graphics_window.h"
 #include "rendering/graphics_window.h"
 #include "rendering/graphics_window_manager.h"
@@ -19,6 +21,7 @@
 
 static Graphics_Window *_p_graphics_window__world_new = 0;
 static UI_Element *_p_ui_element__world_name__text_box = 0;
+static UI_Element *_p_ui_element__world_seed__text_box = 0;
 
 static void m_ui_button__clicked_handler__back(
         UI_Element *p_this_ui_element,
@@ -42,6 +45,21 @@ static void m_ui_button__clicked_handler__create(
                 get_p_world_from__game(p_game), 
                 _p_ui_element__world_name__text_box
                 ->pM_char_buffer);
+        u32 seed = 0;
+        for (Index__u32 index_of__seed_string = 0;
+                index_of__seed_string < 32
+                && _p_ui_element__world_seed__text_box->pM_char_buffer[index_of__seed_string];
+                index_of__seed_string++) {
+            char c = _p_ui_element__world_seed__text_box->pM_char_buffer[index_of__seed_string];
+            seed |= MASK(4) & (seed & (MASK(4) << (index_of__seed_string & MASK(3))))
+                        + ((c & MASK(4)) << (index_of__seed_string & MASK(3)));
+        }
+        if (seed) {
+            initialize_repeatable_psuedo_random(
+                    get_p_repeatable_psuedo_random_from__world(
+                        get_p_world_from__game(p_game)), 
+                    seed);
+        }
     }
     set_active_scene_for__scene_manager(
             get_p_scene_manager_from__game(p_game), 
@@ -91,6 +109,25 @@ void m_load_scene_as__world_new_handler(
                 get_p_ui_manager_from__graphics_window(
                     _p_graphics_window__world_new), 
                 get_vector__3i32(-128 + 96+32, -128 + 144, 0), 
+                196, 32, 
+                get_AG_font__large(), 
+                32);
+
+    make_ag_text(
+            p_game, 
+            _p_graphics_window__world_new, 
+            get_vector__3i32(-128 + 48, -128 + 168 - 48 - 24, 0),
+            96, 48, 
+            "World Seed:",
+            sizeof("World Seed:"));
+
+    _p_ui_element__world_seed__text_box =
+        make_ag_text_box(
+                p_game, 
+                _p_graphics_window__world_new, 
+                get_p_ui_manager_from__graphics_window(
+                    _p_graphics_window__world_new), 
+                get_vector__3i32(-128 + 96+32, -128 + 144 - 48, 0), 
                 196, 32, 
                 get_AG_font__large(), 
                 32);

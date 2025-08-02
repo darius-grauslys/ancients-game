@@ -15,6 +15,7 @@
 #include "ui/ui_text.h"
 #include "vectors.h"
 #include "world/implemented/chunk_generator_registrar.h"
+#include "world/implemented/tile_logic_table_registrar.h"
 #include "world/world.h"
 #include "process/process.h"
 #include "game_action/implemented/game_action_registrar.h"
@@ -41,6 +42,10 @@ void m_load_scene_as__world_load_handler(
 
     register_game_actions__offline(
             get_p_game_action_logic_table_from__game(p_game));
+    register_tile_logic_tables(
+            p_game, 
+            get_p_tile_logic_table_from__world(
+                get_p_world_from__game(p_game)));
     
     set_entity_initializer_in__entity_manager(
             get_p_entity_manager_from__game(p_game), 

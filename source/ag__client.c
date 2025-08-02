@@ -1,14 +1,18 @@
 #include "ag__client.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "collisions/hitbox_aabb.h"
+#include "defines.h"
 #include "defines_weak.h"
 #include "game.h"
+#include "numerics.h"
 #include "process/process.h"
 #include "client.h"
 #include "entity/entity.h"
 #include "entity/entity_manager.h"
 #include "types/implemented/entity_kind.h"
 #include "vectors.h"
+#include "world/implemented/ag__chunk_generator_overworld.h"
+#include "world/world.h"
 
 void m_process__deserialize_client__ag(
         Process *p_this_process,
@@ -39,11 +43,34 @@ void m_process__deserialize_client__ag(
                 p_serialization_request, 
                 p_entity);
 
-    if (error) {
-        debug_error("m_process__deserialize_client__default, read file error: %d",
-                error);
-        fail_process(p_this_process);
-        return;
+    switch (error) {
+        case PLATFORM_Read_File_Error__End_Of_File:
+            /// assume this client is new.
+            ;
+            i32 z__level =
+                ag__get_natural_world_height_at__xy(
+                        get_p_repeatable_psuedo_random_from__world(
+                            get_p_world_from__game(p_game)), 
+                        0, 0);
+            Hitbox_AABB *p_hitbox_aabb =
+                get_p_hitbox_aabb_by__entity_from__hitbox_aabb_manager(
+                        get_p_hitbox_aabb_manager_from__game(
+                            p_game), 
+                        p_entity);
+            if (!p_hitbox_aabb) {
+                debug_error("m_process__deserialize_client__ag, player lacks hitbox.");
+                return;
+            }
+            p_hitbox_aabb->position__3i32F4.z__i32F4 =
+                i32_to__i32F4(z__level
+                        << TILE__WIDTH_AND__HEIGHT__BIT_SHIFT);
+            debug_info("ag__client, SPAWN-z: %d", z__level);
+            break;
+        default:
+            debug_error("m_process__deserialize_client__ag, read file error: %d",
+                    error);
+            fail_process(p_this_process);
+            return;
     }
 
     set_client_as__active(p_client);

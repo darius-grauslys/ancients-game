@@ -342,7 +342,7 @@ i32 ag__get_natural_world_height_at__xy(
         i32 x,
         i32 y) {
     return i32F8_to__i32(
-            get_random_sample(p_random, x, y));
+            flatten_height(get_random_sample(p_random, x, y)));
 }
 
 typedef u8 Slope_Map_Value__u2;
@@ -794,7 +794,9 @@ void m_process__chunk_generator__overworld(
             return;
     }
 
-    Repeatable_Psuedo_Random *p_random = get_p_repeatable_psuedo_random_from__world(get_p_world_from__game(p_game));
+    Repeatable_Psuedo_Random *p_random = 
+        get_p_repeatable_psuedo_random_from__world(
+                get_p_world_from__game(p_game));
 
     Tile_Vector__3i32 tile_vector_of__chunk =
         chunk_vector_3i32_to__tile_vector_3i32(chunk_pos);
