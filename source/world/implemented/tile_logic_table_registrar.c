@@ -927,4 +927,68 @@ void register_tile_logic_tables(
             Tile_Cover_Kind__Stair__Wood__West__North_South, 
             TILE_LOGIC_FLAG__IS_WITHOUT_GROUND, 
             TILE_STAIR_HEIGHT);
+
+
+
+
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Amethyst, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Diamond, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Dirt, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Gold, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Grass, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Iron, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Sand, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Sandstone, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Steel, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Stone, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Stone_Brick, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
+    register_tile_logic_table_entry_for__tile_cover_kind(
+            p_tile_logic_table, 
+            Tile_Cover_Kind__Wall__Wood, 
+            TILE_LOGIC_FLAG__IS_UNPASSABLE, 
+            0);
 }
