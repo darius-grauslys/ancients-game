@@ -1,0 +1,6 @@
+#include <sdl/include/MAIN_TEST_SUITE___.h>
+
+INCLUDE_SUB_SUITES(_, 1,NULL);
+
+DEFINE_SUITE_WITH__SUB_SUITES(_, END_TESTS);
+
