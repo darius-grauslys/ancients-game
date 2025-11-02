@@ -5,6 +5,7 @@
 #include "defines_weak.h"
 #include "game.h"
 #include "game_action/core/hitbox/game_action__hitbox.h"
+#include "game_action/core/entity/game_action__entity__spawn.h"
 #include "numerics.h"
 #include "process/process.h"
 #include "client.h"
@@ -14,6 +15,46 @@
 #include "vectors.h"
 #include "world/implemented/ag__chunk_generator_overworld.h"
 #include "world/world.h"
+
+void m_process__create_client__ag(
+        Process *p_this_process,
+        Game *p_game) {
+    Client *p_client =
+        (Client*)p_this_process->p_process_data;
+
+    Hitbox_AABB *p_hitbox_aabb =
+        allocate_hitbox_aabb_from__hitbox_aabb_manager(
+                get_p_hitbox_aabb_manager_from__game(p_game), 
+                GET_UUID_P(p_client));
+
+    if (!p_hitbox_aabb) {
+        debug_error("m_process__create_client__ag, failed to allocate player hitbox.");
+        fail_process(p_this_process);
+        return;
+    }
+
+    // TODO: do we need to invoke a game action here instead?
+    set_hitbox__position_with__3i32F4(
+            p_hitbox_aabb, 
+            get_spawn_point_of__world(get_p_world_from__game(p_game)));
+
+    Entity *p_entity =
+        allocate_entity_with__this_uuid_in__entity_manager(
+                p_game, 
+                get_p_world_from__game(p_game), 
+                get_p_entity_manager_from__game(p_game), 
+                Entity_Kind__Player,
+                GET_UUID_P(p_client));
+
+    if (!p_entity) {
+        debug_error("m_process__create_client__ag, failed to allocate player entity.");
+        fail_process(p_this_process);
+        return;
+    }
+
+    set_client_as__loaded(p_client);
+    complete_process(p_this_process);
+}
 
 void m_process__deserialize_client__ag(
         Process *p_this_process,
@@ -121,10 +162,4 @@ void m_process__serialize_client__ag(
             p_client);
     complete_process(p_this_process);
     return;
-}
-
-void m_process__create_client__ag(
-        Process *p_this_process,
-        Game *p_game) {
-    complete_process(p_this_process);
 }

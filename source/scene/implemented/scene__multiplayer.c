@@ -1,4 +1,5 @@
 #include "scene/implemented/scene__multiplayer.h"
+#include "config/implemented/engine_config.h"
 #include "defines.h"
 #include "defines_weak.h"
 #include "game_action/implemented/game_action_registrar.h"
@@ -105,6 +106,10 @@ void m_load_scene_as__multiplayer_handler(
             date_time.date_time__sec_min_hour_day_month);
     Identifier__u32 uuid_player =
         get_random__uuid_u32(&random);
+    release_client_pool_from__game(p_game);
+    allocate_client_pool_for__game(
+            p_game,
+            1);
     begin_multiplayer_for__game(
             p_game, 
             m_poll_tcp_socket_manager_as__client__default);

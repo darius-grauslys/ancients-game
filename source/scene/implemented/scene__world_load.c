@@ -27,6 +27,8 @@
 #include "world/world.h"
 #include "process/process.h"
 #include "game_action/implemented/game_action_registrar.h"
+#include "game_action/core/world/game_action__world__load_world.h"
+#include "game_action/core/world/game_action__world__load_client.h"
 #include "entity/entity_manager.h"
 #include "entity/f_entity_initializer.h"
 
@@ -56,20 +58,6 @@ void m_load_scene_as__world_load_handler(
     set_entity_initializer_in__entity_manager(
             get_p_entity_manager_from__game(p_game), 
             f_entity_initializer__ag);
-
-    if (!p_game->pM_clients) {
-        // TODO: can we do better in determining player data
-        // can we have one location that works for both multiplayer
-        // and singleplayer.
-
-        // TODO: do proper player loading
-        
-        // assume we are in single player
-        allocate_client_pool_for__game(
-                p_game, 
-                0, 
-                1);
-    }
 
     _p_graphics_window__world_load =
         make_AG_graphics_window_with__composition_texture(
@@ -111,17 +99,15 @@ void m_enter_scene_as__world_load_handler(
             get_p_chunk_generation_table_from__world(
                 get_p_world_from__game(p_game)));
 
-    Process *p_process__load_client =
-        load_client(
-                p_game, 
-                GET_UUID_P(
-                    get_p_local_client_by__from__game(p_game)));
-    if (!p_process__load_client) {
-        state_of__loading_text =
-            Loading_Text_State__Failed;
-    }
-    Process *p_process__load_world = 0;
-    Process *p_process__teleport_client = 0;
+    Client *p_client =
+        get_p_local_client_by__from__game(p_game);
+
+    dispatch_game_action__world__load_world(
+            p_game, 
+            GET_UUID_P(get_p_local_client_by__from__game(p_game)));
+    dispatch_game_action__world__load_client(
+            p_game, 
+            GET_UUID_P(get_p_local_client_by__from__game(p_game)));
 
     while (poll_is__scene_active(
                 p_game, 
@@ -130,67 +116,10 @@ void m_enter_scene_as__world_load_handler(
         poll_multiplayer(p_game);
         manage_game__pre_render(p_game);
 
-        if (p_process__load_client) {
-            if (is_process__complete(p_process__load_client)) {
-                p_process__load_world = 
-                    load_world(p_game);
-                if (!p_process__load_world) {
-                    state_of__loading_text =
-                        Loading_Text_State__Failed;
-                }
-                p_process__load_client = 0;
-            } else if (is_process__failed(p_process__load_client)) {
-                state_of__loading_text =
-                    Loading_Text_State__Failed;
-                p_process__load_client = 0;
-            }
-        }
-        if (p_process__load_world) {
-            if (is_process__complete(p_process__load_world)) {
-                p_process__load_world = 0;
-                Entity *p_entity__player =
-                    allocate_entity_with__this_uuid_in__entity_manager(
-                            p_game, 
-                            get_p_world_from__game(p_game), 
-                            get_p_entity_manager_from__game(p_game), 
-                            Entity_Kind__Player, 
-                            0);
-
-                Hitbox_AABB *p_hitbox_aabb = 
-                        get_p_hitbox_aabb_by__entity_from__hitbox_aabb_manager(
-                            get_p_hitbox_aabb_manager_from__game(p_game), 
-                            p_entity__player);
-
-                // set_hitbox_aabb_as__active(p_hitbox_aabb);
-
-                i32 z_world_height__i32 = 
-                    ag__get_natural_world_height_at__xy(
-                        &get_p_world_from__game(p_game)->repeatable_pseudo_random, 
-                        0, 
-                        0) << TILE__WIDTH_AND__HEIGHT__BIT_SHIFT;
-
-                p_process__teleport_client =
-                    teleport_client(
-                            p_game, 
-                            get_p_local_client_by__from__game(p_game), 
-                            get_vector__3i32F4(
-                                0, 0, 
-                                i32_to__i32F4(z_world_height__i32 + 1)));
-            } else if (is_process__failed(p_process__load_world)) {
-                state_of__loading_text =
-                    Loading_Text_State__Failed;
-            }
-        }
-        if (p_process__teleport_client) {
-            if (is_process__complete(p_process__teleport_client)) {
-                p_process__load_client = 0;
-                set_active_scene_for__scene_manager(
-                        get_p_scene_manager_from__game(p_game), 
-                        Scene_Kind__World);
-            } else if (is_process__failed(p_process__teleport_client)) {
-                state_of__loading_text =
-                    Loading_Text_State__Failed;
-            }
+        if (is_client__active(p_client)) {
+            set_active_scene_for__scene_manager(
+                    get_p_scene_manager_from__game(p_game), 
+                    Scene_Kind__World);
         }
 
         if (poll_timer_u8(&_tick_timer__loading_text)) {

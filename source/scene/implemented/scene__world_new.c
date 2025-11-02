@@ -17,6 +17,8 @@
 #include "ui/ui_element.h"
 #include "ui/ui_text_box.h"
 #include "ui/ui_manager.h"
+#include "vectors.h"
+#include "world/implemented/ag__chunk_generator_overworld.h"
 #include "world/world.h"
 
 static Graphics_Window *_p_graphics_window__world_new = 0;
@@ -60,6 +62,14 @@ static void m_ui_button__clicked_handler__create(
                         get_p_world_from__game(p_game)), 
                     seed);
         }
+
+        i32 z__i32 = 
+            ag__get_natural_world_height_at__xy(
+                    get_p_repeatable_psuedo_random_from__world(get_p_world_from__game(p_game)), 
+                    0, 0);
+        set_spawn_point_of__world(
+                get_p_world_from__game(p_game),
+                get_vector__3i32F4_using__i32(0, 0, z__i32 << TILE__WIDTH_AND__HEIGHT__BIT_SHIFT));
     }
     set_active_scene_for__scene_manager(
             get_p_scene_manager_from__game(p_game), 

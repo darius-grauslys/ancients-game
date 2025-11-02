@@ -8,6 +8,7 @@
 #include "game.h"
 #include "input/input.h"
 #include "numerics.h"
+#include "serialization/serialization_header.h"
 #include "types/implemented/tile_cover_kind.h"
 #include "vectors.h"
 #include "world/chunk_vectors.h"
@@ -23,10 +24,15 @@ void m_entity_handler__ai_input_controller(
     Client *p_client__controller =
         get_p_client_by__uuid_from__game(
                 p_game, 
-                GET_UUID_P(p_this_entity));
+                BRAND_UUID(GET_UUID_P(p_this_entity), 
+                    GET_UUID_BRANDING(Lavender_Type__Player, 0)));
     if (!p_client__controller) {
         debug_error("m_entity_handler__ai_input_controller, p_client__controller == 0.");
         set_entity_as__disabled(p_this_entity);
+        return;
+    }
+    if (!is_client__active(p_client__controller)) {
+        // Wait for client to be active...
         return;
     }
     Input *p_input = 
@@ -93,24 +99,30 @@ void m_entity_handler__ai_input_controller(
     }
     if (is_input__forward_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.y__i32F4 = 0b1000;
+        set_hitbox_aabb_as__dirty(p_hitbox_aabb);
     }
     if (is_input__backward_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.y__i32F4 = -0b1000;
+        set_hitbox_aabb_as__dirty(p_hitbox_aabb);
     }
     if (is_input__right_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.x__i32F4 = 0b1000;
+        set_hitbox_aabb_as__dirty(p_hitbox_aabb);
     }
     if (is_input__left_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.x__i32F4 = -0b1000;
+        set_hitbox_aabb_as__dirty(p_hitbox_aabb);
     }
     if (is_input__consume_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.z__i32F4 = 0b1000;
         debug_info("z: %d", i32F4_to__i32(
                     p_hitbox_aabb->position__3i32F4.z__i32F4) >> 3);
+        set_hitbox_aabb_as__dirty(p_hitbox_aabb);
     }
     if (is_input__examine_held(p_input)) {
         p_hitbox_aabb->velocity__3i32F4.z__i32F4 = -0b1000;
         debug_info("z: %d", i32F4_to__i32(
                     p_hitbox_aabb->position__3i32F4.z__i32F4) >> 3);
+        set_hitbox_aabb_as__dirty(p_hitbox_aabb);
     }
 }

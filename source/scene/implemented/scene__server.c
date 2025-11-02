@@ -32,6 +32,9 @@ void m_load_scene_as__server_handler(
             p_game, 
             m_poll_tcp_socket_manager_as__server__default);
 
+    set_dispatch_handler_process_for__create_client(
+            p_game,
+            m_process__create_client__ag);
     set_dispatch_handler_process_for__load_client(
             p_game, 
             m_process__deserialize_client__ag);
@@ -57,7 +60,6 @@ void m_load_scene_as__server_handler(
 
     allocate_client_pool_for__game(
             p_game, 
-            0, 
             MAX_QUANTITY_OF__CLIENTS);
     Process *p_process__load_server_client =
         load_client(p_game, 0);
@@ -69,6 +71,7 @@ void m_load_scene_as__server_handler(
         return;
     }
 
+    // TODO: likely wrong order, should be tcp_client (shallow client) -> world -> client
     set_client_as__inactive(
             get_p_local_client_by__from__game(p_game));
 

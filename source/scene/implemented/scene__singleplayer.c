@@ -1,4 +1,5 @@
 #include "scene/implemented/scene__singleplayer.h"
+#include "ag__client.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "defines_weak.h"
@@ -75,6 +76,13 @@ void m_load_scene_as__singleplayer_handler(
         Game *p_game) {
     register_game_actions__offline(
             get_p_game_action_logic_table_from__game(p_game));
+    release_client_pool_from__game(p_game);
+    allocate_client_pool_for__game(
+            p_game,
+            1);
+    set_dispatch_handler_process_for__create_client(
+            p_game,
+            m_process__create_client__ag);
 
     _p_graphics_window__singleplayer =
         make_AG_graphics_window_with__composition_texture(
