@@ -2,7 +2,7 @@
 
 #include <input/sdl_input.c>
 
-#warning Please make tests for: sdl/source/input/test_suite_input_sdl_input.c
+#warning Please make tests for: /home/shalidor/Projects/Lavender/tests/sdl/source/input/test_suite_input_sdl_input.c
 
 // Before writing any tests, please see the README
 // found in ./tests

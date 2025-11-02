@@ -52,8 +52,10 @@ void m_entity_handler__update_skeleton__begin(
                 texture_of__skeleton,
                 TEXTURE_FLAG__SIZE_16x16);
 
-    p_sprite->m_sprite_animation_handler =
-        m_sprite_animation_handler__ag__humanoid;
+    if (p_sprite) {
+        p_sprite->m_sprite_animation_handler =
+            m_sprite_animation_handler__ag__humanoid;
+    }
 
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(

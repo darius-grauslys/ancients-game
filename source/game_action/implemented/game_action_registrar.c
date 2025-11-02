@@ -1,6 +1,9 @@
 #include "game_action/implemented/game_action_registrar.h"
+#include "game_action/core/entity/game_action__entity__spawn.h"
+#include "game_action/core/entity/game_action__entity__get.h"
 #include "game_action/core/game_action__bad_request.h"
 #include "game_action/core/hitbox/game_action__hitbox.h"
+#include "game_action/core/input/game_action__input.h"
 #include "game_action/core/tcp/game_action__tcp_begin_connect.h"
 #include "game_action/core/tcp/game_action__tcp_connect.h"
 #include "game_action/core/tcp/game_action__tcp_connect__accept.h"
@@ -12,6 +15,7 @@
 #include "game_action/core/global_space/game_action__global_space__resolve.h"
 #include "game_action/core/world/game_action__world__load_client.h"
 #include "game_action/core/world/game_action__world__load_world.h"
+#include "game_action/override/tcp/game_action__tcp_connect__accept__ag.h"
 
 void register_game_actions__offline(
         Game_Action_Logic_Table *p_game_action_logic_table) {
@@ -28,6 +32,9 @@ void register_game_actions__offline(
 
     register_game_action__hitbox_for__offline(
             p_game_action_logic_table);
+
+    register_game_action__input_for__offline(
+            p_game_action_logic_table);
     debug_warning("register_game_actions__offline, impl.");
 }
 
@@ -36,11 +43,14 @@ void register_game_actions__client(
     register_game_action__bad_request(
             p_game_action_logic_table);
 
+    register_game_action__entity__spawn_for__client(
+            p_game_action_logic_table);
+    register_game_action__entity__get_for__client(
+            p_game_action_logic_table);
+
     register_game_action__tcp_connect(
             p_game_action_logic_table);
     register_game_action__tcp_connect__begin(
-            p_game_action_logic_table);
-    register_game_action__tcp_connect__accept(
             p_game_action_logic_table);
     register_game_action__tcp_connect__reject(
             p_game_action_logic_table);
@@ -54,6 +64,9 @@ void register_game_actions__client(
 
     register_game_action__hitbox_for__client(
             p_game_action_logic_table);
+
+    register_game_action__input_for__client(
+            p_game_action_logic_table);
     debug_warning("register_game_actions__client, impl.");
 }
 
@@ -62,11 +75,16 @@ void register_game_actions__server(
     register_game_action__bad_request(
             p_game_action_logic_table);
 
+    register_game_action__entity__spawn_for__server(
+            p_game_action_logic_table);
+    register_game_action__entity__get_for__server(
+            p_game_action_logic_table);
+
     register_game_action__tcp_connect(
             p_game_action_logic_table);
     register_game_action__tcp_connect__begin(
             p_game_action_logic_table);
-    register_game_action__tcp_connect__accept(
+    register_game_action__tcp_connect__accept_for__server__ag(
             p_game_action_logic_table);
     register_game_action__tcp_connect__reject(
             p_game_action_logic_table);
@@ -85,6 +103,9 @@ void register_game_actions__server(
             p_game_action_logic_table);
 
     register_game_action__hitbox_for__server(
+            p_game_action_logic_table);
+
+    register_game_action__input_for__server(
             p_game_action_logic_table);
     debug_warning("register_game_actions__server, impl.");
 }

@@ -1,4 +1,4 @@
-#include "test_suite_ui_implemented_ui_registrar__implemented.h"
+#include "test_suite_ui_implemented_ui_window_registrar.h"
 
 #include <test_util.h>
 

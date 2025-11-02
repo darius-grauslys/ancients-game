@@ -2,7 +2,7 @@
 
 #include <TMP.c>
 
-#warning Please make tests for: sdl/source/test_suite_TMP.c
+#warning Please make tests for: /home/shalidor/Projects/Lavender/tests/sdl/source/test_suite_TMP.c
 
 // Before writing any tests, please see the README
 // found in ./tests

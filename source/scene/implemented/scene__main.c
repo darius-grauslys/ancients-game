@@ -195,7 +195,11 @@ void m_unload_scene_as__main_handler(
 void register_scene__main(Scene_Manager *p_scene_manager) {
     register_scene_into__scene_manager(
             p_scene_manager, 
+#ifdef IS_SERVER
+            Scene_Kind__Main, 
+#else
             Scene_Kind__None, 
+#endif
             m_load_scene_as__main_handler, 
             m_enter_scene_as__main_handler, 
             m_unload_scene_as__main_handler);

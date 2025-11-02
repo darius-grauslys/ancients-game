@@ -2,7 +2,7 @@
 
 #include <serialization/sdl_filesystem.c>
 
-#warning Please make tests for: sdl/source/serialization/test_suite_serialization_sdl_filesystem.c
+#warning Please make tests for: /home/shalidor/Projects/Lavender/tests/sdl/source/serialization/test_suite_serialization_sdl_filesystem.c
 
 // Before writing any tests, please see the README
 // found in ./tests

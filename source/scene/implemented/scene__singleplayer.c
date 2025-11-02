@@ -1,6 +1,9 @@
 #include "scene/implemented/scene__singleplayer.h"
+#include "collisions/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "defines_weak.h"
+#include "entity/entity_manager.h"
+#include "game_action/implemented/game_action_registrar.h"
 #include "platform.h"
 #include "rendering/ag__graphics_window.h"
 #include "rendering/aliased_texture_manager.h"
@@ -70,6 +73,9 @@ static void m_ui_button__clicked_handler__new_world(
 void m_load_scene_as__singleplayer_handler(
         Scene *p_this_scene,
         Game *p_game) {
+    register_game_actions__offline(
+            get_p_game_action_logic_table_from__game(p_game));
+
     _p_graphics_window__singleplayer =
         make_AG_graphics_window_with__composition_texture(
                 p_game, 

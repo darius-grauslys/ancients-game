@@ -1,4 +1,5 @@
 #include "entity/handlers/ag__entity_handler__ai_input_controller.h"
+#include "client.h"
 #include "collisions/hitbox_aabb.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "defines.h"
@@ -19,8 +20,17 @@ void m_entity_handler__ai_input_controller(
         Entity *p_this_entity,
         Game *p_game,
         World *p_world) {
+    Client *p_client__controller =
+        get_p_client_by__uuid_from__game(
+                p_game, 
+                GET_UUID_P(p_this_entity));
+    if (!p_client__controller) {
+        debug_error("m_entity_handler__ai_input_controller, p_client__controller == 0.");
+        set_entity_as__disabled(p_this_entity);
+        return;
+    }
     Input *p_input = 
-        get_p_input_from__game(p_game);
+        get_p_input_of__client(p_client__controller);
 
     Hitbox_AABB *p_hitbox_aabb = 
         get_p_hitbox_aabb_by__entity_from__hitbox_aabb_manager(

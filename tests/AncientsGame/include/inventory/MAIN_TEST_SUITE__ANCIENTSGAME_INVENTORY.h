@@ -1,0 +1,6 @@
+#include "implemented/MAIN_TEST_SUITE__ANCIENTSGAME_INVENTORY_IMPLEMENTED.h"
+
+#include <test_util.h>
+
+DECLARE_SUITE(ANCIENTSGAME_INVENTORY);
+

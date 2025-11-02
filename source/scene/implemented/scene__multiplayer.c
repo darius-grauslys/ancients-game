@@ -1,6 +1,12 @@
 #include "scene/implemented/scene__multiplayer.h"
 #include "defines.h"
 #include "defines_weak.h"
+#include "game_action/implemented/game_action_registrar.h"
+#include "multiplayer/tcp_socket.h"
+#include "multiplayer/tcp_socket_manager.h"
+#include "platform.h"
+#include "process/process_manager.h"
+#include "random.h"
 #include "rendering/aliased_texture_manager.h"
 #include "rendering/gfx_context.h"
 #include "rendering/graphics_window.h"
@@ -9,6 +15,7 @@
 #include "scene/scene.h"
 #include "scene/scene_manager.h"
 #include "game.h"
+#include "serialization/identifiers.h"
 #include "types/implemented/scene_kind.h"
 #include "ui/ui_ag__text.h"
 #include "ui/ui_ag__text_box.h"
@@ -19,8 +26,16 @@
 #include "ui/ui_text.h"
 #include "ui/ui_tile_map_manager.h"
 #include "vectors.h"
+#include "multiplayer/session_token.h"
+#include "multiplayer/ipv4_address.h"
+#include "multiplayer/client__default.h"
+#include "game_action/core/tcp/game_action__tcp_begin_connect.h"
+#include "world/world.h"
 
 static Graphics_Window *_p_graphics_window__multiplayer = 0;
+
+static UI_Element *_p_ui_element__ip_address__text_box = 0;
+static UI_Element *_p_ui_element__port__text_box = 0;
 
 static void m_ui_button__clicked_handler__back(
         UI_Element *p_this_ui_element,
@@ -35,12 +50,65 @@ static void m_ui_button__clicked_handler__connect(
         UI_Element *p_this_ui_element,
         Game *p_game,
         Graphics_Window *p_graphics_window) {
-    debug_info("m_ui_button__clicked_handler__connect");
+    IPv4_Address ipv4_address;
+    if (!populate_ipv4_address(
+            &ipv4_address, 
+            _p_ui_element__ip_address__text_box
+            ->pM_char_buffer, 
+            _p_ui_element__port__text_box
+            ->pM_char_buffer)) {
+        set_c_str_of__ui_text_with__const_c_str(
+                _p_ui_element__ip_address__text_box, 
+                "INVALID", sizeof("INVALID"));
+        set_c_str_of__ui_text_with__const_c_str(
+                _p_ui_element__port__text_box, 
+                "INVALID", sizeof("INVALID"));
+        return;
+    }
+    dispatch_game_action__connect__begin(
+            p_game, 
+            ipv4_address, 
+            get_session_token_from__game(p_game));
+    
+    TCP_Socket *p_tcp_socket__client = 0;
+    do {
+        p_tcp_socket__client = get_p_tcp_socket_for__this_uuid(
+                get_p_tcp_socket_manager_from__game(p_game), 
+                GET_UUID_P(get_p_local_client_by__from__game(
+                    p_game)));
+        poll_multiplayer(p_game);
+        poll_process_manager(
+                get_p_process_manager_from__game(p_game), 
+                p_game);
+        // TODO: timeout
+    } while (!p_tcp_socket__client
+            || get_state_of__tcp_socket(p_tcp_socket__client)
+            != TCP_Socket_State__Connected);
+
+    allocate_world_for__game(p_game);
+    initialize_world(p_game, get_p_world_from__game(p_game));
+    set_name_of__world(get_p_world_from__game(p_game), "server");
+
+    set_active_scene_for__scene_manager(
+            get_p_scene_manager_from__game(p_game), 
+            Scene_Kind__World_Load);
 }
 
 void m_load_scene_as__multiplayer_handler(
         Scene *p_this_scene,
         Game *p_game) {
+    Date_Time date_time;
+    PLATFORM_get_date_time(&date_time);
+    Repeatable_Psuedo_Random random;
+    initialize_repeatable_psuedo_random(
+            &random, 
+            date_time.date_time__sec_min_hour_day_month);
+    Identifier__u32 uuid_player =
+        get_random__uuid_u32(&random);
+    begin_multiplayer_for__game(
+            p_game, 
+            m_poll_tcp_socket_manager_as__client__default);
+
     _p_graphics_window__multiplayer =
         allocate_graphics_window_from__graphics_window_manager(
                 get_p_gfx_context_from__game(p_game), 
@@ -90,15 +158,35 @@ void m_load_scene_as__multiplayer_handler(
             "IP Address:",
             sizeof("IP Address:"));
 
-    make_ag_text_box(
+    _p_ui_element__ip_address__text_box =
+        make_ag_text_box(
+                p_game, 
+                _p_graphics_window__multiplayer, 
+                get_p_ui_manager_from__graphics_window(
+                    _p_graphics_window__multiplayer), 
+                get_vector__3i32(-128 + 96+32, -128 + 144, 0), 
+                128, 32, 
+                get_AG_font__large(), 
+                15);
+
+    make_ag_text(
             p_game, 
             _p_graphics_window__multiplayer, 
-            get_p_ui_manager_from__graphics_window(
-                _p_graphics_window__multiplayer), 
-            get_vector__3i32(-128 + 96+32, -128 + 144, 0), 
-            128, 32, 
-            get_AG_font__large(), 
-            15);
+            get_vector__3i32(-128 + 48, 168 - 56 - 128 - 24, 0),
+            96, 48, 
+            "Port:",
+            sizeof("Port:"));
+
+    _p_ui_element__port__text_box =
+        make_ag_text_box(
+                p_game, 
+                _p_graphics_window__multiplayer, 
+                get_p_ui_manager_from__graphics_window(
+                    _p_graphics_window__multiplayer), 
+                get_vector__3i32(-128 + 96+32, -56 - 128 + 144, 0), 
+                128, 32, 
+                get_AG_font__large(), 
+                15);
 
     make_ag_button(
             p_game, 
@@ -122,6 +210,7 @@ void m_enter_scene_as__multiplayer_handler(
         while(!poll__game_tick_timer(p_game));
         manage_game__pre_render(p_game);
 
+        poll_multiplayer(p_game);
         poll_ui_manager__update(
                 _p_graphics_window__multiplayer
                 ->p_ui_manager, 

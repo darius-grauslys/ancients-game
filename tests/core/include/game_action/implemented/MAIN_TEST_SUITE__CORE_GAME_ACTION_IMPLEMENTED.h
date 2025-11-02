@@ -1,4 +1,4 @@
-#include "test_suite_game_action_implemented_game_action__registrar.h"
+#include "test_suite_game_action_implemented_game_action_registrar.h"
 
 #include <test_util.h>
 

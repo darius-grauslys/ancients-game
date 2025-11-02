@@ -1,4 +1,6 @@
 #include "test_suite_rendering_opengl_gl_render_world.h"
+#include "test_suite_rendering_opengl_gl_typer.h"
+#include "test_suite_rendering_opengl_gl_shader_graphics_window.h"
 #include "test_suite_rendering_opengl_gl_vertex_object.h"
 #include "test_suite_rendering_opengl_gl_gfx_sub_context.h"
 #include "test_suite_rendering_opengl_gl_texture.h"

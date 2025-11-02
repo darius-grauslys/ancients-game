@@ -5,15 +5,15 @@ INCLUDE_SUITE(ui_tile_span),
 INCLUDE_SUITE(ui_button),
 INCLUDE_SUITE(ui_tile_map),
 INCLUDE_SUITE(ui_slider),
+INCLUDE_SUITE(ui_text),
 INCLUDE_SUITE(ui_tile_map_manager),
 INCLUDE_SUITE(ui_context),
+INCLUDE_SUITE(ui_text_box),
 INCLUDE_SUITE(ui_draggable),
 INCLUDE_SUITE(ui_drop_zone),
 INCLUDE_SUITE(ui_tile),
 INCLUDE_SUITE(ui_manager),
-INCLUDE_SUITE(ui_element),
-INCLUDE_SUITE(CORE_UI_IMPLEMENTED),
-INCLUDE_SUITE(CORE_UI_HANDLERS),NULL);
+INCLUDE_SUITE(ui_element),NULL);
 
 DEFINE_SUITE_WITH__SUB_SUITES(CORE_UI, END_TESTS);
 

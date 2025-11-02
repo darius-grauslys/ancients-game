@@ -1,0 +1,9 @@
+#include "test_suite_entity_handlers_ag__entity_handler__body_humanoid.h"
+#include "test_suite_entity_handlers_ag__entity_handler__ai_input_controller.h"
+#include "test_suite_entity_handlers_ag__entity_handler__update.h"
+#include "test_suite_entity_handlers_ag__entity_handler__ai_hostile_controller.h"
+
+#include <test_util.h>
+
+DECLARE_SUITE(ANCIENTSGAME_ENTITY_HANDLERS);
+

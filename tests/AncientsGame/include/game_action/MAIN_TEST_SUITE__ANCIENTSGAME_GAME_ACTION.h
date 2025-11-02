@@ -1,0 +1,6 @@
+#include "implemented/MAIN_TEST_SUITE__ANCIENTSGAME_GAME_ACTION_IMPLEMENTED.h"
+
+#include <test_util.h>
+
+DECLARE_SUITE(ANCIENTSGAME_GAME_ACTION);
+

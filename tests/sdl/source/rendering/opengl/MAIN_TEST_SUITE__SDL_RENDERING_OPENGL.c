@@ -1,7 +1,9 @@
 #include <rendering/opengl/MAIN_TEST_SUITE__SDL_RENDERING_OPENGL.h>
 
-INCLUDE_SUB_SUITES(SDL_RENDERING_OPENGL, 17,
+INCLUDE_SUB_SUITES(SDL_RENDERING_OPENGL, 19,
 INCLUDE_SUITE(gl_render_world),
+INCLUDE_SUITE(gl_typer),
+INCLUDE_SUITE(gl_shader_graphics_window),
 INCLUDE_SUITE(gl_vertex_object),
 INCLUDE_SUITE(gl_gfx_sub_context),
 INCLUDE_SUITE(gl_texture),

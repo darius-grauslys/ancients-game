@@ -2,7 +2,7 @@
 
 #include <time/sdl_time.c>
 
-#warning Please make tests for: sdl/source/time/test_suite_time_sdl_time.c
+#warning Please make tests for: /home/shalidor/Projects/Lavender/tests/sdl/source/time/test_suite_time_sdl_time.c
 
 // Before writing any tests, please see the README
 // found in ./tests

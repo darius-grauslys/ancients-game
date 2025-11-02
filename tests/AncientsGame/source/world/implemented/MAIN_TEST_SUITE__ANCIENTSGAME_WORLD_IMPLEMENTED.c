@@ -1,0 +1,10 @@
+#include <world/implemented/MAIN_TEST_SUITE__ANCIENTSGAME_WORLD_IMPLEMENTED.h>
+
+INCLUDE_SUB_SUITES(ANCIENTSGAME_WORLD_IMPLEMENTED, 5,
+INCLUDE_SUITE(tile_logic_table_registrar),
+INCLUDE_SUITE(ag__chunk_generator_overworld),
+INCLUDE_SUITE(chunk_generator_registrar),
+INCLUDE_SUITE(f_tile_render_kernel),NULL);
+
+DEFINE_SUITE_WITH__SUB_SUITES(ANCIENTSGAME_WORLD_IMPLEMENTED, END_TESTS);
+

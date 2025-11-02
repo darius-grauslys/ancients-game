@@ -171,6 +171,10 @@ void m_load_scene_as__world_handler(
             i32_to__i32F20(-10), 
             i32_to__i32F20(100));
 
+    set_camera_to__follow(
+            &_camera, 
+            GET_UUID_P(get_p_local_client_by__from__game(p_game)));
+
     set_p_camera_of__graphics_window(
             *p_ptr_graphics_window__ground,
             &_camera);
@@ -240,6 +244,7 @@ void m_enter_scene_as__world_handler(
                 p_game, 
                 p_this_scene)) {
         while(!poll__game_tick_timer(p_game));
+        poll_multiplayer(p_game);
         manage_game__pre_render(p_game);
 
         manage_world(

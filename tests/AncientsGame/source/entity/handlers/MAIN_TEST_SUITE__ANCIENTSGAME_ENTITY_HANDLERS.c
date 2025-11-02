@@ -1,0 +1,10 @@
+#include <entity/handlers/MAIN_TEST_SUITE__ANCIENTSGAME_ENTITY_HANDLERS.h>
+
+INCLUDE_SUB_SUITES(ANCIENTSGAME_ENTITY_HANDLERS, 5,
+INCLUDE_SUITE(ag__entity_handler__body_humanoid),
+INCLUDE_SUITE(ag__entity_handler__ai_input_controller),
+INCLUDE_SUITE(ag__entity_handler__update),
+INCLUDE_SUITE(ag__entity_handler__ai_hostile_controller),NULL);
+
+DEFINE_SUITE_WITH__SUB_SUITES(ANCIENTSGAME_ENTITY_HANDLERS, END_TESTS);
+

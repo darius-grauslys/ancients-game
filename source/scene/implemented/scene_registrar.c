@@ -1,5 +1,6 @@
 #include "scene/implemented/scene_registrar.h"
 #include "scene/implemented/scene__main.h"
+#include "scene/implemented/scene__server.h"
 #include "scene/implemented/scene__settings.h"
 #include "scene/implemented/scene__world.h"
 #include "scene/implemented/scene__singleplayer.h"
@@ -10,6 +11,7 @@
 
 void register_scenes(Scene_Manager *p_scene_manager) {
     register_scene__main(p_scene_manager);
+    register_scene__server(p_scene_manager);
     register_scene__world(p_scene_manager);
     register_scene__world_new(p_scene_manager);
     register_scene__world_load(p_scene_manager);

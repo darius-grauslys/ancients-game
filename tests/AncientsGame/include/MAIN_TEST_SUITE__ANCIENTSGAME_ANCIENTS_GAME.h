@@ -1,0 +1,13 @@
+#include "test_suite_ag__client.h"
+#include "rendering/MAIN_TEST_SUITE__ANCIENTSGAME_RENDERING.h"
+#include "world/MAIN_TEST_SUITE__ANCIENTSGAME_WORLD.h"
+#include "inventory/MAIN_TEST_SUITE__ANCIENTSGAME_INVENTORY.h"
+#include "game_action/MAIN_TEST_SUITE__ANCIENTSGAME_GAME_ACTION.h"
+#include "entity/MAIN_TEST_SUITE__ANCIENTSGAME_ENTITY.h"
+#include "ui/MAIN_TEST_SUITE__ANCIENTSGAME_UI.h"
+#include "scene/MAIN_TEST_SUITE__ANCIENTSGAME_SCENE.h"
+
+#include <test_util.h>
+
+DECLARE_SUITE(ANCIENTSGAME_ANCIENTS_GAME);
+

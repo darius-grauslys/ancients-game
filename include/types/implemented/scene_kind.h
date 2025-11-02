@@ -5,6 +5,11 @@
 
 typedef enum Scene_Kind {
     Scene_Kind__None = 0,
+#ifdef IS_SERVER
+    Scene_Kind__Main,
+#else
+    Scene_Kind__Server,
+#endif
     Scene_Kind__Singleplayer,
     Scene_Kind__Multiplayer,
     Scene_Kind__Settings,

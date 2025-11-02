@@ -1,0 +1,15 @@
+#include <scene/implemented/MAIN_TEST_SUITE__ANCIENTSGAME_SCENE_IMPLEMENTED.h>
+
+INCLUDE_SUB_SUITES(ANCIENTSGAME_SCENE_IMPLEMENTED, 10,
+INCLUDE_SUITE(scene__main),
+INCLUDE_SUITE(scene__world_save),
+INCLUDE_SUITE(scene_registrar),
+INCLUDE_SUITE(scene__world_new),
+INCLUDE_SUITE(scene__multiplayer),
+INCLUDE_SUITE(scene__singleplayer),
+INCLUDE_SUITE(scene__settings),
+INCLUDE_SUITE(scene__world_load),
+INCLUDE_SUITE(scene__world),NULL);
+
+DEFINE_SUITE_WITH__SUB_SUITES(ANCIENTSGAME_SCENE_IMPLEMENTED, END_TESTS);
+
