@@ -70,6 +70,9 @@ void m_load_scene_as__main_handler(
     set_dispatch_handler_process_for__save_client(
             p_game, 
             m_process__serialize_client__ag);
+    set_dispatch_handler_process_for__create_client(
+            p_game,
+            m_process__create_client__ag);
 
     initialize_hitbox_aabb_manager(
             get_p_hitbox_aabb_manager_from__game(p_game));
