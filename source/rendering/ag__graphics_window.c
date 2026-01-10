@@ -18,6 +18,7 @@ Graphics_Window *make_AG_graphics_window_with__composition_texture(
         bool is_made_with__sprite_manager_or__not) {
     Graphics_Window *p_graphics_window = 0;
     if (!is_identifier_u32__invalid(uuid__u32)) {
+        // TODO: this handling of an optional uuid should be done in core.
         p_graphics_window =
             allocate_graphics_window_with__uuid_from__graphics_window_manager(
                     get_p_gfx_context_from__game(p_game), 
@@ -59,9 +60,10 @@ Graphics_Window *make_AG_graphics_window_with__composition_texture(
     }
 
     if (is_made_with__sprite_manager_or__not) {
-        allocate_sprite_manager_for__graphics_window(
+        allocate_sprite_pool_for__graphics_window(
                 get_p_gfx_context_from__game(p_game), 
-                p_graphics_window);
+                p_graphics_window,
+                128); // TODO: perhaps should change
     }
 
     return p_graphics_window;

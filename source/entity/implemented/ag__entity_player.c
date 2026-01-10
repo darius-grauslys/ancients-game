@@ -10,8 +10,9 @@
 #include "entity/handlers/ag__entity_handler__update.h"
 #include "game.h"
 #include "rendering/handlers/ag__sprite_animation_handler.h"
-#include "rendering/sprite_manager.h"
 #include "rendering/graphics_window.h"
+#include "rendering/sprite_manager.h"
+#include "rendering/sprite_pool.h"
 #include "types/implemented/entity_functions.h"
 #include "types/implemented/entity_kind.h"
 #include "world/world.h"
@@ -29,9 +30,10 @@ void m_entity_handler__update_player__begin(
         name_of__texture__player,
         &texture_of__player);
     Sprite *p_sprite =
-        allocate_sprite_from__sprite_manager(
+        allocate_sprite_from__sprite_pool(
                 get_p_gfx_context_from__game(p_game), 
-                get_p_sprite_manager_from__graphics_window(
+                get_p_sprite_pool_from__graphics_window(
+                    p_game,
                     get_p_graphics_window_from__world(
                         p_world)), 
                 get_p_graphics_window_from__world(

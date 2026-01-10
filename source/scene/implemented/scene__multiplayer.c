@@ -147,6 +147,7 @@ void m_load_scene_as__multiplayer_handler(
             p_game, 
             _p_graphics_window__multiplayer, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__multiplayer), 
             m_ui_button__clicked_handler__back, 
             get_vector__3i32(-128 + 24, 256 - 128 - 16, 0), 
@@ -168,6 +169,7 @@ void m_load_scene_as__multiplayer_handler(
                 p_game, 
                 _p_graphics_window__multiplayer, 
                 get_p_ui_manager_from__graphics_window(
+                    p_game,
                     _p_graphics_window__multiplayer), 
                 get_vector__3i32(-128 + 96+32, -128 + 144, 0), 
                 128, 32, 
@@ -187,6 +189,7 @@ void m_load_scene_as__multiplayer_handler(
                 p_game, 
                 _p_graphics_window__multiplayer, 
                 get_p_ui_manager_from__graphics_window(
+                    p_game,
                     _p_graphics_window__multiplayer), 
                 get_vector__3i32(-128 + 96+32, -56 - 128 + 144, 0), 
                 128, 32, 
@@ -197,6 +200,7 @@ void m_load_scene_as__multiplayer_handler(
             p_game, 
             _p_graphics_window__multiplayer, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__multiplayer), 
             m_ui_button__clicked_handler__connect, 
             get_vector__3i32(-128 + 192, -128 + 16, 0), 
@@ -217,8 +221,9 @@ void m_enter_scene_as__multiplayer_handler(
 
         poll_multiplayer(p_game);
         poll_ui_manager__update(
-                _p_graphics_window__multiplayer
-                ->p_ui_manager, 
+                get_p_ui_manager_from__graphics_window(
+                    p_game,
+                    _p_graphics_window__multiplayer),
                 p_game, 
                 _p_graphics_window__multiplayer);
 

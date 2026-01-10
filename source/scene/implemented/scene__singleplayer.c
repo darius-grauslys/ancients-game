@@ -101,6 +101,7 @@ void m_load_scene_as__singleplayer_handler(
             p_game, 
             _p_graphics_window__singleplayer, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__singleplayer), 
             m_ui_button__clicked_handler__back, 
             get_vector__3i32(-128 + 24, 128 - 16, 0), 
@@ -116,6 +117,7 @@ void m_load_scene_as__singleplayer_handler(
             p_game, 
             _p_graphics_window__singleplayer, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__singleplayer), 
             m_ui_slider__dragged_handler__gfx_window__default, 
             get_vector__3i32(220 - 128 + 12, (192 - 128 - 16)/2 + 8, 0), 
@@ -179,6 +181,7 @@ void m_load_scene_as__singleplayer_handler(
                 p_game, 
                 p_graphics_window__slider, 
                 get_p_ui_manager_from__graphics_window(
+                    p_game,
                     p_graphics_window__slider), 
                 m_ui_button__clicked_handler__world, 
                 get_vector__3i32(
@@ -195,6 +198,7 @@ void m_load_scene_as__singleplayer_handler(
             p_game, 
             p_graphics_window__slider, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 p_graphics_window__slider), 
             m_ui_button__clicked_handler__new_world, 
             get_vector__3i32(
@@ -217,13 +221,15 @@ void m_enter_scene_as__singleplayer_handler(
         manage_game__pre_render(p_game);
 
         poll_ui_manager__update(
-                _p_graphics_window__singleplayer
-                ->p_ui_manager, 
+                get_p_ui_manager_from__graphics_window(
+                    p_game,
+                    _p_graphics_window__singleplayer),
                 p_game, 
                 _p_graphics_window__singleplayer);
         poll_ui_manager__update(
-                p_graphics_window__slider
-                ->p_ui_manager, 
+                get_p_ui_manager_from__graphics_window(
+                    p_game,
+                    p_graphics_window__slider),
                 p_game, 
                 p_graphics_window__slider);
 

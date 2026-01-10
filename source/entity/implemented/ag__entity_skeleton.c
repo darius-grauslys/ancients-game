@@ -10,6 +10,7 @@
 #include "rendering/aliased_texture_manager.h"
 #include "rendering/graphics_window.h"
 #include "rendering/implemented/aliased_texture_registrar.h"
+#include "rendering/sprite_pool.h"
 #include "rendering/sprite_manager.h"
 #include "rendering/handlers/ag__sprite_animation_handler.h"
 #include "collisions/collision_node_pool.h"
@@ -41,9 +42,10 @@ void m_entity_handler__update_skeleton__begin(
         &texture_of__skeleton);
 
     Sprite *p_sprite =
-        allocate_sprite_from__sprite_manager(
+        allocate_sprite_from__sprite_pool(
                 get_p_gfx_context_from__game(p_game), 
-                get_p_sprite_manager_from__graphics_window(
+                get_p_sprite_pool_from__graphics_window(
+                    p_game,
                     get_p_graphics_window_from__world(
                         p_world)), 
                 get_p_graphics_window_from__world(

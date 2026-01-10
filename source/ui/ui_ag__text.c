@@ -15,6 +15,7 @@ UI_Element *make_ag_text(
     UI_Element *p_ui_element__text =
         allocate_ui_element_from__ui_manager(
                 get_p_ui_manager_from__graphics_window(
+                    p_game,
                     p_graphics_window));
 
     initialize_ui_element_as__text_with__const_c_str(

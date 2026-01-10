@@ -96,6 +96,7 @@ void m_load_scene_as__world_new_handler(
             p_game, 
             _p_graphics_window__world_new, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__world_new), 
             m_ui_button__clicked_handler__back, 
             get_vector__3i32(-128 + 24, -128 + 256 - 16, 0), 
@@ -117,6 +118,7 @@ void m_load_scene_as__world_new_handler(
                 p_game, 
                 _p_graphics_window__world_new, 
                 get_p_ui_manager_from__graphics_window(
+                    p_game,
                     _p_graphics_window__world_new), 
                 get_vector__3i32(-128 + 96+32, -128 + 144, 0), 
                 196, 32, 
@@ -136,6 +138,7 @@ void m_load_scene_as__world_new_handler(
                 p_game, 
                 _p_graphics_window__world_new, 
                 get_p_ui_manager_from__graphics_window(
+                    p_game,
                     _p_graphics_window__world_new), 
                 get_vector__3i32(-128 + 96+32, -128 + 144 - 48, 0), 
                 196, 32, 
@@ -150,6 +153,7 @@ void m_load_scene_as__world_new_handler(
             p_game, 
             _p_graphics_window__world_new, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__world_new), 
             m_ui_button__clicked_handler__create, 
             get_vector__3i32(-128 + 192, -128 + 16, 0), 
@@ -169,8 +173,9 @@ void m_enter_scene_as__world_new_handler(
         manage_game__pre_render(p_game);
 
         poll_ui_manager__update(
-                _p_graphics_window__world_new
-                ->p_ui_manager, 
+                get_p_ui_manager_from__graphics_window(
+                    p_game,
+                    _p_graphics_window__world_new),
                 p_game, 
                 _p_graphics_window__world_new);
 

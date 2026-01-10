@@ -13,8 +13,16 @@
             <header path="vectors.h"/>
             <header path="defines.h"/>
             <header path="game.h"/>
-            <header path="ui/ui_drop_zone__inventory_slot.h"/>
-            <header path="ui/handlers/inventory/ui_handler__station__button_craft.h"/>
+            <header path="ui/ui_ag__drop_zone__inventory_slot.h"/>
+            <header path="ui/ui_ag__drop_zone__equipment_slot.h"/>
+            <header path="ui/implemented/handlers/game/station/ui_ag__handler__click__craft.h"/>
+            <header path="ui/ui_ag__slider.h"/>
+            <header path="ui/ui_ag__element.h"/>
+            <header path="rendering/sprite_manager.h"/>
+            <header path="rendering/sprite_pool.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/aliased_texture_manager.h"/>
+            <header path="rendering/implemented/aliased_texture_registrar.h"/>
         </include>
         <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__station.c" h_path="./include/ui/implemented/generated/game/ui_window__game__station.h"/>
         <platform target="SDL" size="256,256"/>
@@ -40,19 +48,16 @@
         </code>
         <group>
             <allocate_ui name="p_slider">
-                <slider x="228" y="132" width="16" height="80" spanning_height="176" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default"/>
+                <slider x="228" y="132" width="16" height="80" spanning_height="176" span="get_ui_tile_span_for__ag_slider__vertical" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default" size_of__texture="16x16" name_of__texture="name_of__texture__ui_sprites__16x16"/>
             </allocate_ui>
             <code>
-                allocate_sprite_for__ui_slider(
-                        p_gfx_context,
-                        p_gfx_window,
-                        p_slider);
                 Graphics_Window *p_gfx_window__inv_column =
-                    open_ui(
+                    open_ui_window(
                             p_game,
                             UI_Window_Kind__Inventory_Column__Small);
-                p_slider->p_ui_data = 
-                    p_gfx_window__inv_column;
+                set_ui_element__p_data(
+                    p_slider,
+                    p_gfx_window__inv_column);
             </code>
             <allocate_ui_container x="140" y="100" size="3" stride__y="32" name="p_recipe_and_tools">
                 <drop_zone width="20" height="20" color="55,55,96" m_Receive_Drop_Handler="m_ui_drop_zone__receive_drop_handler__inventory_slot"/>
@@ -61,7 +66,7 @@
                         p_ui_iterator,
                         get_p_ui_element_by__index_from__ui_manager(
                             p_ui_manager,
-                            UI_WINDOW__GAME__STATION_P_RECIPE_AND_TOOLS_4));
+                            $p_recipe_and_tools));
                 </code>
             </allocate_ui_container>
             <grid x="28" y="124" size="2" stride__y="32" name="p_requirements">
@@ -72,7 +77,7 @@
                             p_ui_iterator,
                             get_p_ui_element_by__index_from__ui_manager(
                                 p_ui_manager,
-                                UI_WINDOW__GAME__STATION_P_RECIPE_AND_TOOLS_4));
+                                $p_recipe_and_tools));
                     </code>
                 </allocate_ui_container>
             </grid>
@@ -84,7 +89,7 @@
                             p_ui_iterator,
                             get_p_ui_element_by__index_from__ui_manager(
                                 p_ui_manager,
-                                UI_WINDOW__GAME__STATION_P_INVENTORY_COLUMN_11));
+                                $p_inventory_column));
                     </code>
                 </allocate_ui_container>
             </grid>
@@ -94,15 +99,15 @@
                     p_slider,
                     get_p_ui_element_by__index_from__ui_manager(
                         p_ui_manager,
-                        UI_WINDOW__GAME__STATION_P_INVENTORY_COLUMN_11));
+                        $p_inventory_column));
             </code>
         </group>
         <allocate_ui>
-            <button x="100" y="164" width="32" height="16" name="p_button_craft" m_Clicked_Handler="m_ui_button__click_handler__station_craft"/>
+            <button x="100" y="164" width="32" height="16" name="p_button_craft" m_Clicked_Handler="m_ui_ag__handler__click__craft"/>
         </allocate_ui>
             <code>
                 Graphics_Window *p_gfx_window__station =
-                    open_ui(
+                    open_ui_window(
                             p_game,
                             UI_Window_Kind__Station_Items);
             </code>

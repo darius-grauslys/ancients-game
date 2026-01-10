@@ -63,6 +63,7 @@ void m_load_scene_as__settings_handler(
             p_game, 
             _p_graphics_window__settings, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_graphics_window__settings), 
             m_ui_button__clicked_handler__back, 
             get_vector__3i32(-128 + 24, -128 + 256 - 16, 0), 
@@ -82,8 +83,9 @@ void m_enter_scene_as__settings_handler(
         manage_game__pre_render(p_game);
 
         poll_ui_manager__update(
-                _p_graphics_window__settings
-                ->p_ui_manager, 
+                get_p_ui_manager_from__graphics_window(
+                    p_game,
+                    _p_graphics_window__settings),
                 p_game, 
                 _p_graphics_window__settings);
 

@@ -9,6 +9,8 @@
 #include "rendering/implemented/aliased_texture_registrar.h"
 #include "rendering/font/font_manager.h"
 #include "rendering/aliased_texture_manager.h"
+#include "rendering/sprite_manager.h"
+#include "ui/implemented/ui_window_registrar.h"
 #include "ui/ui_manager.h"
 #include "ui/ag_fonts.h"
 #include "ui/ui_ag__button.h"
@@ -63,6 +65,13 @@ void m_load_scene_as__main_handler(
             get_p_aliased_texture_manager_from__game(
                 p_game), 
             p_game);
+    register_ui_windows(
+            get_p_gfx_context_from__game(p_game));
+
+    allocate_sprite_pools_from__sprite_manager(
+            get_p_sprite_manager_from__gfx_context(
+                get_p_gfx_context_from__game(p_game)), 
+            8);
 
     set_dispatch_handler_process_for__load_client(
             p_game, 
@@ -120,6 +129,7 @@ void m_load_scene_as__main_handler(
             p_game, 
             _p_main__graphics_window__ui, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__singleplayer, 
             get_vector__3i32(0, 48, 0), 
@@ -132,6 +142,7 @@ void m_load_scene_as__main_handler(
             p_game, 
             _p_main__graphics_window__ui, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__multiplayer, 
             get_vector__3i32(0, 0, 0), 
@@ -144,6 +155,7 @@ void m_load_scene_as__main_handler(
             p_game, 
             _p_main__graphics_window__ui, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__settings, 
             get_vector__3i32(0, -48, 0), 
@@ -156,6 +168,7 @@ void m_load_scene_as__main_handler(
             p_game, 
             _p_main__graphics_window__ui, 
             get_p_ui_manager_from__graphics_window(
+                p_game,
                 _p_main__graphics_window__ui), 
             m_ui_button__clicked_handler__quit, 
             get_vector__3i32(0, -48*2, 0), 
@@ -175,8 +188,9 @@ void m_enter_scene_as__main_handler(
         manage_game__pre_render(p_game);
 
         poll_ui_manager__update(
-                _p_main__graphics_window__ui
-                ->p_ui_manager, 
+                get_p_ui_manager_from__graphics_window(
+                    p_game,
+                    _p_main__graphics_window__ui), 
                 p_game, 
                 _p_main__graphics_window__ui);
 

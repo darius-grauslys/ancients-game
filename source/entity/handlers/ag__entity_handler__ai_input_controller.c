@@ -8,14 +8,18 @@
 #include "game.h"
 #include "input/input.h"
 #include "numerics.h"
+#include "rendering/graphics_window.h"
 #include "serialization/serialization_header.h"
+#include "types/implemented/graphics_window_kind.h"
 #include "types/implemented/tile_cover_kind.h"
+#include "ui/ui_context.h"
 #include "vectors.h"
 #include "world/chunk_vectors.h"
 #include "world/tile_vectors.h"
 #include "world/chunk.h"
 #include "world/global_space_manager.h"
 #include "world/global_space.h"
+#include "world/world.h"
 
 void m_entity_handler__ai_input_controller(
         Entity *p_this_entity,
@@ -53,6 +57,11 @@ void m_entity_handler__ai_input_controller(
     p_hitbox_aabb->velocity__3i32F4.x__i32F4 = 0;
     p_hitbox_aabb->velocity__3i32F4.y__i32F4 = 0;
     // up to here.
+    if (is_input__game_settings_released(p_input)) {
+        open_ui_window(
+                p_game, 
+                UI_Window_Kind__Game__Equip);
+    }
     if (is_input__turn_left_released(p_input)) {
         debug_info(
                 "pos: %d,%d,%d",

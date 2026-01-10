@@ -13,8 +13,15 @@
             <header path="vectors.h"/>
             <header path="defines.h"/>
             <header path="game.h"/>
-            <header path="ui/ui_drop_zone__inventory_slot.h"/>
-            <header path="ui/ui_drop_zone__equipment_slot.h"/>
+            <header path="ui/ui_ag__drop_zone__inventory_slot.h"/>
+            <header path="ui/ui_ag__drop_zone__equipment_slot.h"/>
+            <header path="ui/ui_ag__slider.h"/>
+            <header path="ui/ui_ag__element.h"/>
+            <header path="rendering/sprite_manager.h"/>
+            <header path="rendering/sprite_pool.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/aliased_texture_manager.h"/>
+            <header path="rendering/implemented/aliased_texture_registrar.h"/>
         </include>
         <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__equip.c" h_path="./include/ui/implemented/generated/game/ui_window__game__equip.h"/>
         <platform target="SDL" size="256,256"/>
@@ -40,19 +47,14 @@
         </code>
         <group>
             <allocate_ui name="p_slider">
-                <slider x="196" y="132" width="16" height="80" spanning_height="176" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default"/>
+                <slider x="196" y="132" width="16" height="80" spanning_height="176" span="get_ui_tile_span_for__ag_slider__vertical" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default" size_of__texture="16x16" name_of__texture="name_of__texture__ui_sprites__16x16"/>
             </allocate_ui>
             <code>
-                allocate_sprite_for__ui_slider(
-                        p_gfx_context,
-                        p_gfx_window,
-                        p_slider);
                 Graphics_Window *p_gfx_window__inv_column =
-                    open_ui(
+                    open_ui_window(
                             p_game,
                             UI_Window_Kind__Inventory_Column);
-                p_slider->p_ui_data = 
-                    p_gfx_window__inv_column;
+                set_ui_element__p_data(p_slider, p_gfx_window__inv_column);
             </code>
             <allocate_ui name="p_button_filter__usable">
                 <button x="228" y="104" width="16" height="16" color="64,196,64"/>
@@ -71,7 +73,7 @@
                             p_ui_iterator,
                             get_p_ui_element_by__index_from__ui_manager(
                                 p_ui_manager,
-                                UI_WINDOW__GAME__EQUIP_P_EQUIPMENT_7));
+                                $p_equipment));
                     </code>
                 </allocate_ui_container>
             </grid>
@@ -83,7 +85,7 @@
                             p_ui_iterator,
                             get_p_ui_element_by__index_from__ui_manager(
                                 p_ui_manager,
-                                UI_WINDOW__GAME__EQUIP_P_INVENTORY_COLUMN_13));
+                                $p_inventory_column));
                     </code>
                 </allocate_ui_container>
             </grid>
@@ -93,11 +95,11 @@
                     p_slider,
                     get_p_ui_element_by__index_from__ui_manager(
                         p_ui_manager,
-                        UI_WINDOW__GAME__EQUIP_P_INVENTORY_COLUMN_13));
+                        $p_inventory_column));
             </code>
             <code>
                 Graphics_Window *p_gfx_window__equipment =
-                    open_ui(
+                    open_ui_window(
                             p_game,
                             UI_Window_Kind__Equipment);
             </code>

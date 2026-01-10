@@ -1,10 +1,14 @@
-export INCLUDE_GAME += $(GAME_DIR)/include
+export INCLUDE_GAME += $(GAME_DIR)/include $(GAME_DIR)/lav_gen/grit/$(BACKEND)
 
 export SOURCE_GAME := $(GAME_DIR)/source
 
+export SPRITE_FILES=$(shell find $(GAME_DIR)/lav_gen/grit/$(BACKEND) -name "*.s")
+
 ifeq ($(GAME_OMIT),)
-export CFILES_GAME != realpath --relative-to=$(SOURCE_GAME) $$(find $(SOURCE_GAME) -name *.c)
+export CFILES_GAME != realpath --relative-to=$(SOURCE_GAME) $$(find $(SOURCE_GAME) -name *.c) 
+export CFILES_GRIT != realpath --relative-to=$(GAME_DIR)/lav_gen/grit $$(find $(GAME_DIR)/lav_gen/grit -name *.c) 
 else
-export CFILES_GAME != realpath --relative-to=$(SOURCE_GAME) $$(find $(SOURCE_GAME) -name *.c ! -name $(GAME_OMIT))
+export CFILES_GAME != realpath --relative-to=$(SOURCE_GAME) $$(find $(SOURCE_GAME) -name *.c ! -name $(GAME_OMIT) 
+export CFILES_GRIT != realpath --relative-to=$(GAME_DIR)/lav_gen/grit $$(find $(GAME_DIR)/lav_gen/grit -name *.c ! -name $(GAME_OMIT) 
 endif
-export OFILES_GAME := $(CFILES_GAME:.c=.o)
+export OFILES_GAME := $(CFILES_GAME:.c=.o) $(CFILES_GRIT:.c=.o)

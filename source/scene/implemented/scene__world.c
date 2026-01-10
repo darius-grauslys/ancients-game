@@ -111,12 +111,13 @@ void m_load_scene_as__world_handler(
                     TEXTURE_FLAG__SIZE_256x256,
                     0,
                     TEXTURE_FLAG__FORMAT__RGBA8888));
-    allocate_sprite_manager_for__graphics_window(
+    allocate_sprite_pool_for__graphics_window(
             get_p_gfx_context_from__game(p_game), 
-            *p_ptr_graphics_window__cover);
+            *p_ptr_graphics_window__cover,
+            128); // TODO: should maybe change
     register_sprite_animations(
-            get_p_sprite_manager_from__graphics_window(
-                *p_ptr_graphics_window__cover));
+            get_p_sprite_manager_from__gfx_context(
+                get_p_gfx_context_from__game(p_game)));
 
     get_p_world_from__game(p_game)
         ->p_graphics_window_for__world = *p_ptr_graphics_window__cover;

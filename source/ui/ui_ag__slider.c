@@ -10,6 +10,7 @@
 #include "ui/ui_manager.h"
 #include "ui/ui_slider.h"
 #include "rendering/sprite_manager.h"
+#include "rendering/sprite_pool.h"
 
 UI_Element *make_ag_slider(
         Game *p_game,
@@ -58,9 +59,10 @@ UI_Element *make_ag_slider(
         &texture_of__slider);
 
     Sprite *p_sprite =
-        allocate_sprite_from__sprite_manager(
+        allocate_sprite_from__sprite_pool(
                 get_p_gfx_context_from__game(p_game), 
-                get_p_sprite_manager_from__graphics_window(
+                get_p_sprite_pool_from__graphics_window(
+                    p_game,
                     p_graphics_window), 
                 p_graphics_window, 
                 GET_UUID_P(p_ui_slider__sprite), 
@@ -81,7 +83,9 @@ UI_Element *make_ag_slider(
             position__3i32);
 
     set_ui_element_as__the_parent_of__this_ui_element(
-            p_graphics_window->p_ui_manager, 
+            get_p_ui_manager_from__graphics_window(
+                p_game,
+                p_graphics_window), 
             p_ui_slider, 
             p_ui_slider__sprite);
 

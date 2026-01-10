@@ -13,8 +13,15 @@
             <header path="vectors.h"/>
             <header path="defines.h"/>
             <header path="game.h"/>
-            <header path="ui/ui_drop_zone__inventory_slot.h"/>
+            <header path="ui/ui_ag__drop_zone__inventory_slot.h"/>
+            <header path="ui/ui_ag__drop_zone__equipment_slot.h"/>
+            <header path="ui/ui_ag__slider.h"/>
+            <header path="ui/ui_ag__element.h"/>
             <header path="assets/ui/default/ui_map_trade.h"/>
+            <header path="rendering/sprite_manager.h"/>
+            <header path="rendering/sprite_pool.h"/>
+            <header path="rendering/aliased_texture_manager.h"/>
+            <header path="rendering/implemented/aliased_texture_registrar.h"/>
             <header path="rendering/graphics_window.h"/>
             <header path="rendering/gfx_context.h"/>
             <header path="ui/ui_tile_map_manager.h"/>
@@ -64,34 +71,28 @@
                 </allocate_ui>
             </group>
             <allocate_ui name="p_slider_left">
-                <slider x="14" y="132" width="16" height="80" spanning_height="176" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default"/>
+                <slider x="14" y="132" width="16" height="80" spanning_height="176" span="get_ui_tile_span_for__ag_slider__vertical" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default" size_of__texture="16x16" name_of__texture="name_of__texture__ui_sprites__16x16"/>
             </allocate_ui>
             <code>
-                allocate_sprite_for__ui_slider(
-                        p_gfx_context,
-                        p_gfx_window,
-                        p_slider_left);
                 Graphics_Window *p_gfx_window__bg_left =
-                    open_ui(
+                    open_ui_window(
                             p_game,
                             UI_Window_Kind__Inventory_Column);
-                p_slider_left->p_ui_data = 
-                    p_gfx_window__bg_left;
+                set_ui_element__p_data(
+                    p_slider_left,
+                    p_gfx_window__bg_left);
             </code>
             <allocate_ui name="p_slider_right">
-                <slider x="214" y="132" width="16" height="80" spanning_height="176" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default"/>
+                <slider x="214" y="132" width="16" height="80" spanning_height="176" span="get_ui_tile_span_for__ag_slider__vertical" m_Dragged_Handler="m_ui_slider__dragged_handler__gfx_window__default" size_of__texture="16x16" name_of__texture="name_of__texture__ui_sprites__16x16"/>
             </allocate_ui>
             <code>
-                allocate_sprite_for__ui_slider(
-                        p_gfx_context,
-                        p_gfx_window,
-                        p_slider_right);
                 Graphics_Window *p_gfx_window__bg_right =
-                    open_ui(
+                    open_ui_window(
                             p_game,
                             UI_Window_Kind__Inventory_Column);
-                p_slider_right->p_ui_data = 
-                    p_gfx_window__bg_right;
+                set_ui_element__p_data(
+                    p_slider_right,
+                    p_gfx_window__bg_right);
             </code>
             <grid x="44" y="15" size="9" stride__y="28" name="p_inventory_column__left">
                 <allocate_ui_container size="3" stride__x="24">
@@ -115,13 +116,13 @@
                     p_slider_left,
                     get_p_ui_element_by__index_from__ui_manager(
                         p_ui_manager,
-                        UI_WINDOW__GAME__TRADE_P_INVENTORY_COLUMN__LEFT_8));
+                        $p_inventory_column__left));
                 set_ui_element_as__the_parent_of__this_ui_element(
                     p_ui_manager,
                     p_slider_right, 
                     get_p_ui_element_by__index_from__ui_manager(
                         p_ui_manager,
-                        UI_WINDOW__GAME__TRADE_P_INVENTORY_COLUMN__RIGHT_62));
+                        $p_inventory_column__right));
             </code>
         </group>
     </ui>

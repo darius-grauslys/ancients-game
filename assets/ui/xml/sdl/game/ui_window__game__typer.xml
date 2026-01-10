@@ -12,10 +12,10 @@
             <header path="defines.h"/>
             <header path="game.h"/>
         </include>
-        <output base_dir="./" c_path="./core/source/ui/implemented/generated/game/ui_window__game__typer.c" h_path="./core/include/ui/implemented/generated/game/ui_window__game__typer.h"/>
+        <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__typer.c" h_path="./include/ui/implemented/generated/game/ui_window__game__typer.h"/>
         <platform target="SDL" size="256,192"/>
-        <background layer="0" path="./core/assets/ui/default/ui_map_idle.png"/>
-        <background layer="1" path="./core/assets/ui/typer/ui_map_typer__lowercase.png" x="8"/>
+        <background layer="0" path="./assets/ui/default/ui_map_idle.png"/>
+        <background layer="1" path="./assets/ui/typer/ui_map_typer__lowercase.png" x="8"/>
         <ui_func_signature for="grid"/>
         <ui_func_signature for="group"/>
         <ui_func_signature for="alloc_child" c_signatures="allocate_ui_element_from__ui_manager_as__child"/>

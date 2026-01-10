@@ -6,7 +6,7 @@ Texture_Name__c_str name_of__texture__ground = "ground";
 Texture_Name__c_str name_of__texture__cover = "cover";
 Texture_Name__c_str name_of__texture__ui = "ui";
 Texture_Name__c_str name_of__texture__font__large = "font__large";
-Texture_Name__c_str name_of__texture__ui_sprites__16x16 = "ui_s16x16";
+Texture_Name__c_str name_of__texture__ui_sprites__16x16 = "ui_sprites__16x16";
 Texture_Name__c_str name_of__texture__player = "player";
 Texture_Name__c_str name_of__texture__skeleton = "skeleton";
 
@@ -14,7 +14,7 @@ IO_path path_to__texture__ground = "assets/world/ground.png";
 IO_path path_to__texture__cover = "assets/world/cover.png";
 IO_path path_to__texture__ui = "assets/ui/default/ui.png";
 IO_path path_to__texture__font__large = "assets/ui/font/font__large.png";
-IO_path path_to__texture__ui_sprites__16x16 = "assets/ui/sprites/ui_sprites__16x16/ui_sprites__16x16.png";
+IO_path path_to__texture__ui_sprites__16x16 = "assets/ui/sprites/ui_sprite__16x16/ui_sprites__16x16.png";
 IO_path path_to__texture__player = "assets/entities/entities__16x16/player.png";
 IO_path path_to__texture__skeleton = "assets/entities/entities__16x16/skeleton.png";
 
