@@ -11,7 +11,7 @@
 void m_sprite_animation_handler__ag__humanoid(
         Sprite *p_this_sprite,
         Game *p_game,
-        Sprite_Manager *p_sprite_manager) {
+        Sprite_Context *p_sprite_context) {
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
                 get_p_hitbox_aabb_manager_from__game(
@@ -24,8 +24,8 @@ void m_sprite_animation_handler__ag__humanoid(
         return;
     }
 
-    if (!p_sprite_manager) {
-        debug_error("m_sprite_animation_handler__ag__directional, entity is in graphics window without a sprite_manager.");
+    if (!p_sprite_context) {
+        debug_error("m_sprite_animation_handler__ag__directional, entity is in graphics window without a sprite_context.");
         return;
     }
 
@@ -36,7 +36,7 @@ void m_sprite_animation_handler__ag__humanoid(
                 p_hitbox_aabb);
     if (direction_of__movement) {
         set_sprite_animation(
-                p_sprite_manager, 
+                p_sprite_context, 
                 p_this_sprite, 
                 Sprite_Animation_Kind__Humanoid_Walk);
         if (direction_of__movement
@@ -48,7 +48,7 @@ void m_sprite_animation_handler__ag__humanoid(
         }
     } else {
         set_sprite_animation(
-                p_sprite_manager, 
+                p_sprite_context, 
                 p_this_sprite, 
                 Sprite_Animation_Kind__Humanoid_Idle);
     }
@@ -56,5 +56,5 @@ void m_sprite_animation_handler__ag__humanoid(
     m_sprite_animation_handler__default(
             p_this_sprite, 
             p_game, 
-            p_sprite_manager);
+            p_sprite_context);
 }

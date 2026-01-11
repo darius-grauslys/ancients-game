@@ -116,7 +116,7 @@ void m_load_scene_as__world_handler(
             *p_ptr_graphics_window__cover,
             128); // TODO: should maybe change
     register_sprite_animations(
-            get_p_sprite_manager_from__gfx_context(
+            get_p_sprite_context_from__gfx_context(
                 get_p_gfx_context_from__game(p_game)));
 
     get_p_world_from__game(p_game)

@@ -3,7 +3,7 @@
 #include "rendering/implemented/ag__sprite_humanoid.h"
 
 void register_sprite_animations(
-        Sprite_Manager *p_sprite_manager) {
+        Sprite_Context *p_sprite_context) {
     register_sprite_animation_for__humanoid(
-            p_sprite_manager);
+            p_sprite_context);
 }

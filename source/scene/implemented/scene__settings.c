@@ -57,7 +57,8 @@ void m_load_scene_as__settings_handler(
 
     allocate_ui_manager_for__graphics_window(
             get_p_gfx_context_from__game(p_game), 
-            _p_graphics_window__settings);
+            _p_graphics_window__settings,
+            128);
 
     make_ag_button(
             p_game, 

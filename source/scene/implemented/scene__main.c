@@ -68,8 +68,8 @@ void m_load_scene_as__main_handler(
     register_ui_windows(
             get_p_gfx_context_from__game(p_game));
 
-    allocate_sprite_pools_from__sprite_manager(
-            get_p_sprite_manager_from__gfx_context(
+    allocate_sprite_managers_from__sprite_context(
+            get_p_sprite_context_from__gfx_context(
                 get_p_gfx_context_from__game(p_game)), 
             8);
 
@@ -123,7 +123,8 @@ void m_load_scene_as__main_handler(
 
     allocate_ui_manager_for__graphics_window(
             get_p_gfx_context_from__game(p_game), 
-            _p_main__graphics_window__ui);
+            _p_main__graphics_window__ui,
+            128);
 
     make_ag_button(
             p_game, 

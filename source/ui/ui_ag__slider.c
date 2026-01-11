@@ -9,8 +9,8 @@
 #include "ui/ui_element.h"
 #include "ui/ui_manager.h"
 #include "ui/ui_slider.h"
+#include "rendering/sprite_context.h"
 #include "rendering/sprite_manager.h"
-#include "rendering/sprite_pool.h"
 
 UI_Element *make_ag_slider(
         Game *p_game,
@@ -59,9 +59,9 @@ UI_Element *make_ag_slider(
         &texture_of__slider);
 
     Sprite *p_sprite =
-        allocate_sprite_from__sprite_pool(
+        allocate_sprite_from__sprite_manager(
                 get_p_gfx_context_from__game(p_game), 
-                get_p_sprite_pool_from__graphics_window(
+                get_p_sprite_manager_from__graphics_window(
                     p_game,
                     p_graphics_window), 
                 p_graphics_window, 

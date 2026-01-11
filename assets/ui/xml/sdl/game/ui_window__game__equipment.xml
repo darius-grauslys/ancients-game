@@ -2,38 +2,47 @@
 <root>
     <config>
         <include sub_dir="ui/implemented/generated/game/">
-            <header path="ui/implemented/generated/game/ui_window__game__hud.h"/>
+            <header path="ui/implemented/generated/game/ui_window__game__equipment.h"/>
+            <header path="ui/ui_ag__drop_zone__equipment_slot.h"/>
+            <header path="ui/ui_context.h"/>
             <header path="ui/ui_element.h"/>
             <header path="ui/ui_button.h"/>
             <header path="ui/ui_drop_zone.h"/>
             <header path="ui/ui_draggable.h"/>
+            <header path="ui/ui_slider.h"/>
             <header path="ui/ui_manager.h"/>
             <header path="vectors.h"/>
             <header path="defines.h"/>
             <header path="game.h"/>
+            <header path="ui/ui_ag__slider.h"/>
+            <header path="ui/ui_ag__element.h"/>
         </include>
-        <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__labor.c" h_path="./include/ui/implemented/generated/game/ui_window__game__labor.h"/>
-        <platform target="SDL" size="256,192"/>
-        <background layer="0" path="./assets/ui/default/ui_map_labor.png"/>
+        <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__equipment.c" h_path="./include/ui/implemented/generated/game/ui_window__game__equipment.h"/>
+        <platform target="SDL" size="256,256"/>
+        <background layer="1" path="./assets/ui/default/ui_map_equipment.png"/>
         <ui_func_signature for="grid"/>
         <ui_func_signature for="group"/>
         <ui_func_signature for="alloc_child" c_signatures="allocate_ui_element_from__ui_manager_as__child"/>
         <ui_func_signature for="allocate_ui" c_signatures="allocate_ui_element_from__ui_manager"/>
         <ui_func_signature for="allocate_ui_container" c_signatures="allocate_many_ui_elements_from__ui_manager_in__succession"/>
         <ui_func_signature for="code"/>
+        <ui_func_signature for="background" c_signatures="SDL_initialize_ui_element_as__background"/>
         <ui_func_signature for="button" c_signatures="initialize_ui_element_as__button"/>
         <ui_func_signature for="slider" c_signatures="initialize_ui_element_as__slider"/>
         <ui_func_signature for="draggable" c_signatures="initialize_ui_element_as__draggable"/>
         <ui_func_signature for="drop_zone" c_signatures="initialize_ui_element_as__drop_zone"/>
     </config>
-    <ui offset_of__ui_index="3">
-        <code>
-            allocate_ui_for__ui_window__game__hud(p_gfx_context, p_gfx_window, p_game, p_ui_manager, index_of__ui_element_offset__u16);
-            toggle_ui_button(get_p_ui_element_by__index_from__ui_manager(p_ui_manager, 2));
-        </code>
-        <grid size="5" x="64" y="104" stride__x="16">
-            <allocate_ui_container size="5" stride__y="16">
-                <button width="8" height="8"/>
+    <ui offset_of__ui_index="0">
+        <grid x="32" y="100" size="3" stride__y="32" name="p_equipment">
+            <allocate_ui_container size="2" stride__x="28">
+                <drop_zone width="20" height="20" color="55,55,96" m_Receive_Drop_Handler="m_ui_drop_zone__receive_drop_handler__equipment_slot"/>
+                <code>
+                    set_ui_element__p_data(
+                        p_ui_iterator,
+                        get_p_ui_element_by__index_from__ui_manager(
+                            p_ui_manager,
+                            $p_equipment));
+                </code>
             </allocate_ui_container>
         </grid>
     </ui>

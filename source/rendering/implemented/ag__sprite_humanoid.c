@@ -1,7 +1,7 @@
 #include "rendering/implemented/ag__sprite_humanoid.h"
 #include "defines.h"
 #include "defines_weak.h"
-#include "rendering/sprite_manager.h"
+#include "rendering/sprite_context.h"
 #include "types/implemented/sprite_animation_group_kind.h"
 #include "types/implemented/sprite_animation_kind.h"
 
@@ -57,34 +57,34 @@ Sprite_Animation sprite_animation__humanoid__sleep = {
 };
 
 void register_sprite_animation_for__humanoid(
-        Sprite_Manager *p_sprite_manager) {
-    register_sprite_animation_group_into__sprite_manager(
-            p_sprite_manager, 
+        Sprite_Context *p_sprite_context) {
+    register_sprite_animation_group_into__sprite_context(
+            p_sprite_context, 
             Sprite_Animation_Group_Kind__Humanoid, 
             sprite_animation_group__humanoid);
     
-    register_sprite_animation_into__sprite_manager(
-            p_sprite_manager, 
+    register_sprite_animation_into__sprite_context(
+            p_sprite_context, 
             Sprite_Animation_Kind__Humanoid_Walk, 
             sprite_animation__humanoid__walk);
     
-    register_sprite_animation_into__sprite_manager(
-            p_sprite_manager, 
+    register_sprite_animation_into__sprite_context(
+            p_sprite_context, 
             Sprite_Animation_Kind__Humanoid_Idle, 
             sprite_animation__humanoid__idle);
 
-    register_sprite_animation_into__sprite_manager(
-            p_sprite_manager, 
+    register_sprite_animation_into__sprite_context(
+            p_sprite_context, 
             Sprite_Animation_Kind__Humanoid_Use, 
             sprite_animation__humanoid__use);
 
-    register_sprite_animation_into__sprite_manager(
-            p_sprite_manager, 
+    register_sprite_animation_into__sprite_context(
+            p_sprite_context, 
             Sprite_Animation_Kind__Humanoid_Die, 
             sprite_animation__humanoid__die);
 
-    register_sprite_animation_into__sprite_manager(
-            p_sprite_manager, 
+    register_sprite_animation_into__sprite_context(
+            p_sprite_context, 
             Sprite_Animation_Kind__Humanoid_Sleep, 
             sprite_animation__humanoid__sleep);
 }
