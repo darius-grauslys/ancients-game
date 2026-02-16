@@ -113,7 +113,7 @@ void m_enter_scene_as__server_handler(
                 p_this_scene)) {
         while(!poll__game_tick_timer(p_game));
         poll_multiplayer(p_game);
-        manage_world(p_game, 0);
+        manage_world(p_game);
         manage_game__pre_render(p_game);
         manage_game__post_render(p_game);
     }

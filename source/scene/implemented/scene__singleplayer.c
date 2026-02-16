@@ -91,6 +91,10 @@ void m_load_scene_as__singleplayer_handler(
                 IDENTIFIER__UNKNOWN__u32,
                 true,
                 true);
+    allocate_sprite_manager_for__graphics_window(
+            get_p_gfx_context_from__game(p_game), 
+            _p_graphics_window__singleplayer, 
+            16);
 
     if (!_p_graphics_window__singleplayer) {
         debug_error("m_load_scene_as__singleplayer_handler, failed to allocate _p_graphics_window__singleplayer.");

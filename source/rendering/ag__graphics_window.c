@@ -61,7 +61,7 @@ Graphics_Window *make_AG_graphics_window_with__composition_texture(
     }
 
     if (is_made_with__sprite_manager_or__not) {
-        allocate_sprite_pool_for__graphics_window(
+        allocate_sprite_manager_for__graphics_window(
                 get_p_gfx_context_from__game(p_game), 
                 p_graphics_window,
                 128); // TODO: perhaps should change
