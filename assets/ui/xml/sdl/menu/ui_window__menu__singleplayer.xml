@@ -8,6 +8,8 @@
             <header path="vectors.h"/>
             <header path="defines.h"/>
             <header path="game.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
         </include>
         <output base_dir="./" c_path="./source/ui/implemented/generated/menu/ui_window__menu__singleplayer.c" h_path="./include/ui/implemented/generated/menu/ui_window__menu__singleplayer.h"/>
         <platform target="SDL" size="256,196"/>

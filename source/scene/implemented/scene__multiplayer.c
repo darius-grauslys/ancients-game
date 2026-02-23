@@ -35,6 +35,8 @@
 
 static Graphics_Window *_p_graphics_window__multiplayer = 0;
 
+static UI_Manager *_p_ui_manager = 0;
+
 static UI_Element *_p_ui_element__ip_address__text_box = 0;
 static UI_Element *_p_ui_element__port__text_box = 0;
 
@@ -59,9 +61,11 @@ static void m_ui_button__clicked_handler__connect(
             _p_ui_element__port__text_box
             ->pM_char_buffer)) {
         set_c_str_of__ui_text_with__const_c_str(
+                _p_ui_manager,
                 _p_ui_element__ip_address__text_box, 
                 "INVALID", sizeof("INVALID"));
         set_c_str_of__ui_text_with__const_c_str(
+                _p_ui_manager,
                 _p_ui_element__port__text_box, 
                 "INVALID", sizeof("INVALID"));
         return;
@@ -125,6 +129,10 @@ void m_load_scene_as__multiplayer_handler(
         debug_error("m_load_scene_as__singleplayer_handler, failed to allocate _p_graphics_window__singleplayer.");
         return;
     }
+
+    _p_ui_manager = get_p_ui_manager_from__graphics_window(
+            p_game, 
+            _p_graphics_window__multiplayer);
 
     set_graphics_window__ui_tile_map(
             _p_graphics_window__multiplayer, 

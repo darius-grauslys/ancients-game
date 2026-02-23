@@ -8,6 +8,8 @@
             <header path="ui/ui_drop_zone.h"/>
             <header path="ui/ui_draggable.h"/>
             <header path="ui/ui_manager.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
             <header path="vectors.h"/>
             <header path="defines.h"/>
             <header path="game.h"/>

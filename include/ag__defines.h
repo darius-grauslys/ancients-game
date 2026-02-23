@@ -78,4 +78,9 @@ typedef union Equipment_t {
     };
 } Equipment;
 
+typedef struct World_Scene_Data_t {
+    Graphics_Window *p_graphics_window__ground;
+    Graphics_Window *p_graphics_window__ui;
+} World_Scene_Data;
+
 #endif

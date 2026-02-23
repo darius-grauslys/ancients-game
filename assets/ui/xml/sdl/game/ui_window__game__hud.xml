@@ -3,6 +3,8 @@
     <config>
         <include sub_dir="ui/implemented/generated/game/">
             <header path="ui/ui_element.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
             <header path="ui/ui_button.h"/>
             <header path="ui/ui_manager.h"/>
             <header path="vectors.h"/>

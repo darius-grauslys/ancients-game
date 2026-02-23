@@ -1,4 +1,5 @@
 #include "entity/handlers/ag__entity_handler__ai_input_controller.h"
+#include "ag__defines.h"
 #include "client.h"
 #include "collisions/hitbox_aabb.h"
 #include "collisions/hitbox_aabb_manager.h"
@@ -9,6 +10,7 @@
 #include "input/input.h"
 #include "numerics.h"
 #include "rendering/graphics_window.h"
+#include "scene/scene_manager.h"
 #include "serialization/serialization_header.h"
 #include "types/implemented/graphics_window_kind.h"
 #include "types/implemented/tile_cover_kind.h"
@@ -58,9 +60,33 @@ void m_entity_handler__ai_input_controller(
     p_hitbox_aabb->velocity__3i32F4.y__i32F4 = 0;
     // up to here.
     if (is_input__game_settings_released(p_input)) {
-        open_ui_window(
+        Scene_Manager *p_scene_manager =
+            get_p_scene_manager_from__game(p_game);
+        Scene *p_current_scene =
+            get_p_active_scene_from__scene_manager(p_scene_manager);
+        World_Scene_Data *p_world_scene_data =
+            p_current_scene->p_scene_data;
+
+        Graphics_Window *p_graphics_window__ui =
+            p_world_scene_data->p_graphics_window__ui;
+        UI_Manager *p_ui_manager =
+            get_p_ui_manager_from__graphics_window(
+                    p_game, 
+                    p_graphics_window__ui);
+        reset_graphics_window(
                 p_game, 
-                UI_Window_Kind__Game__Equip);
+                p_graphics_window__ui, 
+                true /*is_releasing_unprovided_children*/);
+
+        if (!p_ui_manager) {
+            // If the ui_manager was not previously allocated
+            // open the ui
+            populate_window_with__ui(
+                    p_game, 
+                    p_graphics_window__ui,
+                    UI_Window_Kind__Game__Equip, 
+                    0);
+        }
     }
     if (is_input__turn_left_released(p_input)) {
         debug_info(

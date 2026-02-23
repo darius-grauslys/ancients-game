@@ -13,10 +13,12 @@
 #include "ui/ui_text.h"
 #include "vectors.h"
 #include "world/local_space_manager.h"
+#include "rendering/graphics_window.h"
 
-Graphics_Window *_p_graphics_window__world_save = 0;
+static Graphics_Window *_p_graphics_window__world_save = 0;
 
-UI_Element *_p_ui_element__saving_text = 0;
+static UI_Manager *_p_ui_manager = 0;
+static UI_Element *_p_ui_element__saving_text = 0;
 
 typedef enum Saving_Text_State {
     Saving_Text_State__SavingDot,
@@ -38,6 +40,10 @@ void m_load_scene_as__world_save_handler(
                 IDENTIFIER__UNKNOWN__u32, 
                 true, 
                 false);
+
+    _p_ui_manager = get_p_ui_manager_from__graphics_window(
+            p_game, 
+            _p_graphics_window__world_save);
 
     _p_ui_element__saving_text =
         make_ag_text(
@@ -99,6 +105,7 @@ void m_enter_scene_as__world_save_handler(
                 default:
                 case Saving_Text_State__SavingDot:
                     insert_c_str_into__ui_text(
+                            _p_ui_manager,
                             _p_ui_element__saving_text, 
                             "Saving.   ", 
                             sizeof("Saving.   "), 
@@ -111,11 +118,13 @@ void m_enter_scene_as__world_save_handler(
                 case Saving_Text_State__SavingDotDotDot:
                 case Saving_Text_State__SavingDotDotDotDot:
                     append_symbol_into__ui_text(
+                            _p_ui_manager,
                             _p_ui_element__saving_text, 
                             '.');
                     break;
                 case Saving_Text_State__Failed:
                     insert_c_str_into__ui_text(
+                            _p_ui_manager,
                             _p_ui_element__saving_text, 
                             "Failed.    ", 
                             sizeof("Failed.    "), 

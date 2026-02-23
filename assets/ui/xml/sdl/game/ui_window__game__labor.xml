@@ -10,6 +10,8 @@
             <header path="ui/ui_manager.h"/>
             <header path="vectors.h"/>
             <header path="defines.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
             <header path="game.h"/>
         </include>
         <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__labor.c" h_path="./include/ui/implemented/generated/game/ui_window__game__labor.h"/>

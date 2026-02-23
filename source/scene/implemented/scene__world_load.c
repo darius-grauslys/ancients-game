@@ -7,6 +7,7 @@
 #include "numerics.h"
 #include "rendering/ag__graphics_window.h"
 #include "rendering/graphics_window_manager.h"
+#include "rendering/graphics_window.h"
 #include "rendering/implemented/aliased_texture_registrar.h"
 #include "scene/scene.h"
 #include "scene/scene_manager.h"
@@ -32,9 +33,11 @@
 #include "entity/entity_manager.h"
 #include "entity/f_entity_initializer.h"
 
-Graphics_Window *_p_graphics_window__world_load = 0;
+static Graphics_Window *_p_graphics_window__world_load = 0;
 
-UI_Element *_p_ui_element__loading_text = 0;
+static UI_Manager *_p_ui_manager = 0;
+
+static UI_Element *_p_ui_element__loading_text = 0;
 
 typedef enum Loading_Text_State {
     Loading_Text_State__LoadingDot,
@@ -66,6 +69,11 @@ void m_load_scene_as__world_load_handler(
                 IDENTIFIER__UNKNOWN__u32, 
                 true, 
                 false);
+
+    // TODO: null check
+    _p_ui_manager = get_p_ui_manager_from__graphics_window(
+            p_game, 
+            _p_graphics_window__world_load);
 
     _p_ui_element__loading_text =
         make_ag_text(
@@ -128,6 +136,7 @@ void m_enter_scene_as__world_load_handler(
                 default:
                 case Loading_Text_State__LoadingDot:
                     insert_c_str_into__ui_text(
+                            _p_ui_manager,
                             _p_ui_element__loading_text, 
                             "Loading.   ", 
                             sizeof("Loading.   "), 
@@ -140,11 +149,13 @@ void m_enter_scene_as__world_load_handler(
                 case Loading_Text_State__LoadingDotDotDot:
                 case Loading_Text_State__LoadingDotDotDotDot:
                     append_symbol_into__ui_text(
+                            _p_ui_manager,
                             _p_ui_element__loading_text, 
                             '.');
                     break;
                 case Loading_Text_State__Failed:
                     insert_c_str_into__ui_text(
+                            _p_ui_manager,
                             _p_ui_element__loading_text, 
                             "Failed.    ", 
                             sizeof("Failed.    "), 

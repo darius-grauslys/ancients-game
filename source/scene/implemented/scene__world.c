@@ -1,4 +1,5 @@
 #include "scene/implemented/scene__world.h"
+#include "ag__defines.h"
 #include "defines.h"
 #include "defines_weak.h"
 #include "platform.h"
@@ -8,7 +9,6 @@
 #include "scene/scene.h"
 #include "scene/scene_manager.h"
 #include "game.h"
-#include "rendering/graphics_window_manager.h"
 #include "rendering/gfx_context.h"
 #include "client.h"
 #include "rendering/aliased_texture_manager.h"
@@ -18,6 +18,7 @@
 #include "types/implemented/graphics_window_kind.h"
 #include "types/implemented/scene_kind.h"
 #include "types/implemented/tile_cover_kind.h"
+#include "ui/ui_manager.h"
 #include "world/chunk_vectors.h"
 #include "world/global_space.h"
 #include "world/implemented/ag__chunk_generator_overworld.h"
@@ -84,8 +85,6 @@ void m_load_scene_as__world_handler(
                     TEXTURE_FLAG__SIZE_256x256,
                     0,
                     TEXTURE_FLAG__FORMAT__RGBA8888));
-    p_this_scene->p_scene_data =
-        p_graphics_window__ground;
 
     Graphics_Window *p_graphics_window__cover =
         allocate_graphics_window_from__graphics_window_manager(
@@ -153,6 +152,23 @@ void m_load_scene_as__world_handler(
                     TEXTURE_FLAG__SIZE_256x256,
                     0,
                     TEXTURE_FLAG__FORMAT__RGBA8888));
+    allocate_ui_manager_for__graphics_window(
+            get_p_gfx_context_from__game(p_game), 
+            p_graphics_window__ui, 
+            256);
+
+    p_this_scene->p_scene_data =
+        malloc(sizeof(World_Scene_Data));
+    if (!p_this_scene->p_scene_data) {
+        debug_abort("scene__world, could not allocate scene data.");
+    }
+    World_Scene_Data *p_world_scene_data =
+        p_this_scene->p_scene_data;
+
+    p_world_scene_data->p_graphics_window__ground =
+        p_graphics_window__ground;
+    p_world_scene_data->p_graphics_window__ui =
+        p_graphics_window__ui;
 
     set_graphics_window_as__parent_to__this_graphics_window(
         get_p_graphics_window_manager_from__gfx_context(
@@ -274,8 +290,12 @@ void m_enter_scene_as__world_handler(
     //         Tile_Cover_Kind__Stair__North__East_West+i;
     // }
 
+    World_Scene_Data *p_world_scene_data =
+        p_this_scene->p_scene_data;
     Graphics_Window *p_graphics_window__ground =
-        (Graphics_Window*)p_this_scene->p_scene_data;
+        p_world_scene_data->p_graphics_window__ground;
+    Graphics_Window *p_graphics_window__ui =
+        p_world_scene_data->p_graphics_window__ui;
 
     while (poll_is__scene_active(
                 p_game, 
@@ -284,6 +304,16 @@ void m_enter_scene_as__world_handler(
         poll_multiplayer(p_game);
         manage_game__pre_render(p_game);
 
+        UI_Manager *p_ui_manager =
+            get_p_ui_manager_from__graphics_window(
+                    p_game, 
+                    p_graphics_window__ui);
+        if (p_ui_manager) {
+            poll_ui_manager__update(
+                    p_ui_manager, 
+                    p_game, 
+                    p_graphics_window__ui);
+        }
         manage_world(p_game);
 
         set_graphics_window_as__in_need_of__composition(p_graphics_window__ground);
@@ -300,10 +330,10 @@ void m_enter_scene_as__world_handler(
 void m_unload_scene_as__world_handler(
         Scene *p_this_scene,
         Game *p_game) {
-    release_graphics_window_from__graphics_window_manager(
-            p_game, 
-            get_default_platform_graphics_window(
-                get_p_gfx_context_from__game(p_game)));
+    free(p_this_scene->p_scene_data);
+    reset_platform_provided_graphics_windows(
+            p_game,
+            true /*is_releasing_unprovided_children*/);
 }
 
 void register_scene__world(Scene_Manager *p_scene_manager) {

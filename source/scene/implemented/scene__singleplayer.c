@@ -144,18 +144,18 @@ void m_load_scene_as__singleplayer_handler(
             get_vector__3i32(0,0,-7));
 
     fill_ui_tile_map(
-            get_ui_tile_map_from__graphics_window(
+            get_p_ui_tile_map_from__graphics_window(
                 _p_graphics_window__singleplayer), 
             (UI_Tile){UI_Tile_Kind__Background_Fill});
     fill_ui_tile_map_in__this_region(
-            get_ui_tile_map_from__graphics_window(
+            get_p_ui_tile_map_from__graphics_window(
                 _p_graphics_window__singleplayer), 
             (UI_Tile){0}, 
             6, 
             0, 
             20, 32);
     fill_ui_tile_map(
-            get_ui_tile_map_from__graphics_window(
+            get_p_ui_tile_map_from__graphics_window(
                 p_graphics_window__slider), 
             (UI_Tile){UI_Tile_Kind__Button_Toggled_Fill});
 

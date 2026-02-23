@@ -23,6 +23,7 @@
             <header path="rendering/aliased_texture_manager.h"/>
             <header path="rendering/implemented/aliased_texture_registrar.h"/>
             <header path="rendering/graphics_window.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
             <header path="rendering/gfx_context.h"/>
             <header path="ui/ui_tile_map_manager.h"/>
         </include>

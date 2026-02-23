@@ -6,6 +6,12 @@
             <header path="ui/ui_ag__drop_zone__inventory_slot.h"/>
             <header path="ui/ui_context.h"/>
             <header path="ui/ui_element.h"/>
+            <header path="ui/ui_tile_map.h"/>
+            <header path="ui/ui_tile_map_manager.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="assets/ui/default/ui_map_inventory_column.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
+            <header path="rendering/aliased_texture_manager.h"/>
             <header path="ui/ui_button.h"/>
             <header path="ui/ui_drop_zone.h"/>
             <header path="ui/ui_draggable.h"/>
@@ -32,7 +38,7 @@
         <ui_func_signature for="draggable" c_signatures="initialize_ui_element_as__draggable"/>
         <ui_func_signature for="drop_zone" c_signatures="initialize_ui_element_as__drop_zone"/>
     </config>
-    <ui offset_of__ui_index="0">
+    <ui offset_of__ui_index="0" ui_position="0,0,2"  ui_tile_map__size="UI_Tile_Map_Size__Large" ui_tile_map="ui_map_inventory_columnMap" ui_tile_map__length="ui_map_inventory_columnMapLen" ui_tile_map__aliased_texture="ui">
         <grid x="104" y="15" size="9" stride__y="28" name="p_inventory_column">
             <allocate_ui_container size="3" stride__x="24">
                 <drop_zone width="23" height="27" color="55,55,96" m_Receive_Drop_Handler="m_ui_drop_zone__receive_drop_handler__inventory_slot"/>

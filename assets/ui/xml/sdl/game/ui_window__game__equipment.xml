@@ -3,6 +3,11 @@
     <config>
         <include sub_dir="ui/implemented/generated/game/">
             <header path="ui/implemented/generated/game/ui_window__game__equipment.h"/>
+            <header path="assets/ui/default/ui_map_equipment.h"/>
+            <header path="ui/ui_tile_map.h"/>
+            <header path="ui/ui_tile_map_manager.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/aliased_texture_manager.h"/>
             <header path="ui/ui_ag__drop_zone__equipment_slot.h"/>
             <header path="ui/ui_context.h"/>
             <header path="ui/ui_element.h"/>
@@ -15,6 +20,8 @@
             <header path="defines.h"/>
             <header path="game.h"/>
             <header path="ui/ui_ag__slider.h"/>
+            <header path="rendering/graphics_window.h"/>
+            <header path="rendering/graphics_window_manager.h"/>
             <header path="ui/ui_ag__element.h"/>
         </include>
         <output base_dir="./" c_path="./source/ui/implemented/generated/game/ui_window__game__equipment.c" h_path="./include/ui/implemented/generated/game/ui_window__game__equipment.h"/>
@@ -32,7 +39,7 @@
         <ui_func_signature for="draggable" c_signatures="initialize_ui_element_as__draggable"/>
         <ui_func_signature for="drop_zone" c_signatures="initialize_ui_element_as__drop_zone"/>
     </config>
-    <ui offset_of__ui_index="0">
+    <ui offset_of__ui_index="0" ui_position="0,0,2" ui_tile_map__size="UI_Tile_Map_Size__Large" ui_tile_map="ui_map_equipmentMap" ui_tile_map__length="ui_map_equipmentMapLen" ui_tile_map__aliased_texture="ui">
         <grid x="32" y="100" size="3" stride__y="32" name="p_equipment">
             <allocate_ui_container size="2" stride__x="28">
                 <drop_zone width="20" height="20" color="55,55,96" m_Receive_Drop_Handler="m_ui_drop_zone__receive_drop_handler__equipment_slot"/>
