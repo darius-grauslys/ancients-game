@@ -92,6 +92,8 @@ void register_entity_player_into__entity_manager(
         m_entity_handler__ai_input_controller;
     entity_functions__player.m_entity_body_handler =
         m_entity_handler__body_humanoid;
+    entity_functions__player.m_entity_body_handler =
+        m_entity_handler__body_humanoid;
 
     register_entity_into__entity_manager(
             p_entity_manager, 

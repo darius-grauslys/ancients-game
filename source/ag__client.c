@@ -1,4 +1,5 @@
 #include "ag__client.h"
+#include "collisions/hitbox_context.h"
 #include "collisions/hitbox_aabb_manager.h"
 #include "collisions/hitbox_aabb.h"
 #include "defines.h"
@@ -22,21 +23,27 @@ void m_process__create_client__ag(
     Client *p_client =
         (Client*)p_this_process->p_process_data;
 
-    Hitbox_AABB *p_hitbox_aabb =
-        allocate_hitbox_aabb_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
-                GET_UUID_P(p_client));
+    Identifier__u32 uuid_of__hitbox_manager__u32 =
+        p_this_process->process_valueA__i32;
 
-    if (!p_hitbox_aabb) {
-        debug_error("m_process__create_client__ag, failed to allocate player hitbox.");
+    Vector__3i32F4 *p_position__3i32F4 = 0;
+
+    bool success_of_ptr_acquision = 
+        get_ptrs_to_properties_of__hitbox(
+                get_p_hitbox_context_from__game(p_game),
+                uuid_of__hitbox_manager__u32,
+                GET_UUID_P(p_client),
+                0,
+                &p_position__3i32F4,
+                0,
+                0,
+                0);
+
+    if (!success_of_ptr_acquision) {
+        debug_error("m_process__create_client__ag, failed to get hitbox position pointer for client.");
         fail_process(p_this_process);
         return;
     }
-
-    // TODO: do we need to invoke a game action here instead?
-    set_hitbox__position_with__3i32F4(
-            p_hitbox_aabb, 
-            get_spawn_point_of__world(get_p_world_from__game(p_game)));
 
     Entity *p_entity =
         allocate_entity_with__this_uuid_in__entity_manager(
@@ -45,6 +52,14 @@ void m_process__create_client__ag(
                 get_p_entity_manager_from__game(p_game), 
                 Entity_Kind__Player,
                 GET_UUID_P(p_client));
+
+    dispatch_game_action__hitbox(
+            p_game,
+            GET_UUID_P(p_client),
+            get_spawn_point_of__world(get_p_world_from__game(p_game)),
+            VECTOR__3i32F4__0_0_0,
+            VECTOR__3i16F8__0_0_0,
+            Hitbox_Kind__Opaque);
 
     if (!p_entity) {
         debug_error("m_process__create_client__ag, failed to allocate player entity.");
@@ -85,15 +100,19 @@ void m_process__deserialize_client__ag(
                 p_serialization_request, 
                 p_entity);
 
-    Hitbox_AABB *p_hitbox_aabb =
-        get_p_hitbox_aabb_by__entity_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(
-                    p_game), 
-                p_entity);
+    Vector__3i32F4 *p_position__3i32F4 = 0;
+
+    get_ptrs_to_properties_of__hitbox(
+            get_p_hitbox_context_from__game(p_game),
+            GET_UUID_P(get_p_world_from__game(p_game)),
+            GET_UUID_P(p_client),
+            0,
+            &p_position__3i32F4,
+            0,
+            0,
+            0);
 
     set_entity_as__disabled(p_entity);
-    if (p_hitbox_aabb)
-        set_hitbox_aabb_as__disabled(p_hitbox_aabb);
 
     switch (error) {
         case PLATFORM_Read_File_Error__None:
@@ -106,10 +125,11 @@ void m_process__deserialize_client__ag(
                         get_p_repeatable_psuedo_random_from__world(
                             get_p_world_from__game(p_game)), 
                         0, 0);
-            if (!p_hitbox_aabb) {
+            if (!p_position__3i32F4) {
                 debug_error("m_process__deserialize_client__ag, player lacks hitbox.");
                 break;
             }
+            p_position__3i32F4->z__i32F4 = z__level;
             break;
         default:
             debug_error("m_process__deserialize_client__ag, read file error: %d",

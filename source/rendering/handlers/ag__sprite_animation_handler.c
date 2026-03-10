@@ -11,11 +11,13 @@
 void m_sprite_animation_handler__ag__humanoid(
         Sprite *p_this_sprite,
         Game *p_game,
-        Sprite_Context *p_sprite_context) {
+        Sprite_Context *p_sprite_context,
+        Graphics_Window *p_graphics_window) {
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(
-                    p_game), 
+                get_p_hitbox_manager_aabb_from__graphics_window(
+                    p_game,
+                    p_graphics_window), 
                 GET_UUID_P(p_this_sprite));
 
     if (!p_hitbox_aabb) {

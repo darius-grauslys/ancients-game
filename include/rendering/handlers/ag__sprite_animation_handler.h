@@ -6,6 +6,7 @@
 void m_sprite_animation_handler__ag__humanoid(
         Sprite *p_this_sprite,
         Game *p_game,
-        Sprite_Context *p_sprite_context);
+        Sprite_Context *p_sprite_context,
+        Graphics_Window *p_graphics_window);
 
 #endif
