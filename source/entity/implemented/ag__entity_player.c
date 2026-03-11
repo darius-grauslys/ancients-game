@@ -1,7 +1,7 @@
 #include "entity/implemented/ag__entity_player.h"
 #include "ag__defines_weak.h"
-#include "collisions/hitbox_aabb.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "entity/entity.h"
 #include "defines.h"
 #include "entity/entity_manager.h"
@@ -47,15 +47,19 @@ void m_entity_handler__update_player__begin(
             m_sprite_animation_handler__ag__humanoid;
     }
 
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(get_p_world_from__game(p_game)));
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
+                p_hitbox_aabb_manager, 
                 GET_UUID_P(p_this_entity));
 
     if (!p_hitbox_aabb) {
         p_hitbox_aabb =
             allocate_hitbox_aabb_from__hitbox_aabb_manager(
-                    get_p_hitbox_aabb_manager_from__game(p_game), 
+                    p_hitbox_aabb_manager, 
                     GET_UUID_P(p_this_entity));
         if (!p_hitbox_aabb) {
             debug_error("m_entity_handler__update_player__begin, failed to allocate hitbox.");

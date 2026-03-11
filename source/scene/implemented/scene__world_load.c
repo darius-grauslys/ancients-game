@@ -1,7 +1,7 @@
 #include "scene/implemented/scene__world_load.h"
 #include "client.h"
 #include "collisions/collision_node.h"
-#include "collisions/hitbox_aabb.h"
+#include "collisions/core/aabb/hitbox_aabb.h"
 #include "defines.h"
 #include "entity/entity.h"
 #include "numerics.h"

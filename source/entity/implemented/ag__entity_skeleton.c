@@ -1,6 +1,6 @@
 #include "entity/implemented/ag__entity_skeleton.h"
-#include "collisions/hitbox_aabb.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "entity/entity_manager.h"
 #include "entity/handlers/ag__entity_handler__ai_hostile_controller.h"

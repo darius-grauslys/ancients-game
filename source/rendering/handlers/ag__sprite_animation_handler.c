@@ -1,6 +1,7 @@
 #include "rendering/handlers/ag__sprite_animation_handler.h"
-#include "collisions/hitbox_aabb.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/hitbox_context.h"
+#include "collisions/core/aabb/hitbox_aabb.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "game.h"
 #include "rendering/graphics_window.h"
@@ -11,13 +12,12 @@
 void m_sprite_animation_handler__ag__humanoid(
         Sprite *p_this_sprite,
         Game *p_game,
-        Sprite_Context *p_sprite_context,
-        Graphics_Window *p_graphics_window) {
+        Sprite_Context *p_sprite_context) {
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_manager_aabb_from__graphics_window(
-                    p_game,
-                    p_graphics_window), 
+                get_p_hitbox_aabb_manager_from__hitbox_context(
+                    get_p_hitbox_context_from__game(p_game),
+                    GET_UUID_P(get_p_world_from__game(p_game))), 
                 GET_UUID_P(p_this_sprite));
 
     if (!p_hitbox_aabb) {

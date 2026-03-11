@@ -1,5 +1,5 @@
 #include "entity/handlers/ag__entity_handler__body_humanoid.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "game.h"
 
 void m_entity_handler__body_humanoid(

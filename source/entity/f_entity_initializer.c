@@ -1,5 +1,5 @@
 #include "entity/f_entity_initializer.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "entity/entity_manager.h"
 #include "entity/handlers/ag__entity_handler__update.h"

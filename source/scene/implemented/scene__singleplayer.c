@@ -1,6 +1,6 @@
 #include "scene/implemented/scene__singleplayer.h"
 #include "ag__client.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "defines.h"
 #include "defines_weak.h"
 #include "entity/entity_manager.h"

@@ -1,6 +1,7 @@
 #include "game_action/override/tcp/game_action__tcp_connect__accept__ag.h"
-#include "collisions/hitbox_aabb.h"
-#include "collisions/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
+#include "collisions/hitbox_context.h"
 #include "defines.h"
 #include "defines_weak.h"
 #include "entity/entity.h"
@@ -34,9 +35,13 @@ void m_process__game_action__tcp_connect__accept__ag__outbound_server(
         return;
     }
 
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game), 
+                GET_UUID_P(p_entity));
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__entity_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
+                p_hitbox_aabb_manager,
                 p_entity);
 
     if (!p_hitbox_aabb) {
@@ -46,7 +51,6 @@ void m_process__game_action__tcp_connect__accept__ag__outbound_server(
     }
 
     set_entity_as__enabled(p_entity);
-    set_hitbox_aabb_as__active(p_hitbox_aabb);
 
     broadcast_game_action__entity__spawn(
             p_game,

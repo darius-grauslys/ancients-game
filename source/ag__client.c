@@ -1,7 +1,7 @@
 #include "ag__client.h"
 #include "collisions/hitbox_context.h"
-#include "collisions/hitbox_aabb_manager.h"
-#include "collisions/hitbox_aabb.h"
+#include "collisions/core/aabb/hitbox_aabb_manager.h"
+#include "collisions/core/aabb/hitbox_aabb.h"
 #include "defines.h"
 #include "defines_weak.h"
 #include "game.h"
@@ -26,18 +26,19 @@ void m_process__create_client__ag(
     Identifier__u32 uuid_of__hitbox_manager__u32 =
         p_this_process->process_valueA__i32;
 
-    Vector__3i32F4 *p_position__3i32F4 = 0;
+    Vector__3i32F4 position__3i32F4 = VECTOR__3i32F4__0_0_0;
 
     bool success_of_ptr_acquision = 
-        get_ptrs_to_properties_of__hitbox(
+        opaque_access_to__hitbox(
                 get_p_hitbox_context_from__game(p_game),
                 uuid_of__hitbox_manager__u32,
                 GET_UUID_P(p_client),
-                0,
-                &p_position__3i32F4,
-                0,
-                0,
-                0);
+                0,                  // void *pV_OPTIONAL_dimensions,
+                &position__3i32F4,  // void *pV_OPTIONAL_position,
+                0,                  // void *pV_OPTIONAL_velocity,
+                0,                  // void *pV_OPTIONAL_acceleration,
+                0,                  // Hitbox_Flags__u8 *p_OPTIONAL_hitbox_flags__u8,
+                OPAQUE_HITBOX_ACCESS__GET);
 
     if (!success_of_ptr_acquision) {
         debug_error("m_process__create_client__ag, failed to get hitbox position pointer for client.");
@@ -100,18 +101,6 @@ void m_process__deserialize_client__ag(
                 p_serialization_request, 
                 p_entity);
 
-    Vector__3i32F4 *p_position__3i32F4 = 0;
-
-    get_ptrs_to_properties_of__hitbox(
-            get_p_hitbox_context_from__game(p_game),
-            GET_UUID_P(get_p_world_from__game(p_game)),
-            GET_UUID_P(p_client),
-            0,
-            &p_position__3i32F4,
-            0,
-            0,
-            0);
-
     set_entity_as__disabled(p_entity);
 
     switch (error) {
@@ -125,11 +114,25 @@ void m_process__deserialize_client__ag(
                         get_p_repeatable_psuedo_random_from__world(
                             get_p_world_from__game(p_game)), 
                         0, 0);
-            if (!p_position__3i32F4) {
+
+            Vector__3i32F4 position__3i32F4;
+            position__3i32F4.z__i32F4 = z__level;
+
+            bool success_of_ptr_acquision = 
+                opaque_access_to__hitbox(
+                        get_p_hitbox_context_from__game(p_game),
+                        GET_UUID_P(get_p_world_from__game(p_game)),
+                        GET_UUID_P(p_client),
+                        0,                  // void *pV_OPTIONAL_dimensions,
+                        &position__3i32F4,  // void *pV_OPTIONAL_position,
+                        0,                  // void *pV_OPTIONAL_velocity,
+                        0,                  // void *pV_OPTIONAL_acceleration,
+                        0,                  // Hitbox_Flags__u8 *p_OPTIONAL_hitbox_flags__u8,
+                        OPAQUE_HITBOX_ACCESS__SET);
+            if (!success_of_ptr_acquision) {
                 debug_error("m_process__deserialize_client__ag, player lacks hitbox.");
                 break;
             }
-            p_position__3i32F4->z__i32F4 = z__level;
             break;
         default:
             debug_error("m_process__deserialize_client__ag, read file error: %d",
