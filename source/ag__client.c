@@ -23,15 +23,26 @@ void m_process__create_client__ag(
     Client *p_client =
         (Client*)p_this_process->p_process_data;
 
-    Identifier__u32 uuid_of__hitbox_manager__u32 =
-        p_this_process->process_valueA__i32;
+    Entity *p_entity =
+        allocate_entity_with__this_uuid_in__entity_manager(
+                p_game, 
+                get_p_world_from__game(p_game), 
+                get_p_entity_manager_from__game(p_game), 
+                Entity_Kind__Player,
+                GET_UUID_P(p_client));
+
+    if (!p_entity) {
+        debug_error("m_process__create_client__ag, failed to allocate entity for player.");
+        fail_process(p_this_process);
+        return;
+    }
 
     Vector__3i32F4 position__3i32F4 = VECTOR__3i32F4__0_0_0;
 
     bool success_of_ptr_acquision = 
         opaque_access_to__hitbox(
                 get_p_hitbox_context_from__game(p_game),
-                uuid_of__hitbox_manager__u32,
+                GET_UUID_P(get_p_world_from__game(p_game)),
                 GET_UUID_P(p_client),
                 0,                  // void *pV_OPTIONAL_dimensions,
                 &position__3i32F4,  // void *pV_OPTIONAL_position,
@@ -46,14 +57,6 @@ void m_process__create_client__ag(
         return;
     }
 
-    Entity *p_entity =
-        allocate_entity_with__this_uuid_in__entity_manager(
-                p_game, 
-                get_p_world_from__game(p_game), 
-                get_p_entity_manager_from__game(p_game), 
-                Entity_Kind__Player,
-                GET_UUID_P(p_client));
-
     dispatch_game_action__hitbox(
             p_game,
             GET_UUID_P(p_client),
@@ -61,12 +64,6 @@ void m_process__create_client__ag(
             VECTOR__3i32F4__0_0_0,
             VECTOR__3i16F8__0_0_0,
             Hitbox_Kind__Opaque);
-
-    if (!p_entity) {
-        debug_error("m_process__create_client__ag, failed to allocate player entity.");
-        fail_process(p_this_process);
-        return;
-    }
 
     set_client_as__loaded(p_client);
     complete_process(p_this_process);

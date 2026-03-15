@@ -1,4 +1,5 @@
 #include "entity/handlers/ag__entity_handler__ai_hostile_controller.h"
+#include "collisions/hitbox_context.h"
 #include "collisions/core/aabb/hitbox_aabb.h"
 #include "collisions/core/aabb/hitbox_aabb_manager.h"
 #include "defines.h"
@@ -74,9 +75,13 @@ static void engage_player(
         Hitbox_AABB *p_hitbox_aabb_of__this_entity,
         Game *p_game,
         Entity *p_player) {
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(p_player));
     Hitbox_AABB *p_hitbox_aabb_of__target =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
+                p_hitbox_aabb_manager,
                 GET_UUID_P(p_player));
 
     if (!p_hitbox_aabb_of__this_entity) {
@@ -123,17 +128,21 @@ static void engage_player(
                 p_hitbox_aabb_of__this_entity),
             get_velocity_3i32F4_of__hitbox_aabb(
                 p_hitbox_aabb_of__this_entity),
-            vector_3i32F4_to__vector_3i16F8(movement__3i32F4));
+            vector_3i32F4_to__vector_3i16F8(movement__3i32F4),
+            Hitbox_Kind__AABB);
 }
 
 void m_entity_handler__ai_hostile__melee_controller(
         Entity *p_this_entity,
         Game *p_game,
         World *p_world) {
-
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(p_this_entity));
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
+                p_hitbox_aabb_manager,
                 GET_UUID_P(p_this_entity));
 
     if (!p_hitbox_aabb) {
@@ -221,5 +230,6 @@ void m_entity_handler__ai_hostile__melee_controller(
                 p_hitbox_aabb),
             get_velocity_3i32F4_of__hitbox_aabb(
                 p_hitbox_aabb),
-            vector_3i32F4_to__vector_3i16F8(movement__3i32F4));
+            vector_3i32F4_to__vector_3i16F8(movement__3i32F4),
+            Hitbox_Kind__AABB);
 }

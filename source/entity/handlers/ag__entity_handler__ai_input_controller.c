@@ -44,9 +44,13 @@ void m_entity_handler__ai_input_controller(
     Input *p_input = 
         get_p_input_of__client(p_client__controller);
 
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(p_world));
     Hitbox_AABB *p_hitbox_aabb = 
         get_p_hitbox_aabb_by__entity_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
+                p_hitbox_aabb_manager,
                 p_this_entity);
 
     if (!p_hitbox_aabb) {

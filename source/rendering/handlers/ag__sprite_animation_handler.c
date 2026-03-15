@@ -34,7 +34,7 @@ void m_sprite_animation_handler__ag__humanoid(
     // TODO: check by armor
     // p_sprite->index_of__sprite_animation_sub_group__u8 = 0;
     Direction__u8 direction_of__movement =
-        get_movement_direction_of__hitbox(
+        get_movement_direction_of__hitbox_aabb(
                 p_hitbox_aabb);
     if (direction_of__movement) {
         set_sprite_animation(

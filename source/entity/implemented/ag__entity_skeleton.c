@@ -59,15 +59,19 @@ void m_entity_handler__update_skeleton__begin(
             m_sprite_animation_handler__ag__humanoid;
     }
 
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(p_world));
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game), 
+                p_hitbox_aabb_manager,
                 GET_UUID_P(p_this_skeleton));
 
     if (!p_hitbox_aabb) {
         p_hitbox_aabb =
             allocate_hitbox_aabb_from__hitbox_aabb_manager(
-                    get_p_hitbox_aabb_manager_from__game(p_game), 
+                    p_hitbox_aabb_manager,
                     GET_UUID_P(p_this_skeleton));
         if (!p_hitbox_aabb) {
             debug_error("m_entity_handler__update_skeleton__begin, failed to allocate hitbox.");
@@ -76,11 +80,12 @@ void m_entity_handler__update_skeleton__begin(
         }
     }
 
+    // TODO: likely need to propigate via game action
     set_size_of__hitbox_aabb(
             p_hitbox_aabb, 
             8, 8);
 
-    set_hitbox__position_with__3i32(
+    set_hitbox_aabb__position_with__3i32(
             p_hitbox_aabb, 
             get_vector__3i32(
                 32, 0, 0));
@@ -101,7 +106,8 @@ void m_entity_handler__update_skeleton__begin(
                     get_p_collision_node_pool_from__world(
                         get_p_world_from__game(p_game)), 
                     p_collision_node, 
-                    p_hitbox_aabb);
+                    p_global_space->chunk_vector__3i32,
+                    GET_UUID_P(p_this_skeleton));
         }
     }
 

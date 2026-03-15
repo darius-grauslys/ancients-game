@@ -1,5 +1,6 @@
 #include "scene/implemented/scene__world.h"
 #include "ag__defines.h"
+#include "collisions/hitbox_context.h"
 #include "defines.h"
 #include "defines_weak.h"
 #include "platform.h"
@@ -71,7 +72,7 @@ void m_load_scene_as__world_handler(
 
     if (is_identifier_u32__invalid(uuid_of__cover_over_sprites_texture)) {
         debug_error("m_load_scene_as__world_handler, failed to load cover_over_sprites texture.");
-    }
+    }    
 
     Graphics_Window *p_graphics_window__world =
         get_default_platform_graphics_window(
@@ -203,9 +204,13 @@ void m_load_scene_as__world_handler(
                 get_p_aliased_texture_manager_from__game(p_game), 
                 name_of__texture__ui));
 
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(get_p_world_from__game(p_game)));
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(p_game),
+                p_hitbox_aabb_manager,
                 GET_UUID_P(get_p_local_client_by__from__game(p_game)));
 
     initialize_camera(
@@ -243,10 +248,13 @@ void m_enter_scene_as__world_handler(
         Scene *p_this_scene,
         Game *p_game) {
     Client *p_client = get_p_local_client_by__from__game(p_game);
+    Hitbox_AABB_Manager *p_hitbox_aabb_manager =
+        get_p_hitbox_aabb_manager_from__hitbox_context(
+                get_p_hitbox_context_from__game(p_game),
+                GET_UUID_P(get_p_world_from__game(p_game)));
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__game(
-                    p_game), 
+                p_hitbox_aabb_manager,
                 GET_UUID_P(p_client));
     // Chunk *p_chunk =
     //         get_p_chunk_from__global_space(

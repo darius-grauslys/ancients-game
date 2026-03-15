@@ -91,9 +91,11 @@ void m_load_scene_as__singleplayer_handler(
                 IDENTIFIER__UNKNOWN__u32,
                 true,
                 true);
-    allocate_sprite_manager_for__graphics_window(
-            get_p_gfx_context_from__game(p_game), 
+
+    allocate_hitbox_manager_for__graphics_window(
+            get_p_hitbox_context_from__game(p_game), 
             _p_graphics_window__singleplayer, 
+            Hitbox_Manager_Type__AABB, 
             16);
 
     if (!_p_graphics_window__singleplayer) {
@@ -137,6 +139,12 @@ void m_load_scene_as__singleplayer_handler(
                 GET_UUID_P(p_ui_slider), 
                 true, 
                 false);
+
+    allocate_hitbox_manager_for__graphics_window(
+            get_p_hitbox_context_from__game(p_game), 
+            p_graphics_window__slider, 
+            Hitbox_Manager_Type__AABB, 
+            32);
 
     set_position_3i32_of__graphics_window(
             p_game, 

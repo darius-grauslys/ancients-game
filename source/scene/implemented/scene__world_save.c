@@ -41,6 +41,12 @@ void m_load_scene_as__world_save_handler(
                 true, 
                 false);
 
+    allocate_hitbox_manager_for__graphics_window(
+            get_p_hitbox_context_from__game(p_game), 
+            _p_graphics_window__world_save, 
+            Hitbox_Manager_Type__AABB, 
+            16);
+
     _p_ui_manager = get_p_ui_manager_from__graphics_window(
             p_game, 
             _p_graphics_window__world_save);

@@ -10,6 +10,7 @@
 #include "rendering/font/font_manager.h"
 #include "rendering/aliased_texture_manager.h"
 #include "rendering/sprite_manager.h"
+#include "types/implemented/hitbox_manager_type.h"
 #include "ui/implemented/ui_window_registrar.h"
 #include "ui/ui_manager.h"
 #include "ui/ag_fonts.h"
@@ -83,9 +84,6 @@ void m_load_scene_as__main_handler(
             p_game,
             m_process__create_client__ag);
 
-    initialize_hitbox_aabb_manager(
-            get_p_hitbox_aabb_manager_from__game(p_game));
-
     _p_main__graphics_window__ui =
         allocate_graphics_window_from__graphics_window_manager(
                 get_p_gfx_context_from__game(p_game), 
@@ -100,6 +98,12 @@ void m_load_scene_as__main_handler(
                 Scene_Kind__Unknown);
         return;
     }
+
+    allocate_hitbox_manager_for__graphics_window(
+            get_p_hitbox_context_from__game(p_game), 
+            _p_main__graphics_window__ui, 
+            Hitbox_Manager_Type__AABB, 
+            16);
 
     if (!get_texture_by__alias(
             get_p_aliased_texture_manager_from__game(p_game), 

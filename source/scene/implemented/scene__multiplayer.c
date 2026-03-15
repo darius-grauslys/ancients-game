@@ -125,6 +125,12 @@ void m_load_scene_as__multiplayer_handler(
                     get_p_gfx_context_from__game(p_game)), 
                 TEXTURE_FLAG__SIZE_256x256);
 
+    allocate_hitbox_manager_for__graphics_window(
+            get_p_hitbox_context_from__game(p_game), 
+            _p_graphics_window__multiplayer, 
+            Hitbox_Manager_Type__AABB, 
+            16);
+
     if (!_p_graphics_window__multiplayer) {
         debug_error("m_load_scene_as__singleplayer_handler, failed to allocate _p_graphics_window__singleplayer.");
         return;
