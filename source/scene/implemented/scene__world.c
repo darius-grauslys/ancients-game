@@ -74,9 +74,15 @@ void m_load_scene_as__world_handler(
         debug_error("m_load_scene_as__world_handler, failed to load cover_over_sprites texture.");
     }    
 
+    World *p_world =
+        get_p_world_from__game(p_game);
     Graphics_Window *p_graphics_window__world =
         get_default_platform_graphics_window(
                 get_p_gfx_context_from__game(p_game));
+    share_hitbox_manager_with__graphics_window(
+            p_graphics_window__world, 
+            GET_UUID_P(p_world));
+
     Graphics_Window *p_graphics_window__ground =
         allocate_graphics_window_from__graphics_window_manager(
                 get_p_gfx_context_from__game(p_game), 
@@ -100,6 +106,9 @@ void m_load_scene_as__world_handler(
             get_p_gfx_context_from__game(p_game), 
             p_graphics_window__cover,
             128); // TODO: should maybe change
+    share_hitbox_manager_with__graphics_window(
+            p_graphics_window__cover, 
+            GET_UUID_P(p_world));
     register_sprite_animations(
             get_p_sprite_context_from__gfx_context(
                 get_p_gfx_context_from__game(p_game)));
@@ -205,7 +214,7 @@ void m_load_scene_as__world_handler(
                 name_of__texture__ui));
 
     Hitbox_AABB_Manager *p_hitbox_aabb_manager =
-        get_p_hitbox_aabb_manager_from__hitbox_context(
+        (Hitbox_AABB_Manager*)get_pV_hitbox_manager_from__hitbox_context(
                 get_p_hitbox_context_from__game(p_game),
                 GET_UUID_P(get_p_world_from__game(p_game)));
     Hitbox_AABB *p_hitbox_aabb =
@@ -249,7 +258,7 @@ void m_enter_scene_as__world_handler(
         Game *p_game) {
     Client *p_client = get_p_local_client_by__from__game(p_game);
     Hitbox_AABB_Manager *p_hitbox_aabb_manager =
-        get_p_hitbox_aabb_manager_from__hitbox_context(
+        (Hitbox_AABB_Manager*)get_pV_hitbox_manager_from__hitbox_context(
                 get_p_hitbox_context_from__game(p_game),
                 GET_UUID_P(get_p_world_from__game(p_game)));
     Hitbox_AABB *p_hitbox_aabb =

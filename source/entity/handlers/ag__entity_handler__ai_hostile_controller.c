@@ -76,7 +76,7 @@ static void engage_player(
         Game *p_game,
         Entity *p_player) {
     Hitbox_AABB_Manager *p_hitbox_aabb_manager =
-        get_p_hitbox_aabb_manager_from__hitbox_context(
+        (Hitbox_AABB_Manager*)get_pV_hitbox_manager_from__hitbox_context(
                 get_p_hitbox_context_from__game(p_game),
                 GET_UUID_P(p_player));
     Hitbox_AABB *p_hitbox_aabb_of__target =
@@ -137,7 +137,7 @@ void m_entity_handler__ai_hostile__melee_controller(
         Game *p_game,
         World *p_world) {
     Hitbox_AABB_Manager *p_hitbox_aabb_manager =
-        get_p_hitbox_aabb_manager_from__hitbox_context(
+        (Hitbox_AABB_Manager*)get_pV_hitbox_manager_from__hitbox_context(
                 get_p_hitbox_context_from__game(p_game),
                 GET_UUID_P(p_this_entity));
     Hitbox_AABB *p_hitbox_aabb =

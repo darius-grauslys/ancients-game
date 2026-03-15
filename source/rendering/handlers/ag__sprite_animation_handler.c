@@ -15,7 +15,8 @@ void m_sprite_animation_handler__ag__humanoid(
         Sprite_Context *p_sprite_context) {
     Hitbox_AABB *p_hitbox_aabb =
         get_p_hitbox_aabb_by__uuid_u32_from__hitbox_aabb_manager(
-                get_p_hitbox_aabb_manager_from__hitbox_context(
+                (Hitbox_AABB_Manager*)
+                get_pV_hitbox_manager_from__hitbox_context(
                     get_p_hitbox_context_from__game(p_game),
                     GET_UUID_P(get_p_world_from__game(p_game))), 
                 GET_UUID_P(p_this_sprite));
